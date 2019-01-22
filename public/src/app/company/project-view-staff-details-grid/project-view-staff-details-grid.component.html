@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-lg-12 p-3">
+        <ng-template #content let-c="close" let-d="dismiss" style="width: 50%;max-width:  150%;">
+            <div class="container-fluid">
+                <app-staff-view-project-details-popover (childStaffCloseEvent)="childStaffCloseEvent($event)" [staffInstance]="selectedStaff" [renderTable]="renderTable">
+                </app-staff-view-project-details-popover>
+            </div>
+        </ng-template>
+        <kendo-grid
+            [data]="gridView"
+            [loading]="showDetailsLoader"
+            [resizable]="true"
+            [sortable]="true"
+            [sort]="sort"
+            (sortChange)="sortChange($event)"
+            style="min-width: 500px; max-width: 1200px; max-height: 250px; height: auto"
+          >
+            <kendo-grid-column
+                field="{{column.columnId}}"
+                title="{{column.columnLabel}}"
+                [width]="100"
+                *ngFor="let column of projectDetailColumns">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="column.columnId == 'START_DATE' || column.columnId == 'END_DATE'">
+                    <span> {{dataItem[column.columnId]| date: date_format}} </span>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="column.columnId == 'STAFF_NAME'">
+                    <button type="button"  *ngIf="dataItem.STAFF_NAME"  class="btn btn-link btn-popover-link" container="body" placement="right-top"
+                            (click)="openVerticallyCentered(content,dataItem)">
+                        {{dataItem.STAFF_NAME}}
+                    </button>
+                    <span  *ngIf="!dataItem.STAFF_NAME" class="unassigned-staff">
+                        (Unassigned)
+                    </span>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="column.columnId == 'RESUME_SUBMITTED'">
+                    <span  *ngIf="dataItem.RESUME_SUBMITTED == '1'"> Yes
+                    </span>
+                    <span *ngIf="dataItem.RESUME_SUBMITTED == '0'">
+                        No
+                    </span>
+                </ng-template>
+            </kendo-grid-column>
+        </kendo-grid>
+    </div>
+</div>

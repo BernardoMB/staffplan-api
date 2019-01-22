@@ -1,0 +1,212 @@
+<section>
+    <div class="container-fluid ">
+        <div class="row">
+            <div class="col-lg-6 dark-grey-bg box-pd current-project custom-height-hv">
+                <div class="col-lg-12 pl-0">
+                    <h1 class="los_text page-title">Home</h1>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 pl-0">
+                        <h2 class="custom-pl10 pt-0 page-subtitle d-inline-block">
+                            Current Project Summary
+                            <!-- <span class="page-subtitle__status">Los Angeles</span> -->
+                        </h2>
+                        <div class="home-location-search">
+                            <kendo-dropdownlist [data]="filteredOfficeList" [textField]="'OFFICE_NAME'"
+                                                [valueField]="'OFFICE_ID'" [filterable]="true"
+                                                name="office" id="assProjectCity"
+                                                class="form-control form-control--gray"
+                                                (filterChange)="handleFilterChange($event, 'OFFICE')"
+                                                [(ngModel)]='selectedOffice' (valueChange)="handleValueChange($event)">
+                            </kendo-dropdownlist>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="overlay-main" (click)="projectView('projectInProgress')">
+                            <div class="bg-white box1 ">
+                                <h3 class="pb-0">Project in Progress</h3>
+                                <p class="pb-0">On Going</p>
+                                <hr/>
+                                <span class="big-text">{{dashboardData && dashboardData.InProgressProjectCount ? dashboardData.InProgressProjectCount : 0}}</span>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="overlay-main" (click)="projectView('projectStartThisYear')">
+                            <div class="bg-white box1 ">
+                                <h3 class="pb-0"> <span class="pull-right more-btn">More <i
+                                        class="fa fa-chevron-right" aria-hidden="true"></i></span>Project Started this
+                                    Year</h3>
+                                <p class="pb-0">On Going</p>
+                                <hr/>
+                                <span class="big-text">{{dashboardData && dashboardData.ProjectStartedThisYear ? dashboardData.ProjectStartedThisYear:0}}</span>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="overlay-main" (click)="projectView('projectEndThisYear')">
+                            <div class="bg-white box1 ">
+                                <h3 class="pb-0"><span class="pull-right more-btn">More <i
+                                        class="fa fa-chevron-right" aria-hidden="true"></i></span>Project End this Year
+                                </h3>
+                                <p class="pb-0">On Going</p>
+                                <hr/>
+                                <span class="big-text">{{dashboardData && dashboardData.ProjectEndThisYear ? dashboardData.ProjectEndThisYear : 0}}</span>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-lg-5">
+                    <div class="col-lg-6 pl-0">
+                        <h2 class="custom-pl10">Projects</h2>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-lg-3">
+                        <div class="overlay-main" (click)="projectView('projectRequest')">
+                            <div class="bg-white box1 custom-pt border-red"><span class="big-text">{{dashboardData && dashboardData.ProposalProjectCount ? dashboardData.ProposalProjectCount : 0}}</span>
+                                <h4 class="pt-0">Project Requests</h4>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="overlay-main" (click)="projectQuickView('unassignedRole')">
+                            <div class="bg-white box1 custom-pt border-blue"><span class="big-text">{{dashboardData && dashboardData.UnassignedRoleCount ? dashboardData.UnassignedRoleCount : 0}}</span>
+                                <h4 class="pt-0">Unassigned Role</h4>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="overlay-main" (click)="projectQuickView('projectStart')">
+                            <div class="bg-white box1 custom-pt border-green"><span class="big-text">{{dashboardData && dashboardData.ProjectStarting ? dashboardData.ProjectStarting : 0}}</span>
+                                <h4 class="pt-0">Project Starting</h4>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="overlay-main" (click)="projectQuickView('projectEnd')">
+                            <div class="bg-white box1 custom-pt border-yellow"><span class="big-text">{{dashboardData && dashboardData.ProjectEnding ? dashboardData.ProjectEnding :  0}}</span>
+                                <h4 class="pt-0">Project Ending</h4>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 light-grey-bg box-pd current-project custom-height-hv staff-summary">
+                <div class="row">
+                    <div class="col-lg-12 pl-0 mtset">
+                        <h2 class="custom-pl10 pt-0 page-subtitle">Current Staff Summary</h2>
+                    </div>
+                </div>
+                <div class="row  ">
+                    <div class="col-lg-4">
+                        <div class="overlay-main" (click)="staffView('adminStaff')">
+                            <div class="bg-white box1">
+                                <h3 class="pb-0">
+                                    <span class="pull-right more-btn">
+                                        More 
+                                        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                                    </span>Admin Staff
+                                </h3>
+                                <hr/>
+                                <span class="big-text">{{dashboardData && dashboardData.AdminStaff ? dashboardData.AdminStaff : 0}}</span>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="overlay-main" (click)="staffView('opsStaff')">
+                            <div class="bg-white box1">
+                                <h3 class="pb-0">
+                                    <span class="pull-right more-btn">
+                                        More
+                                        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                                    </span>OPS Staff
+                                </h3>
+                                <hr/>
+                                <span class="big-text">{{dashboardData && dashboardData.OPSStaff ? dashboardData.OPSStaff : 0}}</span>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-lg-5">
+                    <div class="col-lg-6 pl-0">
+                        <h2 class="custom-pl10">Staff</h2>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-lg-3">
+                        <div class="overlay-main" (click)="staffQuickView('staffGap')">
+                            <div class="bg-white box1 custom-pt border-red"><span class="big-text">{{dashboardData && dashboardData.StaffingGap ? dashboardData.StaffingGap : 0}}</span>
+                                <h4 class="pt-0">Staffing Gap</h4>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="overlay-main" (click)="staffQuickView('onBench')">
+                            <div class="bg-white box1 custom-pt border-blue"><span class="big-text">{{dashboardData && dashboardData.OnBench ? dashboardData.OnBench : 0}}</span>
+                                <h4 class="pt-0">On Bench</h4>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="overlay-main" (click)="staffQuickView('overUnder')">
+                            <div class="bg-white box1 custom-pt border-yellow"><span class="big-text">{{dashboardData && dashboardData.OverUnderAllocation ? dashboardData.OverUnderAllocation: 0 }}</span>
+                                <h4 class="pt-0">Over/Under Alloc.</h4>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="overlay-main" (click)="staffQuickView('assignEnd')">
+                            <div class="bg-white box1 custom-pt border-red"><span class="big-text">{{dashboardData && dashboardData.AssignmentEnding ? dashboardData.AssignmentEnding : 0}}</span>
+                                <h4 class="pt-0">Assignment Ending</h4>
+                            </div>
+                            <div class="overlay">
+                                <div class="text">View More</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

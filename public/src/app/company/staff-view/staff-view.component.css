@@ -1,0 +1,68 @@
+.k-header.k-grid-toolbar {
+    position: absolute;
+    right: 30px;
+    margin-top: -65px;
+    border: none;
+    padding: 0;
+}
+
+.filter__right {
+    margin-right: 80px;
+}
+
+.filter__right .btn i.fa {
+    font-size: 15px;
+}
+
+.k-header.k-grid-toolbar .k-button {
+    background: none;
+    border: none;
+    padding: 0;
+    position: relative;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.word-wrap {
+    word-wrap: break-word;
+}
+
+.btn-stafflog {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.avatar {
+    width: 62px;
+    height: 62px;
+    border-radius: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.avatar .avatar__image img {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    bottom: 0;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+}
+
+@supports(object-fit: cover) {
+    .avatar .avatar__image img {
+        position: static;
+        -webkit-transform: none;
+        -ms-transform: none;
+        transform: none;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+}

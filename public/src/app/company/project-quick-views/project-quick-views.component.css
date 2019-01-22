@@ -1,0 +1,34 @@
+.project-dropdown-list.k-popup {
+    border-radius: 8px;
+    background: #FFFFFF;
+    border: none;
+    box-shadow: 0 -5px 10px 10px rgba(2,2,2,0.030);
+    position: relative;
+    overflow: hidden;
+}
+.project-dropdown-list > * {
+    background-color: #FFFFFF !important;
+}
+.project-dropdown-list kendo-button-list {
+    min-width: 155px;
+    padding: 15px 20px;
+}
+.project-dropdown-list .k-list .k-item {
+    font-size: 14px;
+    font-weight: 400;
+    color: #363636;
+    display: block;
+    text-decoration: none;
+    padding: 10px 15px;
+}
+.project-dropdown-list .k-list .k-item.k-state-selected {
+    font-weight: 500;
+    color: #FFFFFF;
+}
+.project-dropdown-list .k-list .k-item:hover {
+    color: #254b78;
+    background: none;
+}
+.project-dropdown-list .k-list .k-item:focus {
+    box-shadow: none;
+}

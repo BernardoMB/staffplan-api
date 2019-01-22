@@ -1,0 +1,403 @@
+<!--<div class="justify-content-start mt-4 container-fluid" id="staffAdd">-->
+
+<!--</div>-->
+
+
+<div class="staff-add-panel project-panel" [ngClass]="addForm ? 'is-open':''" id="staffAdd">
+    <div class="pull-right">
+        <button class="btn btn-close-panel " title="Close" (click)="staffFormReset(true)"><i class="fa fa-times"></i>
+        </button>
+    </div>
+    
+    <form #staffForm="ngForm" novalidate>
+    
+        <div class="">
+    
+            <div class="row mx-0">
+                <div class="col-md-7">
+                    <div class="staff-add-form">
+                        <div class="col-md-12 mb-3 mb-md-4 px-0">
+                            <div class="staff-member-detail">
+                                <div class="avtar">
+                                    <img [src]="profileImageUrl" class="profilePic avtar__image"> 
+                                    <input type="file" id="selectedFile" style="display: none;" (change)="onSelectFile($event)"
+                                            accept="image/*"/>
+                                    <input type="button" class="selectFileBrowse avatar__label" value="Browse"
+                                            onclick="document.getElementById('selectedFile').click();"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12 px-0">
+                            <div class="row">
+                                <div class="col-lg-4 px-2">
+                                    <div class="form-group">
+                                        <label>{{ addFormLabels.FIRST_NAME }}</label>
+                                        <input type="text" name="FIRST_NAME" #FIRST_NAME="ngModel"
+                                                [(ngModel)]="addStaffModel.FIRST_NAME" required
+                                                class="form-control form-control--gray k-textbox" trim="blur"/>
+                                        <div *ngIf="staffForm.submitted && FIRST_NAME.invalid"
+                                                class="form-invalid-message">
+                                            <div *ngIf="FIRST_NAME.errors.required" class="k-text-error">
+                                                Please enter first name
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <div class="col-lg-4 px-2">
+                                    <div class="form-group">
+                                        <label>{{ addFormLabels.MIDDLE_INITIAL }}</label>
+                                        <input type="text" name="MIDDLE_INITIAL" #MIDDLE_INITIAL="ngModel"
+                                            [(ngModel)]="addStaffModel.MIDDLE_INITIAL"
+                                            class="form-control form-control--gray k-textbox" trim="blur"/>
+                                        <div *ngIf="staffForm.submitted && MIDDLE_INITIAL.invalid"
+                                            class="form-invalid-message">
+                                            <div *ngIf="MIDDLE_INITIAL.errors.required" class="k-text-error">
+                                                Please enter middle name
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 px-2">
+                                    <div class="form-group">
+                                        <label>{{ addFormLabels.LAST_NAME }}</label>
+                                        <input type="text" name="LAST_NAME" #LAST_NAME="ngModel"
+                                            [(ngModel)]="addStaffModel.LAST_NAME" required
+                                            class="form-control form-control--gray k-textbox" trim="blur"/>
+                                        <div *ngIf="staffForm.submitted && LAST_NAME.invalid"
+                                            class="form-invalid-message">
+                                            <div *ngIf="LAST_NAME.errors.required" class="k-text-error">
+                                                Please enter last name
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 px-2">
+                                    <div class="form-group">
+                                        <label>{{ addFormLabels.PREFERRED_NAME }}</label>
+                                        <input  type="text" name="PREFERRED_NAME" #PREFERRED_NAME="ngModel"
+                                            [(ngModel)]="addStaffModel.PREFERRED_NAME"
+                                            class="form-control form-control--gray k-textbox" trim="blur"/>
+                                        <div *ngIf="staffForm.submitted && PREFERRED_NAME.invalid"
+                                            class="form-invalid-message">
+                                            <div *ngIf="PREFERRED_NAME.errors.required" class="k-text-error">
+                                                Please enter preferred name
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 px-2">
+                                    <div class="form-group">
+                                        <label>{{ addFormLabels.EMPLOYMENT_START_DATE }}</label>
+                                        <kendo-datepicker
+                                                [(ngModel)]="addStaffModel.EMPLOYMENT_START_DATE"
+                                                required
+                                                class="form-control form-control--gray"
+                                                name="EMPLOYMENT_START_DATE"
+                                                #EMPLOYMENT_START_DATE="ngModel"
+                                                required
+                                        ></kendo-datepicker>
+                                        <div *ngIf="staffForm.submitted && EMPLOYMENT_START_DATE.invalid"
+                                            class="form-invalid-message">
+                                            <div *ngIf="EMPLOYMENT_START_DATE.errors.required" class="k-text-error">
+                                                Please enter employment start date
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 px-2">
+                                    <div class="form-group">
+                                    <label>Role:</label>
+                                        <kendo-dropdownlist
+                                                class="form-control form-control--gray"
+                                                [data]="filteredStaffRoleList"
+                                                name="ROLE_DETAIL"
+                                                #ROLE_DETAIL="ngModel"
+                                                [(ngModel)]="addStaffModel.ROLE_DETAIL"
+                                                required
+                                                [textField]="'ROLE_NAME'"
+                                                [valueField]="'ROLE_ID'"
+                                                [filterable]="true"
+                                                (filterChange)="handleFormFilterChange($event, 'ROLE_DETAIL')">
+                                        </kendo-dropdownlist>
+                                        <div *ngIf="staffForm.submitted && ROLE_DETAIL.invalid"
+                                            class="form-invalid-message">
+                                            <div *ngIf="ROLE_DETAIL.errors.required" class="k-text-error">
+                                                Please select role
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 px-2">
+                                    <div class="form-group">
+                                        <label>Group:</label>
+                                        <kendo-dropdownlist
+                                                class="form-control form-control--gray"
+                                                [data]="filteredStaffGroupList"
+                                                [textField]="'GROUP_NAME'"
+                                                [valueField]="'GROUP_ID'"
+                                                [filterable]="true"
+                                                name="STAFF_GROUP"
+                                                required
+                                                #STAFF_GROUP="ngModel"
+                                                [(ngModel)]="addStaffModel.STAFF_GROUP"
+                                                (filterChange)="handleFormFilterChange($event, 'STAFF_GROUP')">
+                                        </kendo-dropdownlist>
+                                        <div *ngIf="staffForm.submitted && STAFF_GROUP.invalid"
+                                            class="form-invalid-message">
+                                            <div *ngIf="STAFF_GROUP.errors.required" class="k-text-error">
+                                                Please select staff group
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 px-2">
+                                    <div class="form-group">
+                                        <label>Office:</label>
+                                        <kendo-dropdownlist
+                                                class="form-control form-control--gray"
+                                                [data]="filteredOfficeList"
+                                                [textField]="'OFFICE_NAME'"
+                                                [valueField]="'OFFICE_ID'"
+                                                [filterable]="true"
+                                                required
+                                                name="OFFICE"
+                                                #OFFICE="ngModel"
+                                                [(ngModel)]="addStaffModel.OFFICE"
+                                                (filterChange)="handleFormFilterChange($event, 'OFFICE')">
+                                        </kendo-dropdownlist>
+                                        <div *ngIf="staffForm.submitted && OFFICE.invalid"
+                                            class="form-invalid-message">
+                                            <div *ngIf="OFFICE.errors.required" class="k-text-error">
+                                                Please select office name
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 px-2">
+                                    <div class="form-group">
+                                        <label>Status:</label>
+                                        <kendo-dropdownlist
+                                                class="form-control form-control--gray"
+                                                [data]="filteredStaffStatusList"
+                                                [textField]="'STATUS_NAME'"
+                                                [valueField]="'STATUS_ID'"
+                                                [filterable]="true"
+                                                name="STAFF_STATUS"
+                                                required
+                                                #STAFF_STATUS="ngModel"
+                                                [(ngModel)]="addStaffModel.STAFF_STATUS"
+                                                (filterChange)="handleFormFilterChange($event, 'STAFF_STATUS')">
+                                        </kendo-dropdownlist>
+                                        <div *ngIf="staffForm.submitted && STAFF_STATUS.invalid"
+                                            class="form-invalid-message">
+                                            <div *ngIf="STAFF_STATUS.errors.required" class="k-text-error">
+                                                Please select staff status
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 px-2">
+                                    <div class="title">Residential Information</div>
+                                </div>
+                                
+                                <div class="col-sm-12 px-2">
+                                    <div class="form-group">
+                                        <label>{{ addFormLabels.HOME_CITY }}</label>
+                                        <input type="text" name="CITY_OF_RESIDENCE" #CITY_OF_RESIDENCE="ngModel"
+                                            [(ngModel)]="addStaffModel.CITY_OF_RESIDENCE"
+                                            class="form-control form-control--gray k-textbox" trim="blur"/>
+                                    </div>
+                                
+                                    <div class="form-group">
+                                        <label>{{ addFormLabels.HOME_STATE }}</label>
+                                        <input type="text" name="STATE_OF_RESIDENCE" #STATE_OF_RESIDENCE="ngModel"
+                                            [(ngModel)]="addStaffModel.STATE_OF_RESIDENCE"
+                                            class="form-control form-control--gray k-textbox" trim="blur"/>
+                                    </div>
+                                
+                                    <div class="form-group">
+                                        <label>{{ addFormLabels.HOME_ZIP }}</label>
+                                        <input type="text" name="ZIP_OF_RESIDENCE" #ZIP_OF_RESIDENCE="ngModel"
+                                            [(ngModel)]="addStaffModel.ZIP_OF_RESIDENCE"
+                                            class="form-control form-control--gray k-textbox" trim="blur"/>
+                                    </div>  
+                                </div>                              
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5 project-panel__bg">
+                    <div class="project-panel__right">
+                        <div class="title">Contact Information</div>
+
+                        <div class="form-group">
+                            <label>Work Email</label>
+                            <input type="text" name="email" #email="ngModel"
+                            [email]="addStaffModel.WORK_EMAIL !== ''" [(ngModel)]="addStaffModel.WORK_EMAIL" id="email"
+                                class="form-control form-control--gray"/>
+                            <div *ngIf="staffForm.submitted && email.invalid"
+                                class="form-invalid-message">
+                                <!-- <div *ngIf="email.errors.required" class="k-text-error">
+                                    Please enter email address
+                                </div> -->
+                                <div *ngIf="email.errors?.email && email.touched" class="k-text-error">
+                                    Please enter valid email address
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>{{ addFormLabels.PHONE_1 }}</label>
+                            <input type="text" name="CELL_NUMBER" #CELL_NUMBER="ngModel"
+                                [(ngModel)]="addStaffModel.CELL_NUMBER" id="contact"
+                                class="form-control form-control--gray k-textbox" minlength="10" maxlength="10" numbersOnly/>
+                            <div *ngIf="staffForm.submitted && CELL_NUMBER.invalid"
+                                class="form-invalid-message">
+                                <!-- <div *ngIf="CELL_NUMBER.errors.required" class="k-text-error">
+                                    Please enter cell number
+                                </div> -->
+                                <div  *ngIf="CELL_NUMBER.touched && CELL_NUMBER.errors.minlength"  class="k-text-error">
+                                    Enter minimum 10 digit 
+                                </div>
+                                <div  *ngIf="CELL_NUMBER.touched && CELL_NUMBER.errors.maxlength"  class="k-text-error">
+                                    Enter maximum 10 digit 
+                                </div>
+                            </div>
+                        </div>                        
+
+                        <div class="form-group">
+                            <label>{{ addFormLabels.PHONE_2 }}</label>
+                            <input type="mobile" name="HOME_NUMBER" #HOME_NUMBER="ngModel"
+                                [(ngModel)]="addStaffModel.HOME_NUMBER"
+                                class="form-control form-control--gray k-textbox" minlength="10" maxlength="10" numbersOnly/>
+                            <div *ngIf="staffForm.submitted && HOME_NUMBER.invalid"
+                                class="form-invalid-message">
+                                <!-- <div *ngIf="HOME_NUMBER.errors.required" class="k-text-error">
+                                    Please enter home contact number
+                                </div> -->
+                                <div  *ngIf="HOME_NUMBER.touched && HOME_NUMBER.errors.minlength"  class="k-text-error">
+                                        Enter minimum 10 digit 
+                                    </div>
+                                    <div  *ngIf="HOME_NUMBER.touched && HOME_NUMBER.errors.maxlength"  class="k-text-error">
+                                        Enter maximum 10 digit 
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- /.row mx-0 -->
+            
+            <!-- <hr/> -->
+            
+            <!-- <div class="row">
+                <div class="col-md-4">
+                    <div class="data-heading">
+                        Contact Information
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Work Email</label>
+                            <input kendoTextBox type="email" name="WORK_EMAIL" #WORK_EMAIL="ngModel"
+                                [(ngModel)]="addStaffModel.WORK_EMAIL" required
+                                class="form-control form-control--gray"/>
+                            <div *ngIf="staffForm.submitted && WORK_EMAIL.invalid"
+                                class="form-invalid-message">
+                                <div *ngIf="WORK_EMAIL.errors.required" class="k-text-error">
+                                    Please select staff status
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Contact No (Cell)</label>
+                            <input kendoTextBox type="text" name="CELL_NUMBER" #CELL_NUMBER="ngModel"
+                                [(ngModel)]="addStaffModel.CELL_NUMBER" required
+                                class="form-control form-control--gray"/>
+                            <div *ngIf="staffForm.submitted && CELL_NUMBER.invalid"
+                                class="form-invalid-message">
+                                <div *ngIf="CELL_NUMBER.errors.required" class="k-text-error">
+                                    Please select cell number
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Contact No (Home)</label>
+                            <input kendoTextBox type="text" name="HOME_NUMBER" #HOME_NUMBER="ngModel"
+                                [(ngModel)]="addStaffModel.HOME_NUMBER" required
+                                class="form-control form-control--gray"/>
+                            <div *ngIf="staffForm.submitted && HOME_NUMBER.invalid"
+                                class="form-invalid-message">
+                                <div *ngIf="HOME_NUMBER.errors.required" class="k-text-error">
+                                    Please enter home contact number
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            
+            <hr/> -->
+            
+            <!-- <div class="row">
+                <div class="col-md-4">
+                    <div class="data-heading">
+                        Residential Information
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>City</label>
+                        <input kendoTextBox type="text" name="CITY_OF_RESIDENCE" #CITY_OF_RESIDENCE="ngModel"
+                            [(ngModel)]="addStaffModel.CITY_OF_RESIDENCE"
+                            class="form-control form-control--gray"/>
+                    </div>
+                
+                    <div class="form-group">
+                        <label>State</label>
+                        <input kendoTextBox type="text" name="STATE_OF_RESIDENCE" #STATE_OF_RESIDENCE="ngModel"
+                            [(ngModel)]="addStaffModel.STATE_OF_RESIDENCE"
+                            class="form-control form-control--gray"/>
+                    </div>
+                
+                    <div class="form-group">
+                        <label>Zip</label>
+                        <input kendoTextBox type="text" name="ZIP_OF_RESIDENCE" #ZIP_OF_RESIDENCE="ngModel"
+                            [(ngModel)]="addStaffModel.ZIP_OF_RESIDENCE"
+                            class="form-control form-control--gray"/>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="text-md-right text-center">
+                <div class="col-md-7 btn-action-wrap">
+                    <button class="btn btn-blue mr-3" type="submit" title="Submit"
+                            (click)="saveStaffDetail();">Submit
+                    </button>
+                    <button class="btn btn-blue-outline" type="submit" title="Cancel"
+                            (click)="staffFormReset(true);">Cancel
+                    </button>
+                </div>                
+            </div>
+
+        </div>
+
+    </form>
+</div>
+
+
+

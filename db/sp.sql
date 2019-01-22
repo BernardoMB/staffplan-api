@@ -1,0 +1,251 @@
+-- phpMyAdmin SQL Dump
+-- version 4.8.3
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: Nov 30, 2018 at 02:41 PM
+-- Server version: 10.1.35-MariaDB
+-- PHP Version: 7.1.21
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `sp`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `COMPANY`
+--
+
+CREATE TABLE `COMPANY` (
+  `COMPANY_ID` int(11) NOT NULL,
+  `COMPANY_NAME` varchar(255) NOT NULL,
+  `COMPANY_ADDRESS` varchar(255) NOT NULL,
+  `PRIMARY_CONTACT` varchar(155) NOT NULL,
+  `PRIMARY_CONTACT_EMAIL` varchar(255) NOT NULL,
+  `PRIMARY_CONTACT_TEL_NUMBER` varchar(155) NOT NULL,
+  `PRIMARY_CONTACT_TITLE` varchar(255) NOT NULL,
+  `CREATED_DATE_TIME` datetime NOT NULL,
+  `UPDATED_DATE_TIME` datetime NOT NULL,
+  `CREATED_BY` int(11) NOT NULL,
+  `UPDATED_BY` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `COMPANY`
+--
+
+INSERT INTO `COMPANY` (`COMPANY_ID`, `COMPANY_NAME`, `COMPANY_ADDRESS`, `PRIMARY_CONTACT`, `PRIMARY_CONTACT_EMAIL`, `PRIMARY_CONTACT_TEL_NUMBER`, `PRIMARY_CONTACT_TITLE`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`) VALUES
+(1, 'Staffplan', 'USA', '9999999999', 'admin@staffplan.io', '9898989898', 'Bacancy', '2018-11-28 00:00:00', '0000-00-00 00:00:00', 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mysql_migrations_347ertt3e`
+--
+
+CREATE TABLE `mysql_migrations_347ertt3e` (
+  `timestamp` varchar(254) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SUBSCRIBER`
+--
+
+CREATE TABLE `SUBSCRIBER` (
+  `SUBSCRIBER_ID` int(11) NOT NULL,
+  `COMPANY_ID` int(11) NOT NULL,
+  `CREATED_DATE` datetime NOT NULL,
+  `CREATED_BY_USER` int(11) NOT NULL,
+  `DOMAIN_ID` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `SUBSCRIBER`
+--
+
+INSERT INTO `SUBSCRIBER` (`SUBSCRIBER_ID`, `COMPANY_ID`, `CREATED_DATE`, `CREATED_BY_USER`, `DOMAIN_ID`) VALUES
+(1, 1, '2018-11-28 00:00:00', 1, 'staffplan.io');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SUBSCRIPTION_SERVICE`
+--
+
+CREATE TABLE `SUBSCRIPTION_SERVICE` (
+  `SUBSCRIBER_ID` int(11) NOT NULL,
+  `SUBSCRIPTION_SERVICE_ID` int(11) NOT NULL,
+  `SUBSCRIPTION_TYPE_ID` int(11) NOT NULL,
+  `COUNT` int(11) NOT NULL,
+  `CREATED_DATE_TIME` datetime NOT NULL,
+  `UPDATED_DATE_TIME` int(11) NOT NULL,
+  `CREATED_BY` int(11) NOT NULL,
+  `UPDATED_BY` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SUBSCRIPTION_TYPE`
+--
+
+CREATE TABLE `SUBSCRIPTION_TYPE` (
+  `SUBSCRIPTION_TYPE_ID` int(11) NOT NULL,
+  `SUBSCRIPTION_NAME` varchar(255) NOT NULL,
+  `SUBSCRIPTION_DETAILS` varchar(255) NOT NULL,
+  `SUBSCRIPTION_PRICING_PER_MONTH` varchar(255) NOT NULL,
+  `CREATED_DATE_TIME` datetime NOT NULL,
+  `UPDATED_DATE_TIME` datetime NOT NULL,
+  `CREATED_BY` int(11) NOT NULL,
+  `UPDATED_BY` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `TENANT_DETAILS`
+--
+
+CREATE TABLE `TENANT_DETAILS` (
+  `SUBSCRIBER_ID` int(11) NOT NULL,
+  `TENANT_TYPE_ID` int(11) NOT NULL,
+  `START_DATE` date NOT NULL,
+  `DOMAIN_ID` varchar(255) NOT NULL,
+  `TENANT_STATUS` varchar(155) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `TENANT_TYPE`
+--
+
+CREATE TABLE `TENANT_TYPE` (
+  `TENANT_TYPE_ID` int(11) NOT NULL,
+  `TENANT_DESCRIPTION` varchar(255) NOT NULL,
+  `UPDATED_BY` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `COMPANY`
+--
+ALTER TABLE `COMPANY`
+  ADD PRIMARY KEY (`COMPANY_ID`);
+
+--
+-- Indexes for table `mysql_migrations_347ertt3e`
+--
+ALTER TABLE `mysql_migrations_347ertt3e`
+  ADD UNIQUE KEY `timestamp` (`timestamp`);
+
+--
+-- Indexes for table `SUBSCRIBER`
+--
+ALTER TABLE `SUBSCRIBER`
+  ADD PRIMARY KEY (`SUBSCRIBER_ID`),
+  ADD KEY `COMPANY_ID` (`COMPANY_ID`);
+
+--
+-- Indexes for table `SUBSCRIPTION_SERVICE`
+--
+ALTER TABLE `SUBSCRIPTION_SERVICE`
+  ADD PRIMARY KEY (`SUBSCRIPTION_SERVICE_ID`),
+  ADD KEY `SUBSCRIBER_ID` (`SUBSCRIBER_ID`);
+
+--
+-- Indexes for table `SUBSCRIPTION_TYPE`
+--
+ALTER TABLE `SUBSCRIPTION_TYPE`
+  ADD PRIMARY KEY (`SUBSCRIPTION_TYPE_ID`);
+
+--
+-- Indexes for table `TENANT_DETAILS`
+--
+ALTER TABLE `TENANT_DETAILS`
+  ADD PRIMARY KEY (`TENANT_TYPE_ID`),
+  ADD KEY `SUBSCRIBER_ID` (`SUBSCRIBER_ID`) USING BTREE;
+
+--
+-- Indexes for table `TENANT_TYPE`
+--
+ALTER TABLE `TENANT_TYPE`
+  ADD PRIMARY KEY (`TENANT_TYPE_ID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `COMPANY`
+--
+ALTER TABLE `COMPANY`
+  MODIFY `COMPANY_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `SUBSCRIBER`
+--
+ALTER TABLE `SUBSCRIBER`
+  MODIFY `SUBSCRIBER_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `SUBSCRIPTION_SERVICE`
+--
+ALTER TABLE `SUBSCRIPTION_SERVICE`
+  MODIFY `SUBSCRIPTION_SERVICE_ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `SUBSCRIPTION_TYPE`
+--
+ALTER TABLE `SUBSCRIPTION_TYPE`
+  MODIFY `SUBSCRIPTION_TYPE_ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `TENANT_DETAILS`
+--
+ALTER TABLE `TENANT_DETAILS`
+  MODIFY `TENANT_TYPE_ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `TENANT_TYPE`
+--
+ALTER TABLE `TENANT_TYPE`
+  MODIFY `TENANT_TYPE_ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `SUBSCRIBER`
+--
+ALTER TABLE `SUBSCRIBER`
+  ADD CONSTRAINT `COMPANY_ID` FOREIGN KEY (`COMPANY_ID`) REFERENCES `COMPANY` (`COMPANY_ID`);
+
+--
+-- Constraints for table `SUBSCRIPTION_SERVICE`
+--
+ALTER TABLE `SUBSCRIPTION_SERVICE`
+  ADD CONSTRAINT `SUBSCRIBER_ID` FOREIGN KEY (`SUBSCRIBER_ID`) REFERENCES `SUBSCRIBER` (`SUBSCRIBER_ID`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

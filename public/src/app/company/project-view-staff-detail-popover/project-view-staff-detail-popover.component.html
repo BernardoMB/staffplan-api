@@ -1,0 +1,986 @@
+<div class="project-panel" [ngClass]="addForm ? 'is-open':''" >
+    <div class="col-lg-12 mt-5 pt-5 text-center" *ngIf="!dataPopulate">
+        <div class="py-5 my-5"></div>
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw active-color"></i>
+        <span class="sr-only"></span>
+    </div>
+    <div *ngIf="dataPopulate">
+        <button class="btn btn-close-panel" title="Close" (click)="projectAddFormReset(true)"><i
+                class="fa fa-times"></i>
+        </button>
+        <ul class="nav nav-tabs" id="projectTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" [ngClass]="addForm == 1 || addForm == 4 ? 'active': ''" id="summaryTab" data-toggle="tab"
+                   href="#summary" role="tab"
+                   aria-controls="summary">Summary</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   [ngClass]="[addForm == 3 && !projectStaffRoleTabDisabled ? 'active':'',projectStaffRoleTabDisabled?'isDisabled':'']"
+                   id="projectTeamTab"
+                   data-toggle="tab" href="#project-team" role="tab"
+                   aria-controls="project-team">Project Team</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   [ngClass]="[addForm == 2 && !projectStaffRoleTabDisabled ? 'active':'',projectStaffRoleTabDisabled?'isDisabled':'']"
+                   id="projectRoleTab"
+                   data-toggle="tab" href="#project-role" role="tab"
+                   aria-controls="project-role">Project Role</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="projectTabContent">
+            <div class="tab-pane" id="summary" role="tabpanel" [ngClass]="addForm == 1 || addForm == 4? 'show active': ''"
+                 aria-labelledby="summaryTab">
+                <form #projectForm="ngForm" novalidate>
+                    <div class="row mx-0">
+                        <div class="col-md-7">
+                            <div class="project-panel__left">
+                                <div class="form-hint text-right" *ngIf="!editProjectSummary"><span
+                                        class="form-hint text-right"> (click to edit) </span>
+                                    <button kendoButton class="edit-form"
+                                            (click)="editProjectSummary = true"
+                                            [look]="'bare'">
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <label for="projectNo">{{ addFormLabels.PROJECT_NO }}</label>
+                                    <input type="text" class="form-control form-control--gray k-textbox" id="projectNo"
+                                           placeholder="Enter Project Number"
+                                           [attr.disabled]="!editProjectSummary ? true : null"
+                                           type="text" name="PROJECT_NO" #PROJECT_NO="ngModel"
+                                           [(ngModel)]="addProjectModel.PROJECT_NO"
+                                           (ngModelChange)='handleValueChange($event, "PROJECT_NO")' 
+                                           required trim="blur"/>
+                                    <div *ngIf="projectForm.submitted && PROJECT_NO.invalid"
+                                         class="form-invalid-message">
+                                        <div *ngIf="PROJECT_NO.errors.required || PROJECT_NO.errors.isError"
+                                             class="k-text-error">
+                                            Please enter project number.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="projectName">{{ addFormLabels.PROJECT_NAME }}</label>
+                                    <input type="text" class="form-control form-control--gray k-textbox" id="projectName"
+                                           placeholder="Enter Project Name"
+                                           [attr.disabled]="!editProjectSummary ? true : null"
+                                           trim="blur"
+                                           type="text" name="PROJECT_NAME" #PROJECT_NAME="ngModel"
+                                           [(ngModel)]="addProjectModel.PROJECT_NAME"
+                                           (ngModelChange)='handleValueChange($event, "PROJECT_NAME")' required/>
+                                    <div *ngIf="projectForm.submitted && PROJECT_NAME.invalid"
+                                         class="form-invalid-message">
+                                        <div *ngIf="PROJECT_NAME.errors.required || PROJECT_NAME.errors.isError"
+                                             class="k-text-error">
+                                            Please enter project name.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4 px-2">
+                                        <div class="form-group">
+                                            <label for="projectStatus">Status</label>
+                                            <kendo-dropdownlist
+                                                    id="projectStatus"
+                                                    [attr.disabled]="!editProjectSummary ? true : null"
+                                                    [data]="filteredProjectStatusList"
+                                                    [textField]="'STATUS_NAME'"
+                                                    [valueField]="'STATUS_ID'"
+                                                    [filterable]="true"
+                                                    name="PROJECT_STATUS"
+                                                    required
+                                                    class="form-control form-control--gray"
+                                                    #PROJECT_STATUS="ngModel"
+                                                    [(ngModel)]="addProjectModel.PROJECT_STATUS"
+                                                    (blur)="editingStatus = false"
+                                                    (filterChange)="handleFilterChange($event, 'PROJECT_STATUS')"
+                                                    (valueChange)="handleValueChange($event, 'PROJECT_STATUS')">
+                                            </kendo-dropdownlist>
+                                            <div *ngIf="projectForm.submitted && PROJECT_STATUS.invalid"
+                                                 class="form-invalid-message">
+                                                <div *ngIf="PROJECT_STATUS.errors.required" class="k-text-error">
+                                                    Please select project status.
+                                                </div>
+                                                <div *ngIf="PROJECT_STATUS.errors.errorMatch" class="k-text-error">
+                                                    Please select project status.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 px-2">
+                                        <div class="form-group">
+                                            <label for="projectCategory">Category</label>
+                                            <kendo-dropdownlist
+                                                    id="projectCategory"
+                                                    [attr.disabled]="!editProjectSummary ? true : null"
+                                                    [data]="filteredCategoryList"
+                                                    [textField]="'CATEGORY_NAME'"
+                                                    [valueField]="'CATEGORY_ID'"
+                                                    [filterable]="true"
+                                                    name="PROJECT_CATEGORY"
+                                                    required
+                                                    class="form-control form-control--gray"
+                                                    (blur)="editCategory = false"
+                                                    #PROJECT_CATEGORY="ngModel"
+                                                    [(ngModel)]="addProjectModel.PROJECT_CATEGORY"
+                                                    (filterChange)="handleFilterChange($event, 'PROJECT_CATEGORY')"
+                                                    (valueChange)="handleValueChange($event, 'PROJECT_CATEGORY')">
+                                            </kendo-dropdownlist>
+                                            <div *ngIf="projectForm.submitted && PROJECT_CATEGORY.invalid"
+                                                 class="form-invalid-message">
+                                                <div *ngIf="PROJECT_CATEGORY.errors.required" class="k-text-error">
+                                                    Please select project category.
+                                                </div>
+                                                <div *ngIf="PROJECT_CATEGORY.errors.errorMatch" class="k-text-error">
+                                                    Please select project category.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 px-2">
+                                        <div class="form-group">
+                                            <label for="projectType">Type</label>
+                                            <kendo-dropdownlist
+                                                    id="projectType"
+                                                    [attr.disabled]="!editProjectSummary ? true : null"
+                                                    [data]="filteredProjectTypeList"
+                                                    [textField]="'TYPE_NAME'"
+                                                    [valueField]="'TYPE_ID'"
+                                                    [filterable]="true"
+                                                    name="PROJECT_TYPE"
+                                                    required
+                                                    class="form-control form-control--gray"
+                                                    (blur)="editProjectType = false"
+                                                    #PROJECT_TYPE="ngModel"
+                                                    [(ngModel)]="addProjectModel.PROJECT_TYPE"
+                                                    (filterChange)="handleFilterChange($event, 'PROJECT_TYPE')"
+                                                    (valueChange)="handleValueChange($event, 'PROJECT_TYPE')">
+                                            </kendo-dropdownlist>
+                                            <div *ngIf="projectForm.submitted && PROJECT_TYPE.invalid"
+                                                 class="form-invalid-message">
+                                                <div *ngIf="PROJECT_TYPE.errors.required" class="k-text-error">
+                                                    Please select project type.
+                                                </div>
+                                                <div *ngIf="PROJECT_TYPE.errors.errorMatch" class="k-text-error">
+                                                    Please select project type.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="title">
+                                    Overview
+                                    <div class="form-hint d-inline-block"><span
+                                            class="font-size light-header font-italic"
+                                            *ngIf="!editProjectOverview"> (click to edit) </span>
+                                        <button *ngIf="!editProjectOverview" kendoButton class="edit-form"
+                                                (click)="editProjectOverview = true" [look]="'bare'">
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="overviewROM">{{ addFormLabels.PROJECT_ROM }}</label>
+                                    <input type="number" class="form-control form-control--gray k-textbox" id="overviewROM"
+                                           placeholder="Enter Value" trim="blur"
+                                           [attr.disabled]="!editProjectOverview ? true : null"
+                                           name="ROM"
+                                           #ROM="ngModel"
+                                           [(ngModel)]="addProjectModel.ROM"
+                                           pattern="^\d*(\.\d{0,5})?$" required/>
+                                        <div *ngIf="projectForm.submitted && ROM.invalid"
+                                                class="form-invalid-message">
+                                            <div *ngIf="ROM.errors.required || ROM.errors.isError" class="k-text-error">
+                                                Please enter project ROM
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 px-2">
+                                        <div class="form-group">
+                                            <label for="overviewGroup">Group</label>
+                                            <kendo-dropdownlist
+                                                    id="overviewGroup"
+                                                    [attr.disabled]="!editProjectOverview ? true : null"
+                                                    [data]="filteredGroupList"
+                                                    [textField]="'GROUP_NAME'"
+                                                    [valueField]="'GROUP_ID'"
+                                                    [filterable]="true"
+                                                    required
+                                                    name="PROJECT_GROUP"
+                                                    #PROJECT_GROUP="ngModel"
+                                                    class="form-control form-control--gray"
+                                                    [(ngModel)]="addProjectModel.PROJECT_GROUP"
+                                                    (filterChange)="handleFilterChange($event, 'PROJECT_GROUP')">
+                                            </kendo-dropdownlist>
+                                            <div *ngIf="projectForm.submitted && PROJECT_GROUP.invalid"
+                                                 class="form-invalid-message">
+                                                <div *ngIf="PROJECT_GROUP.errors.required" class="k-text-error">
+                                                    Please select group name.
+                                                </div>
+                                                <div *ngIf="PROJECT_GROUP.errors.errorMatch" class="k-text-error">
+                                                    Please select group name.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 px-2">
+                                        <div class="form-group">
+                                            <label for="overviewOffice">Office</label>
+                                            <kendo-dropdownlist
+                                                    id="overviewOffice"
+                                                    [attr.disabled]="!editProjectOverview ? true : null"
+                                                    [data]="filteredOfficeList"
+                                                    [textField]="'OFFICE_NAME'"
+                                                    [valueField]="'OFFICE_ID'"
+                                                    [filterable]="true"
+                                                    required
+                                                    name="OFFICE"
+                                                    #OFFICE="ngModel"
+                                                    class="form-control form-control--gray"
+                                                    [(ngModel)]="addProjectModel.OFFICE"
+                                                    (filterChange)="handleFilterChange($event, 'OFFICE')"
+                                                    (valueChange)="handleValueChange($event, 'OFFICE')">
+                                            </kendo-dropdownlist>
+                                            <div *ngIf="projectForm.submitted && OFFICE.invalid"
+                                                 class="form-invalid-message">
+                                                <div *ngIf="OFFICE.errors.required" class="k-text-error">
+                                                    Please select office name.
+                                                </div>
+                                                <div *ngIf="OFFICE.errors.errorMatch" class="k-text-error">
+                                                    Please select office name.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="overviewDesc">{{ addFormLabels.PROJECT_DESCRIPTION }}</label>
+                                    <textarea
+                                            id="overviewDesc"
+                                            [attr.disabled]="!editProjectOverview ? true : null"
+                                            placeholder="Enter Project Description"
+                                            name="PROJECT_DESCRIPTION"
+                                            class="form-control form-control--gray"
+                                            #PROJECT_DESCRIPTION="ngModel"
+                                            [(ngModel)]="addProjectModel.PROJECT_DESCRIPTION"
+                                            trim="blur">
+                                 </textarea>
+                                </div>
+                                <div class="title">
+                                    Client Detail
+                                    <div class="form-hint d-inline-block">
+                                <span class="font-size light-header font-italic"
+                                      *ngIf="!editProjectClient"> (click to edit) </span>
+                                        <button *ngIf="!editProjectClient" kendoButton class="edit-form"
+                                                (click)="editProjectClient = true" [look]="'bare'"><i
+                                                class="fa fa-pencil"></i></button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="client">Client</label>
+                                    <kendo-dropdownlist
+                                            [attr.disabled]="!editProjectClient ? true : null"
+                                            [data]="filteredCustomerList"
+                                            [textField]="'CUSTOMER_NAME'"
+                                            [valueField]="'CUSTOMER_ID'"
+                                            [filterable]="true"
+                                            name="CUSTOMER"
+                                            #CUSTOMER="ngModel"
+                                            class="form-control form-control--gray"
+                                            id="client"
+                                            [(ngModel)]="addProjectModel.CUSTOMER"
+                                            (filterChange)="handleFilterChange($event, 'CUSTOMER')"
+                                            (valueChange)="handleValueChange($event, 'CUSTOMER')">
+                                    </kendo-dropdownlist>
+                                </div>
+                                <div class="form-group">
+                                    <label for="clientContact">Client Contact</label>
+                                    <input type="text" class="form-control form-control--gray k-textbox" id="clientContact"
+                                           trim="blur"
+                                           [attr.disabled]="!editProjectClient ? true : null"
+                                           type="text" name="CUSTOMER_CONTACT"
+                                           #CUSTOMER_CONTACT="ngModel"
+                                           [(ngModel)]="addProjectModel.CUSTOMER_CONTACT"
+                                           readonly/>
+                                </div>
+                                <div class="title">
+                                    Project Address
+                                    <div class="form-hint d-inline-block">
+                        <span class="font-size light-header font-italic"
+                              *ngIf="!editProjectAddress"> (click to edit) </span>
+                                        <button *ngIf="!editProjectAddress" kendoButton class="edit-form"
+                                                (click)="editProjectAddress = true" [look]="'bare'"><i
+                                                class="fa fa-pencil"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 px-2">
+                                        <div class="form-group">
+                                            <label for="streetAddress">{{ addFormLabels.PROJECT_ADDRESS }}</label>
+                                            <input type="text" class="form-control form-control--gray k-textbox"
+                                                   id="streetAddress"
+                                                   placeholder="Enter street address" trim="blur"
+                                                   [attr.disabled]="!editProjectAddress ? true : null"
+                                                   name="PROJECT_ADDRESS" #PROJECT_ADDRESS="ngModel"
+                                                   [(ngModel)]="addProjectModel.PROJECT_ADDRESS"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 px-2">
+                                        <div class="form-group">
+                                            <label for="city">{{ addFormLabels.PROJECT_CITY }}</label>
+                                            <input type="text" class="form-control form-control--gray k-textbox" id="city"
+                                                   placeholder="Enter city" trim="blur"
+                                                   [attr.disabled]="!editProjectAddress ? true : null"
+                                                   name="PROJECT_CITY" #PROJECT_CITY="ngModel"
+                                                   [(ngModel)]="addProjectModel.PROJECT_CITY"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 px-2">
+                                        <div class="form-group">
+                                            <label for="state">{{ addFormLabels.PROJECT_STATE }}</label>
+                                            <input type="text" class="form-control form-control--gray k-textbox" id="state"
+                                                   placeholder="Enter state" trim="blur"
+                                                   [attr.disabled]="!editProjectAddress ? true : null"
+                                                   name="PROJECT_STATE" #PROJECT_STATE="ngModel"
+                                                   [(ngModel)]="addProjectModel.PROJECT_STATE"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 px-2">
+                                        <div class="form-group">
+                                            <label for="zip">{{ addFormLabels.PROJECT_ZIP }}</label>
+                                            <input type="text" class="form-control form-control--gray k-textbox" id="zip"
+                                                   placeholder="Enter zip code" trim="blur"
+                                                   [attr.disabled]="!editProjectAddress ? true : null"
+                                                   name="PROJECT_ZIP" #PROJECT_ZIP="ngModel"
+                                                   [(ngModel)]="addProjectModel.PROJECT_ZIP"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-md-right mt-2">
+                                    <button class="btn btn-blue mr-2" type="submit" title="Submit"
+                                            (click)="saveProjectDetail();" [disabled]="isSaveProjectDetail">Submit
+                                    </button>
+                                    <button class="btn btn-blue-outline" type="submit" title="Cancel"
+                                            (click)="projectAddFormReset(true);">Cancel
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /.project-panel__left -->
+                        </div>
+                        <div class="col-md-5 project-panel__bg">
+                            <div class="project-panel__right">
+                                <div *ngIf="renderTable">
+                                    <div class="title">
+                                        Project Owner
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Project Executive</label>
+                                        <span class="form-control form-control--gray"
+                                              *ngIf="projectInstance.PROJECT_EXECUTIVE"> {{projectInstance.PROJECT_EXECUTIVE}} </span>
+                                        <span class="form-control form-control--gray"
+                                              *ngIf="!projectInstance.PROJECT_EXECUTIVE"> {{" NA "}}</span>
+                                        <!--<input type="text" class="form-control form-control&#45;&#45;gray" id="projectExecutive"-->
+                                        <!--placeholder="NA"/>-->
+                                    </div>
+                                </div>
+                                <div class="title">
+                                    Project Timeline
+                                    <div class="form-hint d-inline-block">
+                          <span class="font-size light-header font-italic"
+                                *ngIf="!editProjectTimeline"> (click to edit) </span>
+                                        <button *ngIf="!editProjectTimeline" kendoButton class="edit-form"
+                                                (click)="editProjectTimeline = true" [look]="'bare'">
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 px-2">
+                                        <div class="form-group is-date-field">
+                                            <label for="projectStartDate">{{ addFormLabels.START_DATE }}</label>
+                                            <kendo-datepicker
+                                                    [attr.disabled]="!editProjectTimeline ? true : null"
+                                                    [(ngModel)]="addProjectModel.START_DATE"
+                                                    required
+                                                    name="START_DATE"
+                                                    #START_DATE="ngModel"
+                                                    required
+                                                    class="form-control form-control--gray" id="projectStartDate"
+                                                    id="projectStartDate"
+                                                    (valueChange)="handleValueChange($event, 'START_DATE')"
+                                            ></kendo-datepicker>
+                                            <div *ngIf="errorStartDate.isError"
+                                                 class="form-invalid-message k-text-error">
+                                                {{ errorStartDate.errorMessage}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 px-2">
+                                        <div class="form-group is-date-field">
+                                            <label for="projectEndDate">{{ addFormLabels.END_DATE }}</label>
+                                            <kendo-datepicker
+                                                    [attr.disabled]="!editProjectTimeline ? true : null"
+                                                    [(ngModel)]="addProjectModel.END_DATE"
+                                                    required
+                                                    name="END_DATE"
+                                                    class="form-control form-control--gray"
+                                                    id="projectEndDate"
+                                                    #END_DATE="ngModel"
+                                                    (valueChange)="handleValueChange($event, 'END_DATE')"
+                                            ></kendo-datepicker>
+                                            <div *ngIf="errorEndDate.isError" class="form-invalid-message k-text-error">
+                                                {{ errorEndDate.errorMessage}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="radio-btn-holder">
+                                    <label class="radio-btn__label">{{ addFormLabels.TIMELINE_TYPE }}</label>
+                                    <div class="radio-btn__item" *ngFor="let timeLine of timelineType">
+                                        <input [attr.disabled]="!editProjectTimeline ? true : null"
+                                               id="timeLine_{{timeLine.TIMELINE_TYPE_KEY}}"
+                                               class="k-radio" [value]='timeLine.TIMELINE_TYPE_KEY'
+                                               type="radio" name="TIMELINE_TYPE" required
+                                               [(ngModel)]="addProjectModel.TIMELINE_TYPE">
+                                        <label class="radio-btn__text"
+                                               for="timeLine_{{timeLine.TIMELINE_TYPE_KEY}}">
+                                            {{timeLine.TIMELINE_TYPE_VALUE}}</label>
+                                    </div>
+                                    <!-- /.radio-btn-holder -->
+                                </div>
+                                <!-- /.project-panel__right -->
+                            </div>
+                            <!-- /.project-panel__bg -->
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </form>
+            </div>
+
+            <div class="tab-pane fade"
+                 [ngClass]="addForm == 3 && !projectStaffRoleTabDisabled ? 'show active': ''"
+                 id="project-team"
+                 role="tabpanel" aria-labelledby="projectTeamTab">
+                <div class="row mx-0">
+                    <div class="col-sm-12">
+                        <div class="project-panel__team">
+                            <ngb-accordion #acc="ngbAccordion" (panelChange)="beforeChange($event)"
+                                           activeIds="{{activeStaffPanel}}">
+                                <ngb-panel id="staff-add">
+                                    <ng-template ngbPanelTitle>
+                             <span class="btn btn-link-blue text-uppercase">
+                                <span *ngIf="!assignStaffUpdate"><i
+                                        class="fa fa-plus"></i>Add New Staff Member</span>
+                                <span *ngIf="assignStaffUpdate == 1"><i
+                                        class="fa fa-plus"></i>Update Staff Member</span>
+                              </span>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <h5 class="title mt-2" id="modalNewProjectStaffTitle">Project Staffing
+                                            Worksheet</h5>
+                                        <form #assignStaffForm="ngForm" novalidate name="form">
+                                            <div class="form-group">
+                                                <label for="staffName">Staff Name</label>
+                                                <kendo-dropdownlist
+                                                        id="staffName"
+                                                        [data]="filteredPeopleList"
+                                                        [textField]="'STAFF_NAME'"
+                                                        [valueField]="'STAFF_ID'"
+                                                        [filterable]="true"
+                                                        name="STAFF_ID"
+                                                        required
+                                                        class="form-control form-control--gray"
+                                                        #STAFF_ID="ngModel"
+                                                        [(ngModel)]="assignStaffModel.STAFF_DETAIL"
+                                                        [attr.disabled]="assignStaffUpdate == 1 && !assignStaffModel.ID ? true : null"
+                                                        (filterChange)="handleFilterChange($event, 'STAFF_DETAIL')"
+                                                >
+                                                </kendo-dropdownlist>
+                                                <div *ngIf="assignStaffForm.submitted && STAFF_ID.invalid"
+                                                     class="form-invalid-message">
+                                                    <div *ngIf="STAFF_ID.errors.required" class="k-text-error"> Please
+                                                        select staff.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="projectRole">Project Role</label>
+                                                <kendo-dropdownlist
+                                                        id="projectRole"
+                                                        [data]="filteredRoleList"
+                                                        [textField]="'ROLE_NAME'"
+                                                        [valueField]="'ROLE_ID'"
+                                                        [filterable]="true"
+                                                        name="ROLE_ID"
+                                                        required
+                                                        class="form-control form-control--gray"
+                                                        #ROLE_ID="ngModel"
+                                                        [attr.disabled]="columnEditable == 2 ? true : null"
+                                                        [(ngModel)]="assignStaffModel.ROLE_DETAIL"
+                                                        (filterChange)="handleFilterChange($event, 'ROLE_ID')"
+                                                >
+                                                </kendo-dropdownlist>
+                                                <div *ngIf="assignStaffForm.submitted && ROLE_ID.invalid"
+                                                     class="form-invalid-message">
+                                                    <div *ngIf="ROLE_ID.errors.required" class="k-text-error">
+                                                        Please select role.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-6 px-2">
+                                                    <div class="form-group is-date-field">
+                                                        <label for="projectRoleStartDate">{{ addFormLabels.START_DATE }}
+                                                        </label>
+                                                        <kendo-datepicker
+                                                                [(ngModel)]="assignStaffModel.START_DATE"
+                                                                required
+                                                                name="STAFF_START_DATE"
+                                                                #STAFF_START_DATE="ngModel"
+                                                                required
+                                                                class="form-control form-control--gray"
+                                                                id="projectRoleStartDate"
+                                                                [attr.disabled]="columnEditable == 2 ? true : null"
+                                                        ></kendo-datepicker>
+
+                                                        <div *ngIf="assignStaffForm.submitted && STAFF_START_DATE.invalid"
+                                                             class="form-invalid-message">
+                                                            <div *ngIf="STAFF_START_DATE.errors.required"
+                                                                 class="k-text-error">
+                                                                Please select {{ addFormLabels.START_DATE }}.
+                                                            </div>
+                                                            <div *ngIf="STAFF_START_DATE.errors.dateMatch"
+                                                                 class="k-text-error">
+                                                                {{dateValidationMsg}}
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 px-2">
+                                                    <div class="form-group is-date-field">
+                                                        <label for="projectRoleEndDate">{{ addFormLabels.END_DATE }}</label>
+                                                        <kendo-datepicker
+                                                                [(ngModel)]="assignStaffModel.END_DATE"
+                                                                required
+                                                                name="STAFF_END_DATE"
+                                                                #STAFF_END_DATE="ngModel"
+                                                                required
+                                                                class="form-control form-control--gray"
+                                                                id="projectRoleEndDate"
+                                                        ></kendo-datepicker>
+                                                        <div *ngIf="assignStaffForm.submitted && STAFF_END_DATE.invalid"
+                                                             class="form-invalid-message">
+                                                            <div *ngIf="STAFF_END_DATE.errors.required"
+                                                                 class="k-text-error">
+                                                                Please select {{ addFormLabels.END_DATE }}.
+                                                            </div>
+                                                            <div *ngIf="STAFF_END_DATE.errors.dateMatch"
+                                                                 class="k-text-error">
+                                                                {{dateValidationMsg}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="projectRoleAllocation">Allocation</label>
+                                                <kendo-numerictextbox class="form-control form-control--gray" [min]="0"
+                                                                      [max]="100" [autoCorrect]="autoCorrect"
+                                                                      [(ngModel)]="assignStaffModel.ALLOCATION"
+                                                                      required
+                                                                      name="ALLOCATION"
+                                                                      #ALLOCATION="ngModel"
+                                                                      required
+                                                                      [attr.disabled]="columnEditable == 2 ? true : null"
+                                                                      id="projectRoleAllocation">
+                                                </kendo-numerictextbox>
+                                                <div *ngIf="assignStaffForm.submitted && ALLOCATION.invalid"
+                                                     class="form-invalid-message">
+                                                    <div *ngIf="ALLOCATION.errors.required" class="k-text-error">
+                                                        Please enter allocation.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-sm-8 px-2">
+                                                        <label class="font-size-16">Resume Submitted?</label>
+                                                    </div>
+                                                    <div class="col-sm-4 px-2 text-md-right">
+                                                        <div class="radio-btn-holder radio-btn--toggle">
+                                                            <div class="radio-btn__item">
+                                                                <input
+                                                                        id="resumeYes"
+                                                                        class="k-radio" [value]=1
+                                                                        type="radio" name="RESUME"
+                                                                        [(ngModel)]="assignStaffModel.RESUME_SUBMITTED"
+                                                                        #RESUME="ngModel">
+                                                                <label for="resumeYes">Yes</label>
+                                                            </div>
+                                                            <div class="radio-btn__item">
+                                                                <input
+                                                                        id="resumeNo"
+                                                                        class="k-radio" [value]=0
+                                                                        type="radio" name="RESUME"
+                                                                        [(ngModel)]="assignStaffModel.RESUME_SUBMITTED"
+                                                                        #RESUME="ngModel">
+                                                                <label for="resumeNo">No</label>
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.radio-btn-holder -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="text-center text-sm-left">
+                                                <button class="btn btn-blue mr-sm-3 mb-2" type="submit"
+                                                        title="Save Changes"
+                                                        (click)="submitAssignStaff(assignStaffForm)">Save Changes
+                                                </button>
+                                                <button type="button" class="btn btn-blue-outline mb-2"
+                                                        title="Cancel Changes"
+                                                        (click)="resetStaffAssignData(assignStaffForm)">Cancel Changes
+                                                </button>
+                                            </div>
+                                        </form>
+
+                                    </ng-template>
+                                </ngb-panel>
+                                <ngb-panel id="staff-list">
+                                    <ng-template ngbPanelTitle>
+                                    <span class="btn btn-link-blue text-uppercase">
+                                        <i class="fa fa-plus"></i>Team List</span>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <div class="table-responsive">
+                                            <div class="table-responsive">
+                                                <table class="table table--default table--border-none td-overflow-visible">
+                                                    <kendo-grid
+                                                            [data]="gridView"
+                                                            [loading]="showDetailsLoader"
+                                                            [resizable]="true"
+                                                            [sortable]="true"
+                                                            [sort]="sort"
+                                                            (sortChange)="sortChange($event)"
+                                                            style="min-height: 200px; max-height: 500px;">
+                                                        <kendo-grid-column width="85">
+                                                            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                                                                <div class="dropdown-project-modify">
+                                                                    <div class="dropdown">
+                                                                        <button class="btn" type="button"
+                                                                                id="dropdownProjectTeam3"
+                                                                                data-toggle="dropdown"
+                                                                                aria-haspopup="true"
+                                                                                aria-expanded="false"
+                                                                                data-offset="-20,15">
+                                                                            <i class="icon-three-dot"></i>
+                                                                        </button>
+                                                                        <div class="dropdown-menu dropdown-menu--white pt-4 pb-4"
+                                                                             aria-labelledby="dropdownProjectTeam3">
+                                                                            <ul class="project-modify__list">
+                                                                                <li class="project-modify__item">
+                                                                                    <a (click)="editStaffAssignment(dataItem);"
+                                                                                       class="js-project-panel"
+                                                                                       title="Edit Assignment">Edit
+                                                                                        Assignment</a>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-template>
+                                                        </kendo-grid-column>
+                                                        <kendo-grid-column
+                                                                field="{{column.columnId}}"
+                                                                title="{{column.columnLabel}}"
+                                                                [width]="100"
+                                                                *ngFor="let column of projectDetailColumns">
+                                                            <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                                                         *ngIf="column.columnId == 'START_DATE' || column.columnId == 'END_DATE'">
+                                                                <span> {{dataItem[column.columnId]| date: date_format}} </span>
+                                                            </ng-template>
+                                                            <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                                                         *ngIf="column.columnId == 'STAFF_NAME'">
+                                                         <span *ngIf="dataItem.STAFF_NAME">
+                                                         {{dataItem.STAFF_NAME}}
+                                                         </span>
+                                                                <span *ngIf="!dataItem.STAFF_NAME"
+                                                                      class="unassigned-staff">
+                                                         (Unassigned)
+                                                         </span>
+                                                            </ng-template>
+                                                            <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                                                         *ngIf="column.columnId == 'RESUME_SUBMITTED'">
+                                                                 <span *ngIf="dataItem.RESUME_SUBMITTED == '1'"> Yes
+                                                                 </span>
+                                                                <span *ngIf="dataItem.RESUME_SUBMITTED == '0'">
+                                                             No
+                                                             </span>
+                                                            </ng-template>
+                                                        </kendo-grid-column>
+                                                    </kendo-grid>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </ngb-panel>
+                            </ngb-accordion>
+
+                        </div>
+                        <!-- /.project-panel__team -->
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade"
+                 [ngClass]="addForm == 2 && !projectStaffRoleTabDisabled ? 'show active': ''"
+                 id="project-role"
+                 role="tabpanel" aria-labelledby="projectRoleTab">
+                <div class="row mx-0">
+                    <div class="col-sm-12">
+                        <div class="project-panel__role">
+                            <!--<button type="button" class="btn btn-link-blue text-uppercase mb-2 mb-sm-3"-->
+                            <!--title="Add New Role"><i class="fa fa-plus"></i>Add-->
+                            <!--New Role-->
+                            <!--</button>-->
+                            <ngb-accordion #acc="ngbAccordion" [closeOthers]="true" (panelChange)="beforeChange($event)"
+                                           activeIds="{{activeRolePanel}}">
+                                <ngb-panel id="role-add">
+                                    <ng-template ngbPanelTitle>
+                              <span class="btn btn-link-blue text-uppercase">
+                                     <span *ngIf="!assignRoleUpdate"><i
+                                             class="fa fa-plus"></i>Add New Role</span>
+                                <span *ngIf="assignRoleUpdate == 1"><i class="fa fa-plus"></i>Update Role</span>
+                              </span>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <h5 class="title mt-2" id="modalNewProjectRoleTitle">Project Role Worksheet</h5>
+                                        <form #assignRoleForm="ngForm" novalidate name="form">
+                                            <div class="form-group">
+                                                <label for="projectRole">Project Role</label>
+                                                <kendo-dropdownlist
+                                                        id="projectRole"
+                                                        [data]="filteredRoleList"
+                                                        [textField]="'ROLE_NAME'"
+                                                        [valueField]="'ROLE_ID'"
+                                                        [filterable]="true"
+                                                        name="ROLE_ID"
+                                                        required
+                                                        class="form-control form-control--gray"
+                                                        #ROLE_ID="ngModel"
+                                                        [(ngModel)]="assignRoleModel.ROLE_DETAIL"
+                                                        [attr.disabled]="columnEditable == 3 ? true : null"
+                                                        (filterChange)="handleFilterChange($event, 'ROLE_ID')"
+                                                >
+                                                </kendo-dropdownlist>
+                                                <div *ngIf="assignRoleForm.submitted && ROLE_ID.invalid"
+                                                     class="form-invalid-message">
+                                                    <div *ngIf="ROLE_ID.errors.required" class="k-text-error">
+                                                        Please select role.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-6 px-2">
+                                                    <div class="form-group is-date-field">
+                                                        <label for="projectRoleStartDate">{{ addFormLabels.START_DATE }}</label>
+                                                        <kendo-datepicker
+                                                                [(ngModel)]="assignRoleModel.START_DATE"
+                                                                required
+                                                                name="ROLE_START_DATE"
+                                                                #ROLE_START_DATE="ngModel"
+                                                                required
+                                                                class="form-control form-control--gray"
+                                                                id="projectRoleStartDate"
+                                                                [attr.disabled]="columnEditable == 3 ? true : null"
+                                                        ></kendo-datepicker>
+                                                        <div *ngIf="assignRoleForm.submitted && ROLE_START_DATE.invalid"
+                                                             class="form-invalid-message">
+                                                            <div *ngIf="ROLE_START_DATE.errors.required"
+                                                                 class="k-text-error">
+                                                                Please select {{ addFormLabels.START_DATE }}.
+                                                            </div>
+                                                            <div *ngIf="ROLE_START_DATE.errors.dateMatch"
+                                                                 class="k-text-error">
+                                                                {{dateValidationMsg}}
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 px-2">
+                                                    <div class="form-group is-date-field">
+                                                        <label for="projectRoleEndDate">{{ addFormLabels.END_DATE }}</label>
+                                                        <kendo-datepicker
+                                                                [(ngModel)]="assignRoleModel.END_DATE"
+                                                                required
+                                                                name="ROLE_END_DATE"
+                                                                #ROLE_END_DATE="ngModel"
+                                                                required
+                                                                class="form-control form-control--gray"
+                                                                id="projectRoleEndDate"
+                                                        ></kendo-datepicker>
+                                                        <div *ngIf="assignRoleForm.submitted && ROLE_END_DATE.invalid"
+                                                             class="form-invalid-message">
+                                                            <div *ngIf="ROLE_END_DATE.errors.required"
+                                                                 class="k-text-error">
+                                                                Please select {{ addFormLabels.END_DATE }}.
+                                                            </div>
+                                                            <div *ngIf="ROLE_END_DATE.errors.dateMatch"
+                                                                 class="k-text-error">
+                                                                {{dateValidationMsg}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="projectRoleAllocation">Allocation</label>
+                                                <kendo-numerictextbox class="form-control form-control--gray" [min]="0"
+                                                                      [max]="100" [autoCorrect]="autoCorrect"
+                                                                      [(ngModel)]="assignRoleModel.ALLOCATION"
+                                                                      required
+                                                                      name="ALLOCATION"
+                                                                      #ALLOCATION="ngModel"
+                                                                      [attr.disabled]="columnEditable == 3 ? true : null"
+                                                                      required
+                                                                      id="projectRoleAllocation">
+                                                </kendo-numerictextbox>
+                                                <div *ngIf="assignRoleForm.submitted && ALLOCATION.invalid"
+                                                     class="form-invalid-message">
+                                                    <div *ngIf="ALLOCATION.errors.required" class="k-text-error">
+                                                        Please enter allocation.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-sm-8 px-2">
+                                                        <label class="font-size-16">Resume Submitted?</label>
+                                                    </div>
+                                                    <div class="col-sm-4 px-2 text-sm-right">
+                                                        <div class="radio-btn-holder radio-btn--toggle">
+                                                            <div class="radio-btn__item">
+                                                                <input
+                                                                        id="resumeYes"
+                                                                        class="k-radio" [value]=1
+                                                                        type="radio" name="RESUME"
+                                                                        [(ngModel)]="assignRoleModel.RESUME_SUBMITTED"
+                                                                        #RESUME="ngModel">
+                                                                <label for="resumeYes">Yes</label>
+                                                            </div>
+                                                            <div class="radio-btn__item">
+                                                                <input
+                                                                        id="resumeNo"
+                                                                        class="k-radio" [value]=0
+                                                                        type="radio" name="RESUME"
+                                                                        [(ngModel)]="assignRoleModel.RESUME_SUBMITTED"
+                                                                        #RESUME="ngModel">
+                                                                <label for="resumeNo">No</label>
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.radio-btn-holder -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="text-center text-sm-left">
+                                                <button class="btn btn-blue mr-sm-3 mb-2" type="submit"
+                                                        title="Save Changes"
+                                                        (click)="submitAssignRole(assignRoleForm)">Save Changes
+                                                </button>
+                                                <button type="button" class="btn btn-blue-outline mb-2"
+                                                        title="Cancel Changes"
+                                                        (click)="resetRoleAssignData(assignRoleForm)">Cancel Changes
+                                                </button>
+                                            </div>
+                                        </form>
+
+                                    </ng-template>
+                                </ngb-panel>
+                                <ngb-panel id="role-list">
+                                    <ng-template ngbPanelTitle>
+                                        <span class="btn btn-link-blue text-uppercase"><i class="fa fa-plus"></i>Role List</span>
+                                    </ng-template>
+                                    <ng-template ngbPanelContent>
+                                        <div class="table-responsive">
+                                            <table class="table table--default td-overflow-visible">
+                                                <kendo-grid
+                                                        [data]="unAssignedProjectGridView"
+                                                        [loading]="showDetailsLoader"
+                                                        [resizable]="true"
+                                                        [sortable]="true"
+                                                        [sort]="sort"
+                                                        (sortChange)="unAssignedProjectSortChange($event)"
+                                                        style="min-height: 100px; max-height: 500px;">
+                                                    <kendo-grid-column width="85">
+                                                        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                                                            <div class="dropdown-project-modify">
+                                                                <div class="dropdown">
+                                                                    <button class="btn" type="button"
+                                                                            id="dropdownProjectRole6"
+                                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                                            aria-expanded="false" data-offset="-20,15">
+                                                                        <i class="icon-three-dot"></i>
+                                                                    </button>
+                                                                    <div class="dropdown-menu dropdown-menu--white pt-4 pb-4"
+                                                                         aria-labelledby="dropdownProjectRole6">
+                                                                        <ul class="project-modify__list">
+                                                                            <li class="project-modify__item">
+                                                                                <a (click)="editRoleAssignment(dataItem);"
+                                                                                   class="js-project-panel"
+                                                                                   title="Edit Role">Edit
+                                                                                    Role</a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ng-template>
+                                                    </kendo-grid-column>
+                                                    <kendo-grid-column
+                                                            field="{{column.columnId}}"
+                                                            title="{{column.columnLabel}}"
+                                                            [width]="100"
+                                                            *ngFor="let column of unAssignedProjectColumns">
+                                                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                                                     *ngIf="column.columnId == 'START_DATE' || column.columnId == 'END_DATE'">
+                                                            <span> {{dataItem[column.columnId]| date: date_format}} </span>
+                                                        </ng-template>
+                                                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                                                     *ngIf="column.columnId == 'STAFF_NAME'">
+                                                      <span *ngIf="dataItem.STAFF_NAME">
+                                                      {{dataItem.STAFF_NAME}}
+                                                      </span>
+                                                            <span *ngIf="!dataItem.STAFF_NAME" class="unassigned-staff">
+                                                  (Unassigned)
+                                                  </span>
+                                                        </ng-template>
+                                                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                                                     *ngIf="column.columnId == 'RESUME_SUBMITTED'">
+                                                      <span *ngIf="dataItem.RESUME_SUBMITTED == '1'"> Yes
+                                                      </span>
+                                                            <span *ngIf="dataItem.RESUME_SUBMITTED == '0'">
+                                                          No
+                                                          </span>
+                                                        </ng-template>
+                                                    </kendo-grid-column>
+                                                </kendo-grid>
+                                            </table>
+                                        </div>
+                                    </ng-template>
+                                </ngb-panel>
+                            </ngb-accordion>
+                        </div>
+                        <!-- /.project-panel__role -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

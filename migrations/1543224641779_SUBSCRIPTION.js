@@ -1,0 +1,4 @@
+module.exports = {
+    "up": "CREATE TABLE SUBSCRIPTION(ID INT NOT NULL AUTO_INCREMENT, UNIQUE KEY ID (ID), NAME varchar(255), COST varchar(255))",
+    "down": "DROP TABLE SUBSCRIPTION"
+}

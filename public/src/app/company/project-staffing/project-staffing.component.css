@@ -1,0 +1,26 @@
+.k-toolbar__has-one-btn {
+    margin-right: 45px;
+}
+
+
+.staff-modify__list .project-team-modify__item + .project-team-modify__item {
+    margin-top: 20px;
+}
+
+.staff-modify__list .project-team-modify__item > a {
+    color: #363636;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.staff-modify__list .project-team-modify__item .text-label {
+    display: block;
+    color: #8b8b8b;
+    font-weight: 400;
+    font-size: 12px;
+    margin-top: 3px;
+}

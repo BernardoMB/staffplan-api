@@ -1,0 +1,317 @@
+<main class="main-container">
+    <div class="hero-content">
+        <div class="page-subtitle ">
+            <div class="alert-column-dropdown-as-title">
+                <kendo-dropdownlist [data]="listQuickViews" textField="text"
+                                    [popupSettings]="{popupClass: popupClassProject}"
+                                    valueField="value" [(ngModel)]="selectedQuickView"
+                                    (valueChange)="handleValueChange($event,'QUICK-VIEW')"
+                >
+                </kendo-dropdownlist>
+            </div>
+            <!--<span class="page-subtitle__status">{{assignStaffData.total}} Project</span>-->
+        </div>
+        <div class="filter-tag clearfix">
+            <div class="filter-tag__wrapper">
+                <span class="filter-tag__label"
+                      *ngIf="viewDataByFilter.status || viewDataByFilter.type || viewDataByFilter.office">Viewing </span>
+                <a class="btn filter-tag__item" *ngIf="viewDataByFilter.status"
+                   (click)="model.status = null;onFilterSubmit(undefined);">{{viewDataByFilter.status['STATUS_NAME']}}<i
+                        class="icon-filter-remove"></i></a>
+                <a class="btn filter-tag__item" *ngIf="viewDataByFilter.type"
+                   (click)="model.type = null;onFilterSubmit(undefined);">{{viewDataByFilter.type['TYPE_NAME']}}<i
+                        class="icon-filter-remove"></i></a>
+                <a class="btn filter-tag__item" *ngIf="viewDataByFilter.office"
+                   (click)="model.office = null;onFilterSubmit(undefined);">{{viewDataByFilter.office['OFFICE_NAME']}}<i
+                        class="icon-filter-remove"></i></a>
+                <a class="btn filter-tag__item"
+                   *ngIf="viewDataByFilter.status || viewDataByFilter.type || viewDataByFilter.office"
+                   (click)="onClearFilter()">Reset of All <i
+                        class="icon-filter-remove"></i></a>
+            </div>
+
+            <div class="filter__right k-toolbar__has-one-btn">
+                <div class="custom-dropdown align-middle">
+                    <kendo-dropdownbutton [popupSettings]="{popupClass: popupClass}" [data]="columnListGrouping"
+                                          (itemClick)="onGroupByColumnSelect($event)">
+                        Group
+                    </kendo-dropdownbutton>
+                </div>
+                <div class="search-wrap">
+                    <div class="search-wrap__inner">
+                        <kendo-autocomplete [data]="typeAheadSuggestions"
+                                            [filterable]="true"
+                                            id="search"
+                                            (valueChange)="getListByValueChange($event)"
+                                            (filterChange)="getListByFilterChange($event)"
+                                            [placeholder]="'Search'"
+                                            [ngModel]="filterValue" class="form-control">
+                        </kendo-autocomplete>
+                    </div>
+                </div><!-- /.search-wrap-->
+
+                <div class="filter__btn">
+                    <div class="dropdown">
+                        <button class="btn btn-light-gray is-filtered" type="button" id="dropdownFilter"
+                                data-toggle="dropdown" (click)="filterMenuOpen = true" aria-haspopup="true"
+                                aria-expanded="false" data-offset="0,20">
+                            <i class="icon-filter"></i>
+                        </button>
+                        <div [hidden]="!filterMenuOpen" [ngClass]="filterMenuOpen ? 'show':''"
+                             class=" dropdown-menu--white dropdown-menu dropdown-menu-right"
+                             aria-labelledby="dropdownFilter">
+                            <form name="form" #projectFilterForm="ngForm">
+                                <div class="form-group">
+                                    <label for="status">Project Status</label>
+                                    <kendo-dropdownlist
+                                            [data]="filteredProjectStatusList"
+                                            [textField]="'STATUS_NAME'"
+                                            [valueField]="'STATUS_NAME'"
+                                            [filterable]="true"
+                                            name="status"
+                                            id="status"
+                                            class="form-control form-control--gray"
+                                            #status="ngModel"
+                                            [(ngModel)]="model.status"
+                                            (filterChange)="handleFilterChange($event, 'PROJECT_STATUS')">
+                                        >
+                                    </kendo-dropdownlist>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status">Office</label>
+                                    <kendo-dropdownlist
+                                            [data]="filteredOfficeList"
+                                            [textField]="'OFFICE_NAME'"
+                                            [valueField]="'OFFICE_ID'"
+                                            [filterable]="true"
+                                            name="office"
+                                            id="assProjectCity"
+                                            class="form-control form-control--gray"
+                                            #office="ngModel"
+                                            placeholder="select office.."
+                                            [(ngModel)]="model.office"
+                                            (filterChange)="handleFilterChange($event, 'OFFICE')">
+                                    </kendo-dropdownlist>
+                                </div>
+                                <div class="form-group">
+                                    <label for="type">Project Type</label>
+                                    <kendo-dropdownlist
+                                            [data]="filteredProjectTypeList"
+                                            [textField]="'TYPE_NAME'"
+                                            [valueField]="'TYPE_NAME'"
+                                            [filterable]="true"
+                                            name="type"
+                                            id="type"
+                                            class="form-control form-control--gray"
+                                            #type="ngModel"
+                                            [(ngModel)]="model.type"
+                                            (filterChange)="handleFilterChange($event, 'PROJECT_TYPE')">
+                                        >
+                                    </kendo-dropdownlist>
+                                </div>
+                                <div class="d-flex">
+                                    <button class="btn btn-blue w-50 mr-1" title="Apply"
+                                            (click)="onFilterSubmit('removeSearch')">Apply
+                                    </button>
+                                    <button class="btn btn-light-gray w-50 ml-1" title="Clear All"
+                                            (click)="onClearFilter()">Clear All
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--<a (click)="tableView = 1" title="Grid" class="btn btn-light-gray"><i class="fa fa-list"></i></a>-->
+                <!--<a (click)="tableView = 2;viewTimeLine()" title="Timeline" class="btn btn-light-gray"><i class="fa fa-line-chart"></i></a>-->
+
+            </div><!-- /.filter__right -->
+        </div><!-- /.filter-tag -->
+        <div class="table-responsive hide-scroll">
+            <table class="table table--default td-overflow-visible" id="print-section"
+                   *ngIf="selectedQuickView['value'] == 'UNASSIGNED'">
+                <kendo-grid
+                        class="position-static"
+                        [data]="openRoleData"
+                        [loading]="showLoader"
+                        [sortable]="true"
+                        [selectable]="true"
+                        [sort]="config.sort"
+                        [navigable]="true"
+                        (dataStateChange)="dataStateChange($event)"
+                        [height]="viewPortHeight"
+                        [resizable]="true">
+                    <ng-template kendoGridToolbarTemplate>
+                        <button kendoGridPDFCommand class="btn btn-light-gray"><i class="icon-download"></i></button>
+                        <button kendoGridExcelCommand class="btn btn-light-gray" type="button"><i
+                                class="icon-excel"></i></button>
+                    </ng-template>
+                    <kendo-grid-column width="100">
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                            <div class="dropdown-project-modify">
+                                <div class="dropdown">
+                                    <button class="btn" type="button" id="dropdownProject2" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false" data-offset="-20,15">
+                                        <i class="icon-three-dot"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu--white" aria-labelledby="dropdownProject2">
+                                        <ul class="staff-modify__list">
+
+                                            <li class="project-team-modify__item">
+                                                <a (click)="openVerticallyCenteredAssignProject(assignContent,dataItem)"
+                                                   title="Project Team: Assign or Edit Staff on Project">
+                                                    Assign Project<span class="text-label">Assign or Edit Staff on Project</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column
+                            field="{{column.columnId}}"
+                            title="{{column.columnLabel}}"
+                            *ngFor="let column of allColumns">
+
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                     *ngIf="column.columnId == 'PROJECT_NAME'">
+                            <button type="button" class="btn btn-link btn-popover-link"
+                                    (click)="openVerticallyCentered(content,dataItem,4)" container="body"
+                                    placement="right-top" appHandlePopoverClose>
+                                <span class="td-highlighted"> {{dataItem[column.columnId]}} </span>
+                            </button>
+
+                        </ng-template>
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                     *ngIf="column.columnId == 'END_DATE' || column.columnId == 'START_DATE'">
+                            <span> {{dataItem[column.columnId]| date: date_format}} </span>
+                        </ng-template>
+                        
+                    </kendo-grid-column>
+
+                    <kendo-grid-pdf fileName="Projects.pdf" [scale]="0.8" [repeatHeaders]="true">
+                        <kendo-grid-pdf-margin top="1cm" left="1cm" right="1cm" bottom="1cm"></kendo-grid-pdf-margin>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="UnassignedProjects.xlsx" [fetchData]="allData"></kendo-grid-excel>
+                </kendo-grid>
+            </table>
+            <table class="table table--default td-overflow-visible" id="print-project-init--section"
+                   *ngIf="selectedQuickView['value'] !== 'UNASSIGNED'">
+                <kendo-grid
+                        class="position-static"
+                        [data]="projectDetail"
+                        [loading]="showLoader"
+                        [sortable]="true"
+                        [height]="viewPortHeight"
+                        [sort]="config.sort"
+                        [resizable]="true"
+                        [reorderable]="true"
+                        [selectable]="true"
+                        (dataStateChange)="dataStateChange($event)">
+                    <ng-template kendoGridToolbarTemplate>
+                        <button kendoGridPDFCommand class="btn btn-light-gray"><i class="icon-download"></i></button>
+                        <button kendoGridExcelCommand class="btn btn-light-gray" type="button"><i
+                                class="icon-excel"></i></button>
+                    </ng-template>
+                    <kendo-grid-column width="100">
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                            <div class="dropdown-project-modify">
+                                <div class="dropdown">
+                                    <button class="btn" type="button" id="dropdownProject1" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false" data-offset="-20,15">
+                                        <i class="icon-three-dot"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu--white" aria-labelledby="dropdownProject1">
+                                        <ul class="project-modify__list">
+                                            <li class="project-modify__item">
+                                                <a (click)="openVerticallyCentered(content,dataItem,2)"
+                                                   class="js-project-panel"
+                                                   title="Project Role: Add or Edit roles for project">
+                                                    Project Role<span
+                                                        class="text-label">Add or Edit roles for Project</span>
+                                                </a>
+                                            </li>
+                                            <li class="project-modify__item">
+                                                <a (click)="openVerticallyCentered(content,dataItem,3)"
+                                                   class="js-project-panel"
+                                                   title="Project Team: Assign or Edit Staff on Project">
+                                                    Project Team<span
+                                                        class="text-label">Assign or Edit Staff on Project</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column
+                            field="{{column.columnId}}"
+                            title="{{column.columnLabel}}"
+                            width="150"
+                            *ngFor="let column of allColumns">
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                     *ngIf="column.columnId == 'PROJECT_NAME'">
+                            <button type="button" class="btn btn-link btn-popover-link"
+                                    (click)="openVerticallyCentered(content,dataItem,4)" container="body"
+                                    placement="right-top" appHandlePopoverClose>
+                                <b><span class="td-highlighted"> {{dataItem['PROJECT_NAME']}}</span></b><br>
+                                <span> {{dataItem.PROJECT_CITY}}</span><span *ngIf="dataItem.PROJECT_STATE">{{',' + dataItem.PROJECT_STATE}} </span>
+                            </button>
+                        </ng-template>
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                     *ngIf="column.columnId == 'DATES'">
+                            <span> {{dataItem['START_DATE'] | date:date_format}},<br>{{dataItem['END_DATE']| date:date_format}} </span>
+                        </ng-template>
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                     *ngIf="column.columnId == 'PROJECT_ROM'">
+                            <span> {{dataItem[column.columnId]}} </span>
+                        </ng-template>
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+                                     *ngIf="column.columnId == 'DURATION'">
+
+                            <div *ngIf="dataItem.PROGRESS_DAYS != null;else duration">
+                                <span class="label-duration">
+                                    {{dataItem[column.columnId]}}
+                                    <span class="total-per">{{dataItem.PROGRESS_DAYS}}</span>
+                                </span>
+                                <div class="progress">
+                                    <div class="progress-bar bg-green" role="progressbar"
+                                         [ngStyle]="{'width': dataItem.PROGRESS_DAYS}"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <ng-template #duration>
+                                <span>
+                                    {{dataItem[column.columnId]}}
+                                </span>
+                            </ng-template>
+                            <span *ngIf="dataItem.DURATION == ''">0 Days</span>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-pdf fileName="Projects.pdf" [scale]="0.8" [repeatHeaders]="true">
+                        <kendo-grid-pdf-margin top="1cm" left="1cm" right="1cm" bottom="1cm"></kendo-grid-pdf-margin>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="AllProjects.xlsx" [fetchData]="allData"></kendo-grid-excel>
+
+                    <!--<div *kendoGridDetailTemplate="let dataItem">-->
+                    <!--<app-project-view-staff-details-grid-->
+                    <!--[projectInstance]="dataItem"></app-project-view-staff-details-grid>-->
+                    <!--</div>-->
+                </kendo-grid>
+            </table>
+        </div>
+    </div>
+</main>
+<ng-template #content>
+    <app-project-view-staff-detail-popover (childDeleteEvent)="childCloseEvent($event)"
+                                           [projectInstance]="selectedProject" [renderTable]="renderTable"
+                                           [addForm]="tabStatus">
+    </app-project-view-staff-detail-popover>
+</ng-template>
+<ng-template #assignContent>
+    <app-assign-staff-popover [model]="editDataItem"
+                              (assignStaffChildCloseEvent)="childCloseEvent($event)">
+    </app-assign-staff-popover>
+</ng-template>

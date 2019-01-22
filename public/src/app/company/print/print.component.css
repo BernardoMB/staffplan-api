@@ -1,0 +1,4 @@
+@media print {
+    * { color: black; background: white; }
+    table { font-size: 80%; background: red !important}
+ } 

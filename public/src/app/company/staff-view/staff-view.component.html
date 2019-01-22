@@ -1,0 +1,441 @@
+<main class="main-container">
+    <div class="hero-content">
+        <div class="page-subtitle"  *ngIf="tableView == 1">
+            <span> Staff Log</span>
+            <span class="page-subtitle__status">{{staffData.total}} Staff</span>
+        </div>
+        <div *ngIf="tableView == 2">
+            <div class="page-subtitle clearfix">
+                Staff Visual Timeline
+                <span class="page-subtitle__status">{{projectsForTimeline.length}} Assign Staff</span>
+                <!-- <div class="project-legend text-lg-right">
+                    <span class="d-inline-block mr-3">
+                        <select class="form-control" [(ngModel)]="timelineStatus"
+                                (ngModelChange)="timeLineTypeChange($event)">
+                            <option *ngFor="let level of timelineByType" [ngValue]="level">
+                                  <span *ngIf="level == 'month'">Month</span>
+                                <span *ngIf="level == 'year'">Year</span>
+                                <span *ngIf="level == 'week'">Week</span>
+                            </option>
+                        </select>
+                    </span>
+
+                </div> -->
+            </div>
+        </div>
+        <div class="filter-tag clearfix">
+            <span *ngIf="tableView == 1" class="d-inline-block">
+                <a (click)="openVerticallyCentered(addContent)" class="btn btn-add-green" title="Add Staff"><i
+                        class="fa fa-plus"></i></a>
+            </span>
+
+
+            <div class="filter-tag__wrapper" *ngIf="tableView == 1">
+                <span class="filter-tag__label">Viewing </span>
+                <a class="btn filter-tag__item" *ngIf="viewDataByFilter.status"
+                   (click)="model.status = null;onStaffFilterSubmit(undefined);">{{viewDataByFilter.status['STATUS_NAME']}}<i
+                        class="icon-filter-remove"></i></a>
+                <a class="btn filter-tag__item" *ngIf="viewDataByFilter.office"
+                    (click)="model.office = null;onStaffFilterSubmit(undefined);">{{viewDataByFilter.office['OFFICE_NAME']}}<i
+                class="icon-filter-remove"></i></a>
+                <a class="btn filter-tag__item" *ngIf="viewDataByFilter.group"
+                   (click)="model.group = null;onStaffFilterSubmit(undefined);">{{viewDataByFilter.group['GROUP_NAME']}}<i
+                        class="icon-filter-remove"></i></a>
+                <a class="btn filter-tag__item" *ngIf="viewDataByFilter.role"
+                   (click)="model.role = null;onStaffFilterSubmit(undefined);">{{viewDataByFilter.role['ROLE_NAME']}}<i
+                        class="icon-filter-remove"></i></a>
+                <a class="btn filter-tag__item"
+                   *ngIf="viewDataByFilter.status || viewDataByFilter.group || viewDataByFilter.role"
+                   (click)="onClearStaffFilter()">Reset of All <i
+                        class="icon-filter-remove"></i></a>
+            </div>
+            <div class="filter-tag__wrapper" *ngIf="tableView == 2">
+                <span class="filter-tag__label">Viewing </span>
+                <a class="btn filter-tag__item" *ngIf="viewStaffDataByFilter.project"
+                   (click)="assignModel.project = null;onAssignStaffFilterSubmit(undefined);">{{viewStaffDataByFilter.project['PROJECT_NAME']}}<i
+                        class="icon-filter-remove"></i></a>
+                <a class="btn filter-tag__item" *ngIf="viewStaffDataByFilter.staff"
+                   (click)="assignModel.staff = null;onAssignStaffFilterSubmit(undefined);">{{viewStaffDataByFilter.staff['STAFF_NAME']}}<i
+                        class="icon-filter-remove"></i></a>
+
+                <a class="btn filter-tag__item"
+                   *ngIf="viewStaffDataByFilter.staff || viewStaffDataByFilter.project"
+                   (click)="onClearAssignStaffFilter()">Reset of All <i
+                        class="icon-filter-remove"></i></a>
+            </div>
+            <div class="filter-tag__wrapper" *ngIf="displayProjectType !=null">
+                <a class="btn filter-tag__item"
+                   (click)="displayProjectType = null;initiateStaffList();">{{displayProjectType}}<i
+                        class="icon-filter-remove"></i></a>
+            </div>
+            <div class="filter__right" [ngClass]="tableView == 2 ? 'mr-0':''">
+                <a (click)="renderViews(1)" title="Grid" class="btn btn-light-gray"><i
+                        [ngClass]="tableView == 1 ? 'icon-grid-selected':'icon-grid'"></i></a>
+                <a (click)="renderViews(2)" title="Timeline"
+                   class="btn btn-light-gray mr-3 mr-lg-0"><i
+                        [ngClass]="tableView == 2 ? 'icon-timeline-selected':'icon-timeline'"></i></a>
+
+                <div class="d-inline-block align-top" *ngIf="tableView == 2">
+                    <select class="form-control" [(ngModel)]="timelineStatus"
+                            (ngModelChange)="timeLineTypeChange($event)">
+                        <option *ngFor="let level of timelineByType" [ngValue]="level">
+                                <span *ngIf="level == 'month'">Month</span>
+                            <span *ngIf="level == 'year'">Year</span>
+                            <span *ngIf="level == 'week'">Week</span>
+                        </option>
+                    </select>
+                </div>
+
+                <div class="search-wrap">
+                    <div class="search-wrap__inner" [ngClass]="tableView == 2 ? 'ml-0':''">
+                        <kendo-autocomplete [data]="typeAheadSuggestions"
+                                            [filterable]="true"
+                                            id="search"
+                                            (valueChange)="getStaffListBySearch($event)"
+                                            (filterChange)="getStaffDataByFilter($event)"
+                                            [placeholder]="'Search'"
+                                            [ngModel]="filterValue" class="form-control">
+                        </kendo-autocomplete>
+                    </div>
+                </div><!-- /.search-wrap-->
+
+                <div class="filter__btn">
+                    <div class="dropdown">
+                        <button class="btn btn-light-gray is-filtered" type="button" id="dropdownFilter"
+                                data-toggle="dropdown" (click)="filterMenuOpen = true" aria-haspopup="true"
+                                aria-expanded="false" data-offset="0,20">
+                            <i class="icon-filter"></i>
+                        </button>
+                        <div *ngIf="tableView == 1" [hidden]="!filterMenuOpen" [ngClass]="filterMenuOpen ? 'show':''"
+                             class=" dropdown-menu--white dropdown-menu dropdown-menu-right"
+                             aria-labelledby="dropdownFilter">
+                            <form name="form" #projectFilterForm="ngForm">
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <kendo-dropdownlist
+                                        [data]="filterStaffStatus"
+                                        [textField]="'STATUS_NAME'"
+                                        [valueField]="'STATUS_NAME'"
+                                        [filterable]="true"
+                                        name="status"
+                                        id="status"
+                                        class="form-control form-control--gray"
+                                        #status="ngModel"
+                                        [(ngModel)]="model.status"
+                                        (filterChange)="handleFilterChange($event, 'STATUS')">
+                                    </kendo-dropdownlist>
+                                </div>
+                                <div class="form-group">
+                                    <label for="group">Office</label>
+                                    <kendo-dropdownlist
+                                        [data]="filteredOfficeList"
+                                        [textField]="'OFFICE_NAME'"
+                                        [valueField]="'OFFICE_ID'"
+                                        [filterable]="true"
+                                        name="office"
+                                        id="assProjectCity"
+                                        class="form-control form-control--gray"
+                                        #office="ngModel"
+                                        placeholder="select office.."
+                                        [(ngModel)]="model.office"
+                                        (filterChange)="handleFilterChange($event, 'OFFICE')">
+                                    </kendo-dropdownlist>
+                                </div>
+                                <div class="form-group">
+                                    <label for="group">Staff Role</label>
+                                    <kendo-dropdownlist
+                                        [data]="filterStaffRole"
+                                        [textField]="'ROLE_NAME'"
+                                        [valueField]="'ROLE_NAME'"
+                                        [filterable]="true"
+                                        name="role"
+                                        id="role"
+                                        class="form-control form-control--gray"
+                                        #role="ngModel"
+                                        [(ngModel)]="model.role"
+                                        (filterChange)="handleFilterChange($event, 'ROLE')">
+                                    </kendo-dropdownlist>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="group">Type of Staff</label>
+                                    <kendo-dropdownlist
+                                        [data]="filterStaffGroup"
+                                        [textField]="'GROUP_NAME'"
+                                        [valueField]="'GROUP_NAME'"
+                                        [filterable]="true"
+                                        name="group"
+                                        id="group"
+                                        class="form-control form-control--gray"
+                                        #group="ngModel"
+                                        [(ngModel)]="model.group"
+                                        (filterChange)="handleFilterChange($event, 'GROUP')">
+                                    </kendo-dropdownlist>
+                                </div>
+                                <div class="d-flex">
+                                    <button class="btn btn-blue w-50 mr-1" title="Apply"
+                                            (click)="onStaffFilterSubmit('removeSearch')">Apply
+                                    </button>
+                                    <button class="btn btn-light-gray w-50 ml-1" title="Clear All"
+                                            (click)="onClearStaffFilter()">Clear All
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div *ngIf="tableView == 2" [hidden]="!filterMenuOpen" [ngClass]="filterMenuOpen ? 'show':''"
+                             class=" dropdown-menu--white dropdown-menu dropdown-menu-right"
+                             aria-labelledby="dropdownFilter">
+                            <form name="form" #projectFilterForm="ngForm">
+
+                                <div class="form-group">
+                                    <label for="location">Staff Name</label>
+                                    <kendo-dropdownlist
+                                            [data]="filterdStaffList"
+                                            [textField]="'STAFF_NAME'"
+                                            [valueField]="'STAFF_ID'"
+                                            [filterable]="true"
+                                            name="staff"
+                                            required
+                                            id="assProjectCity"
+                                            class="form-control form-control--gray"
+                                            #staff="ngModel"
+                                             [(ngModel)]="assignModel.staff"
+                                            (filterChange)="handleFilterChange($event, 'STAFF')">
+                                    </kendo-dropdownlist>
+                                    <!--<input type="text" class="form-control form-control&#45;&#45;gray" id="location"-->
+                                           <!--name="location" [(ngModel)]="assignModel.staff"-->
+                                           <!--#staff="ngModel" placeholder="Enter Staff Name"/>-->
+                                </div>
+                                <div class="form-group">
+                                    <label for="location">Project Name</label>
+                                    <kendo-dropdownlist
+                                            [data]="filteredProjectsList"
+                                            [textField]="'PROJECT_NAME'"
+                                            [valueField]="'PROJECT_ID'"
+                                            [filterable]="true"
+                                            name="project"
+                                            required
+                                            id="assProjectCity"
+                                            class="form-control form-control--gray"
+                                            #project="ngModel"
+                                            [(ngModel)]="assignModel.project"
+                                            (filterChange)="handleFilterChange($event, 'PROJECT')"
+                                    >
+                                    </kendo-dropdownlist>
+                                </div>
+
+                                <div class="d-flex">
+                                    <button class="btn btn-blue w-50 mr-1" title="Apply"
+                                            (click)="onAssignStaffFilterSubmit('removeSearch')">Apply
+                                    </button>
+                                    <button class="btn btn-light-gray w-50 ml-1" title="Clear All"
+                                            (click)="onClearAssignStaffFilter()">Clear All
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- <a href="#" title="Print" class="btn btn-light-gray"><i class="icon-print"></i></a> -->
+            </div><!-- /.filter__right -->
+        </div><!-- /.filter-tag -->
+        <ng-template #addContent>
+            <app-staff-add (childStaffCloseEvent)="childStaffCloseEvent($event)" [addForm]="1">
+            </app-staff-add>
+        </ng-template>
+        <ng-template #editContent>
+            <app-staff-view-project-details-popover (childStaffCloseEvent)="childStaffCloseEvent($event)"
+                                                    [staffIdForEditStaff]="staffIdForEditStaff">
+            </app-staff-view-project-details-popover>
+        </ng-template>
+        <ng-template #assignContent>
+            <app-assign-staff-popover [staffIdForEditStaff]="staffIdForEditStaff"
+                                      (assignStaffChildCloseEvent)="childAssignStaffCloseEvent($event)">
+            </app-assign-staff-popover>
+        </ng-template>
+        <div class="table-responsive hide-scroll" *ngIf="tableView == 1">
+            <table class="table table--default td-overflow-visible">
+                <kendo-grid [data]="staffData"
+                            [loading]="showLoader"
+                            class="word-wrap position-static"
+                            [sortable]="true"
+                            [height]="viewPortHeight"
+                            [sort]="configs.sort"
+                            [height]="gridHeight"
+                            [resizable]="true"
+                            [reorderable]="true"
+                            [selectable]="true"
+                            (dataStateChange)="dataStateChange($event)"
+                            (detailExpand)="rowExpand($event)">
+                    <ng-template kendoGridToolbarTemplate>
+                        <button kendoGridPDFCommand class="btn btn-light-gray"><i class="icon-download"></i></button>
+                        <button kendoGridExcelCommand class="btn btn-light-gray" type="button"><i class="icon-excel"></i></button>
+                    </ng-template>
+                    <kendo-grid-column width="100">
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                            <div class="dropdown-project-modify">
+                                <div class="dropdown">
+                                    <button class="btn" type="button" id="dropdownProject1" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false" data-offset="-20,15">
+                                        <i class="icon-three-dot"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu--white" aria-labelledby="dropdownProject1">
+                                        <ul class="staff-modify__list">
+                                            <li class="staff-modify__item">
+                                                <a (click)="openVerticallyCenteredEditStaff(editContent,dataItem)"
+                                                   title="Project Team: Assign or Edit Staff on Project">
+                                                    Staff Detail<span
+                                                        class="text-label">View and Update Staff</span>
+                                                </a>
+                                            </li>
+                                            <li class="staff-modify__item">
+                                                <a (click)="openVerticallyCenteredAssignProject(assignContent,dataItem)"
+                                                   title="Project Team: Assign or Edit Staff on Project">
+                                                    Assign Project<span
+                                                        class="text-label">Assign or Edit Staff on Project</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column field="{{column.columnId}}" title="{{column.columnLabel}}" width="150"
+                                       *ngFor="let column of staffColumns">
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="column.columnId == 'PREFERRED_NAME'">
+                            <button type="button" class="btn btn-link btn-popover-link" container="body" placement="right-top"
+                                    (click)="openVerticallyCenteredEditStaff(editContent,dataItem)" appHandlePopoverClose>
+                                <span class="td-highlighted" *ngIf="dataItem.PREFERRED_NAME != null && dataItem.PREFERRED_NAME != ''; else other_content"> {{dataItem.PREFERRED_NAME}} {{dataItem.LAST_NAME}}</span>
+                                <ng-template #other_content><span class="td-highlighted"> {{dataItem.FIRST_NAME}} {{dataItem.LAST_NAME}}</span></ng-template>
+                            </button>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-pdf fileName="Staff.pdf" [scale]="0.8" [repeatHeaders]="true">
+                        <kendo-grid-pdf-margin top="1cm" left="1cm" right="1cm" bottom="1cm"></kendo-grid-pdf-margin>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="Staff.xlsx" [fetchData]="allData"></kendo-grid-excel>
+                </kendo-grid>
+            </table>
+        </div>
+        <div class="table-responsive hide-scroll-timeline" *ngIf="tableView == 2" [ngStyle]="{'height': viewPortHeight + 'px'}">
+            <table class="table table--default">
+                <thead>
+                <tr>
+                    <th>Staff Name</th>
+                    <th>Project Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Allocation</th>
+                    <th class="text-nowrap" *ngFor="let type of timeLineHeader">
+                        <span *ngIf="timelineStatus == 'week'">{{type['month']}}' {{type['year']}}<br>{{type['week']}}</span>
+                        <span *ngIf="timelineStatus == 'month'">{{type['timelineByMonth']}}' {{type['timelineByYear']}}</span>
+                        <span *ngIf="timelineStatus == 'year'">{{type['timelineByOnlyYear']}}</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody *ngIf="projectsForTimeline.length > 0;else noRecord">
+                <tr *ngFor="let project of projectsForTimeline;let i = index; let first = first;">
+                    <td class="align-middle td-highlighted text-nowrap" attr.rowspan="{{project.length}}" *ngIf="first">
+                        <div class="w-250" style="word-wrap: normal; word-break: break-all;">
+                            <div class="avatar d-inline-block mr-3 align-middle ">
+                            <span class="avatar__image" *ngIf="!project.STAFF_ID || project.STAFF_PHOTO == 'None' || project.STAFF_PHOTO == null; else image">
+                            <img src="{{STATIC_IMAGE}}"/>
+                            </span>
+                                <ng-template #image>
+                                    <span class="avatar__image">
+                                    <img src="{{imagePath}}{{project.IMAGEPATH}}{{project.STAFF_PHOTO}}"
+                                        alt="{{STATIC_IMAGE}}"/>
+                                    </span>
+                                </ng-template>
+                            </div>
+                            <button type="button" class="btn btn-link btn-popover-link td-highlighted" container="body" placement="right-top"
+                                        (click)="openVerticallyCenteredEditStaff(editContent,project)" appHandlePopoverClose>
+                                {{project.STAFF_NAME}}
+                            </button>
+                        </div>
+                    </td>
+                    <td class="align-middle td-highlighted text-nowrap"
+                        attr.rowspan="{{project.length}}"
+                        *ngIf="!first && project.STAFF_ID !== projectsForTimeline[i - 1]['STAFF_ID']">
+                        <div class="w-250" style="word-wrap: normal; word-break: break-all;">
+                            <div class="avatar d-inline-block mr-3 align-middle">
+                            <span class="avatar__image" *ngIf="!project.STAFF_ID || project.STAFF_PHOTO == 'None' || project.STAFF_PHOTO == null; else image">
+                            <img src="{{STATIC_IMAGE}}"/>
+                            </span>
+                                <ng-template #image>
+                                    <span class="avatar__image">
+                                    <img src="{{imagePath}}{{project.IMAGEPATH}}{{project.STAFF_PHOTO}}"
+                                        (error)="errorHandler($event)"/>
+                                    </span>
+                                </ng-template>
+                            </div>
+                            <button type="button" class="btn btn-link btn-popover-link td-highlighted" container="body" placement="right-top"
+                                    (click)="openVerticallyCenteredEditStaff(editContent,project)" appHandlePopoverClose>
+                                {{project.STAFF_NAME}}
+                            </button>
+                        </div>
+                    </td>
+                    <td  class="align-middle"><span class="td-highlighted">{{project.PROJECT_NAME}}</span> </td>
+                    <td class="align-middle"><span
+                            class="td-highlighted">{{project.START_DATE| date: date_format}}</span></td>
+                    <td class="align-middle"><span class="td-highlighted">{{project.END_DATE| date: date_format}}</span>
+                    </td>
+                    <td class="align-middle"><span class="td-highlighted">{{project.ALLOCATION}}</span></td>
+                    <ng-container *ngIf="timelineStatus == 'week'">
+                        <td class="no-padding align-middle" *ngFor="let data of timeLineData['week']">
+                            <div *ngIf="project['week' + data] != undefined" class="field-exists mt-0"
+                                 placement="bottom" [ngbTooltip]="projectDetailTooltip"
+                                 [ngStyle]="{'background-color':project['timelineColor']}">
+                                <ng-template #projectDetailTooltip>
+                                    <div class="font-weight-bold text-body"> {{project.PROJECT_NAME}}</div>
+                                    Start Date: {{project.START_DATE| date: date_format}}<br>End Date:
+                                    {{project.END_DATE| date: date_format}}<br>Allocation:{{project.ALLOCATION}}
+                                </ng-template>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container *ngIf="timelineStatus == 'month'">
+                        <td class="no-padding align-middle" *ngFor="let data of timeLineData['month']">
+                            <div *ngIf="project['month' + data] !== undefined"
+                                 class="field-exists m-t0"
+                                 placement="bottom" [ngbTooltip]="projectDetailTooltip"
+                                 [ngStyle]="{'background-color':project['timelineColor']}">
+                                <ng-template #projectDetailTooltip>
+                                    <div class="font-weight-bold text-body"> {{project.PROJECT_NAME}}</div>
+                                    Start Date: {{project.START_DATE| date: date_format}}<br> End
+                                    Date:{{project.END_DATE| date: date_format}}<br>Allocation:{{project.ALLOCATION}}
+                                </ng-template>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container *ngIf="timelineStatus == 'year'">
+                        <td class="no-padding align-middle" *ngFor="let data of timeLineData['year']">
+                            <div *ngIf="project['year' + data] !== undefined"
+                                 class="field-exists mt-0"
+                                 placement="bottom" [ngbTooltip]="projectDetailTooltip"
+                                 [ngStyle]="{'background-color':project['timelineColor']}" >
+                                <ng-template #projectDetailTooltip>
+                                    <div class="font-weight-bold text-body"> {{project.PROJECT_NAME}}</div>
+                                    Start Date: {{project.START_DATE| date: date_format}}<br>End Date:
+                                    {{project.END_DATE| date: date_format}}<br>Allocation:{{project.ALLOCATION}}
+                                </ng-template>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                </tr>
+                </tbody>
+                <ng-template #noRecord>
+                    <tbody>
+                    <div>
+                        No record found
+                    </div>
+                    </tbody>
+                </ng-template>
+            </table>
+        </div>
+
+    </div>
+</main>

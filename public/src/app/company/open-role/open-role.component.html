@@ -1,0 +1,76 @@
+<div class="row" id="futureDays">
+    <div class="col-lg-12">
+        <div class="row mb-2">
+            <div class="col-lg-3">
+                <kendo-dropdownbutton  [data]="columnListGrouping" (itemClick)="onGroupByColumnSelect($event)">
+                    Group
+                </kendo-dropdownbutton>
+            </div>
+            <div class="col-lg-3 offset-lg-6">
+                <div class="input-group search-input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1"> <i class="fa fa-search"></i> </span>
+                    </div>
+                    <kendo-autocomplete [placeholder]="'Search role, project etc'" [data]="typeAheadSuggestions" [filterable]="true" (valueChange)="getListByValueChange($event)" (filterChange)="getListByFilterChange($event)"[placeholder]="'Search'"  [ngModel]="filterValue">
+                </kendo-autocomplete>
+            </div>
+        </div>
+    </div>
+    <ng-template #content let-c="close" let-d="dismiss" style="width: 50%;max-width:  150%;">
+        <div class="container-fluid">
+            <app-staff-view-project-details-popover [staffInstance]="selectedStaff" [renderTable]="renderTable">
+            </app-staff-view-project-details-popover>
+        </div>
+    </ng-template>
+    <ng-template #contentForProject let-c="close" let-d="dismiss" style="width: 50%;max-width:  150%;">
+        <div class="container-fluid">
+            <button type="button" class="close pt-3" aria-label="Close" (click)="d('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+            </button>
+            <app-project-view-staff-detail-popover [projectInstance]="selectedProject" [renderTable]="renderTable"  (childDeleteEvent)="childDeleteEvent($event)">
+            </app-project-view-staff-detail-popover>
+        </div>
+    </ng-template>
+
+    <div class="row">
+        <div class="col-lg-12" id="projectTable">
+            <kendo-grid
+                [data]="openRoleData"
+                [loading]="showLoader"
+                filterable="menu"
+                [sortable]="true"
+                [selectable]="true"
+                [sort]="config.sort"
+                [filter]="config.filter"
+                [navigable]="true"
+                (dataStateChange)="dataStateChange($event)"
+                [height]="gridHeight"
+                [resizable]="true">
+                <kendo-grid-column width="100" ></kendo-grid-column>
+                <kendo-grid-column
+                    field="{{column.columnId}}"
+                    title="{{column.columnLabel}}"
+                    [filter]="dateFilter(column.columnId)"
+                    *ngFor="let column of allColumns" >
+                    <ng-template kendoGridGroupHeaderTemplate let-value="value"  *ngIf="column.columnId == 'START_DATE'">
+                        {{column.columnLabel}}:  {{value| date: date_format}}
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="column.columnId == 'PROJECT_NAME'">
+                        <button type="button" class="btn btn-link btn-popover-link" (click)="openVerticallyCenteredProject(contentForProject,dataItem)" container="body" placement="right-top" appHandlePopoverClose [ngClass]="{'selected-record':staffIdProjectClass === dataItem.STAFF_ID && projectIdProjectClass == dataItem.PROJECT_ID}">
+                                {{dataItem.PROJECT_NAME}}
+                    </button>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="column.columnId == 'END_DATE' || column.columnId == 'START_DATE'">
+                    <span> {{dataItem[column.columnId]| date: date_format}} </span>
+                </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="column.columnId == 'RESUME_SUBMITTED'">
+                    <span *ngIf="dataItem.RESUME_SUBMITTED == '1'"> Yes
+                    </span>
+                        <span *ngIf="dataItem.RESUME_SUBMITTED == '0'">No</span>
+                    </ng-template>
+            </kendo-grid-column>
+        </kendo-grid>
+    </div>
+</div>
+</div>
+</div>

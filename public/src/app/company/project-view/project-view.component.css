@@ -1,0 +1,160 @@
+.k-header.k-grid-toolbar {
+    position: absolute;
+    right: 30px;
+    margin-top: -65px;
+    border: none;
+    padding: 0;
+}
+
+.filter__right {
+    margin-right: 80px;
+}
+
+.filter__right .btn i.fa {
+    font-size: 15px;
+}
+
+.k-header.k-grid-toolbar .k-button {
+    border: none;
+    background: none;
+    padding: 0;
+    position: relative;
+}
+
+.project-modify__list .project-modify__item + .project-modify__item {
+    margin-top: 20px;
+}
+
+.project-modify__list .project-modify__item > a {
+    color: #363636;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.project-modify__list .project-modify__item .text-label {
+    display: block;
+    color: #8b8b8b;
+    font-weight: 400;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.field-exists {
+    height: 10px;
+    text-align: left;
+}
+
+.proposal-status {
+    background-color: #ffd246;
+}
+
+.in-progress-status {
+    background-color: #17a2b8;
+}
+
+.initiated-status {
+    background-color: #ff928a;
+}
+
+.completed-status {
+    background-color: #00b0ff;
+}
+
+.close-status {
+    background-color: #f31700;
+}
+
+.proposal-status-color {
+    color: #ffd246;
+}
+
+.in-progress-status-color {
+    color: #17a2b8;
+}
+
+.initiated-status-color {
+    color: #ff928a;
+}
+
+.completed-status-color {
+    color: #00b0ff;
+}
+
+.close-status-color {
+    color: #f31700;
+}
+
+.progress {
+    height: 5px;
+    background: #eff8ff;
+    border-radius: 12px;
+}
+
+.progress .bg-green {
+    background-color: #38c172;
+}
+
+.label-duration {
+    font-size: 11px;
+    color: #38c172;
+    font-weight: normal;
+    text-shadow: none;
+    margin-bottom: 3px;
+    display: block;
+    padding-right: 28px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+}
+
+.label-duration .total-per {
+    color: #5f6b7a;
+    font-size: 11px;
+    text-align: right;
+    position: absolute;
+    right: 0;
+}
+
+@media screen and (max-width: 1200px) {
+    .navbar {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .k-header.k-grid-toolbar {
+        right: 15px;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .project-legend {
+        float: none;
+        margin-top: 20px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .k-header.k-grid-toolbar {
+        margin-top: -62px;
+    }
+    .filter-tag .filter__right {
+        flex-wrap: wrap;
+        position: relative;
+        float: none !important;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .k-header.k-grid-toolbar {
+        margin-top: -55px;
+    }
+}
+

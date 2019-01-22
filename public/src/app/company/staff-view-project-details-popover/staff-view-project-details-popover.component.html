@@ -1,0 +1,247 @@
+<div class="project-panel project--staff-detail-panel"
+     [ngClass]="staffIdForEditStaff ? 'is-open':''">
+    <div class="col-lg-12 mt-5 pt-5 text-center" *ngIf="showDetailsLoader">
+        <div class="py-5 my-5"></div>
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw active-color"></i>
+        <span class="sr-only"></span>
+    </div>
+    <div *ngIf="!showDetailsLoader">
+        <button class="btn btn-close-panel" title="Close" (click)="resetUpdateForm()"><i class="fa fa-times"></i>
+        </button>
+        <div class="">
+            <form>
+                <div class="row mx-0">
+                    <div class="col-md-7">
+                        <div class="project-panel__left">
+                            <div class="staff-member-detail mb-1 pb-md-5 pb-4 bb-1">
+                                <div class="avtar">
+                                    <img src="{{profileImageUrl}}" class="avtar__image"
+                                         (error)="errorHandler($event)">
+
+                                    <!--<a href="#" class="d-block">-->
+                                    <!--<img src="./images/avatar-m1.jpg" alt="May Baker" />-->
+                                    <!--<span class="avatar__label">Edit</span>-->
+                                    <!--</a>-->
+
+                                    <input type="file" id="selectedFile" style="display: none;"
+                                           (change)="onSelectFile($event)"
+                                           accept="image/*"/>
+                                    <input type="button" class="avatar__label" value="Edit"
+                                           onclick="document.getElementById('selectedFile').click();"/>
+                                </div>
+
+                                <div class="detail pt-md-2">
+                                    <div class="font-size-16 font-weight-500 mb-2">{{staffInstance.FIRST_NAME}}
+                                        {{staffInstance.LAST_NAME}}
+                                    </div>
+                                    <ul>
+                                        <li><span class="d-block text-muted"><span class="font-weight-light">Staff Role:</span> {{staffInstance.ROLE_NAME}}</span>
+                                        </li>
+                                        <li><span class="d-block text-muted"><span class="font-weight-light">Staff Group:</span> {{staffInstance.GROUP_NAME
+                                            ||"NA"}}</span>
+                                        </li>
+                                        <li><span class="d-block text-muted"><span class="font-weight-light">Office:</span> {{staffInstance.OFFICE_NAME ||
+                                            "NA"}}</span>
+                                        </li>
+                                        <li><span class="d-block text-muted"><span class="font-weight-light">Tenure:</span> {{staffInstance.TENURE || "NA"}}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="title mb-4">Contact Information</div>
+                                    <div class="mb-md-4 mb-3">
+                                        <div class="text-muted">Email Address</div>
+                                        <div class="font-size-16 font-weight-500">{{staffInstance.EMAIL_ID || "NA"}}</div>
+                                    </div>
+                                    <div class="mb-md-4 mb-3">
+                                        <div class="text-muted">Phone Number</div>
+                                        <div *ngIf="staffInstance.PHONE_1 != null && staffInstance.PHONE_1 != '' ; else NA_content">
+                                            <div class="font-size-16 font-weight-500"> {{staffInstance.PHONE_1_TYPE}}:{{' '+staffInstance.PHONE_1}}
+                                            </div>
+                                            <div class="font-size-16 font-weight-500">{{staffInstance.PHONE_2_TYPE}}:{{' '+staffInstance.PHONE_2}}
+                                            </div>
+                                        </div>
+                                        <ng-template #NA_content>NA</ng-template>
+                                    </div>
+                                    <div class="mb-md-4 mb-3">
+                                        <div class="text-muted">Address</div>
+                                        <div class="font-size-16 font-weight-500">
+                                            <span *ngIf="staffInstance.HOME_CITY">{{staffInstance.HOME_CITY}}</span>
+                                            <span *ngIf="staffInstance.HOME_CITY && staffInstance.HOME_STATE">,</span>
+                                            <span *ngIf="staffInstance.HOME_STATE">{{staffInstance.HOME_STATE }}</span>
+                                            <span *ngIf="staffInstance.HOME_CITY || staffInstance.HOME_STATE && staffInstance.HOME_ZIP">,</span>
+                                            <span *ngIf="staffInstance.HOME_ZIP">{{staffInstance.HOME_ZIP }}</span>
+                                        </div>
+                                        <div class="font-size-16 font-weight-500">
+                                            <span *ngIf="!staffInstance.HOME_CITY && !staffInstance.HOME_STATE && !staffInstance.HOME_ZIP">
+                                                NA
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="title mb-4">Travel & Commute</div>
+                                    <div class="mb-md-4 mb-3">
+                                        <div class="checkbox-btn-holder">
+                                            <div class="checkbox-btn__item">
+                                                <input type="checkbox" name="" id="chkbox1">
+                                                <label class="checkbox-btn__text text-muted" for="chkbox1">Open to longer commute</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-md-4 mb-3">
+                                        <div class="checkbox-btn-holder">
+                                            <div class="checkbox-btn__item">
+                                                <input type="checkbox" name="" id="chkbox2">
+                                                <label class="checkbox-btn__text text-muted" for="chkbox2">Relocation</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="mb-md-4 mb-3">
+                                        <div class="text-muted">Open to longer commute</div>
+                                        <div class="font-size-16 font-weight-500">Lorem ipsum dolor sit amet</div>
+                                    </div>
+                                    <div class="mb-md-4 mb-3">
+                                        <div class="text-muted">Relocation</div>
+                                        <div class="font-size-16 font-weight-500">Lorem ipsum dolor sit amet</div>
+                                    </div> -->
+                                    <div class="mb-md-4 mb-3">
+                                        <div class="text-muted">Geographical Preference</div>
+                                        <div class="font-size-16 font-weight-500">Lorem ipsum dolor sit amet</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.project-panel__left -->
+                    </div>
+
+                    <div class="col-md-5 project-panel__bg">
+                        <div class="project-panel__right available-staff">
+                            <div class="title mb-4">
+                                Current Project
+                            </div>
+
+                            <div class="current-project-list"
+                                 *ngFor="let instance of staffInstance.CURRENT_PROJECT; let key = index">
+                                <div class="dropdown-current-project">
+                                    <div class="dropdown">
+                                        <button class="btn bg-light-orange" type="button"
+                                                id="id_{{instance.PROJECT_ID}}"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                                data-offset="0,15">
+                                            {{instance.PROJECT_NAME}}
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu--white"
+                                             attr.aria-label="id_{{instance.PROJECT_ID}}">
+                                            <div class="font-size-16 font-weight-500"> {{instance.PROJECT_NAME}}</div>
+                                            <div class="">
+                                                <span class="text-muted">Start Date:</span> {{instance.START_DATE |
+                                                date:
+                                                date_format}}
+                                            </div>
+                                            <div class="">
+                                                <span class="text-muted">End Date:</span> {{instance.END_DATE | date:
+                                                date_format}}
+                                            </div>
+                                            <div class="">
+                                                <span class="text-muted">Allocation:</span> {{instance.ALLOCATION}}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="title mt-4">
+                                    Next Project
+                                </div>
+                                <div *ngFor="let instance of staffInstance.NEXT_PROJECT">
+                                    {{instance.PROJECT_NAME}}
+                                </div>
+                            </div>
+                        </div><!-- /.project-panel__right -->
+                    </div><!-- /.project-panel__bg -->
+
+                    <div class="col-sm-12">
+                        <!--<kendo-tabstrip>-->
+                        <!--<kendo-tabstrip-tab [title]="'Experience & Certification'" [selected]="true">-->
+                        <!--<ng-template kendoTabContent>-->
+                        <div class="px-md-3">
+                            <div class="bt-1 mb-4"><!-- / border Separator --></div>
+                            <div class="title">Experience & Certification</div>
+                            <div class="text-muted font-size-14">Certification</div>
+                            <div class="filter-tag mt-2">
+                                <kendo-multiselect
+                                        [allowCustom]="true"
+                                        [data]="certificateList"
+                                        [textField]="'CERTIFICATION_NAME'"
+                                        [valueField]="'CERTIFICATION_ID'"
+                                        [valueNormalizer]="valueNormalizerCertificate"
+                                        [(ngModel)]="certificationData"
+                                        name="certificationData"
+                                        placeholder="Select certification from here..."
+                                >
+                                </kendo-multiselect>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table--default">
+                                    <thead>
+                                    <tr>
+                                        <th>Project</th>
+                                        <th>Assignment Details</th>
+                                        <th>Project Role</th>
+                                        <th>Relevant Project Experience</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let instance of staffDetailsData;let i = index">
+                                        <td class="font-size-14 align-middle">
+                                            <span class="td-highlighted d-block mb-1">{{instance.PROJECT_NAME}}</span>
+                                            <span class="d-block mb-1">{{instance.CATEGORY_NAME}}</span>
+                                            <span class="d-block mb-1"><span class="font-weight-light">Area:</span> {{" " +(instance.PROJECT_CITY||'NA')}}</span>
+                                            <span class="d-block mb-1"><span class="font-weight-light">From:</span> {{" "+(instance.START_DATE|date:date_format)+ " "}} To {{" "+(instance.END_DATE | date: date_format)}}</span>
+                                        </td>
+                                        <td class="font-size-14 align-middle">
+                                            <span class="d-block mb-1"><span class="font-weight-light">Status:</span> {{instance.STAFF_ASSIGNMENT}}</span>
+                                            <span class="d-block mb-1"><span class="font-weight-light">Duration:</span> {{instance.DURATION}}</span>
+                                        </td>
+                                        <td class="font-size-14 align-middle">
+                                            <span class="d-block">{{instance.ROLE_NAME}}</span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <kendo-multiselect
+                                                    [autoClose]="false"
+                                                    [allowCustom]="true"
+                                                    name="expertizeList-{{i}}"
+                                                    [data]="staffExperienceList"
+                                                    [textField]="'EXPERIENCE_LABEL'"
+                                                    [(ngModel)]="instance['expertizeList']"
+                                                    [valueField]="'EXPERIENCE_ID'"
+                                                    [valueNormalizer]="valueNormalizerExperience"
+                                                    placeholder="Select experience detail from here..."
+                                            >
+                                            </kendo-multiselect>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-md-right mt-md-4 bt-1 pt-4 pb-5">
+                                <button class="btn btn-blue mr-3" type="submit" title="Submit" (click)="updateDetail();">
+                                    Submit
+                                </button>
+                                <button class="btn btn-blue-outline" title="Cancel" (click)="resetUpdateForm()">Cancel
+                                </button>
+                            </div>
+                        </div>
+                        <!--</ng-template>-->
+                    </div>
+                </div><!-- /.row -->
+            </form>
+        </div>
+    </div>
+
+</div><!-- /.project--staff-detail-panel -->

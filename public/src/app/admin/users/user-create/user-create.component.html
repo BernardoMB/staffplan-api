@@ -1,0 +1,164 @@
+<div class="row">
+    <div class="col-lg-11">
+        <h3 class="page-subtitle p-0">Create User</h3>
+        <form name="form" (ngSubmit)="f.form.valid && onSubmit(f)" #f="ngForm" novalidate>
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" name="firstName" [(ngModel)]="model.FIRST_NAME"
+                       #firstName="ngModel" [ngClass]="{ 'is-invalid': f.submitted && firstName.invalid }"
+                       required/>
+                <div *ngIf="f.submitted && firstName.invalid" class="invalid-feedback">
+                    <div *ngIf="firstName.errors.required">First Name is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="middleName">Middle Name</label>
+                <input type="text" class="form-control" name="middleName" [(ngModel)]="model.MIDDLE_NAME"
+                       #middleName="ngModel" [ngClass]="{ 'is-invalid': f.submitted && middleName.invalid }"
+                       required/>
+                <div *ngIf="f.submitted && middleName.invalid" class="invalid-feedback">
+                    <div *ngIf="middleName.errors.required">Middle Name is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" class="form-control" name="lastName" [(ngModel)]="model.LAST_NAME"
+                       #lastName="ngModel" [ngClass]="{ 'is-invalid': f.submitted && lastName.invalid }"
+                       required/>
+                <div *ngIf="f.submitted && lastName.invalid" class="invalid-feedback">
+                    <div *ngIf="lastName.errors.required">Last Name is required</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="role">Role</label>
+                        <button type="button" class="btn btn-link px-0 py-1 float-right"
+                                (click)="openRoleForm()">
+                                <small class="font-weight-500"><i class="fa fa-plus"></i> Add Role</small>
+                        </button>
+                        <kendo-dropdownlist
+                                class="form-control"
+                                [data]="filteredRoleList"
+                                [textField]="'ROLE_NAME'"
+                                [valueField]="'ID'"
+                                required
+                                name="ROLE"
+                                #ROLE="ngModel"
+                                [(ngModel)]="model.ROLE"
+                                [ngClass]="{ 'is-invalid': f.submitted && ROLE.invalid }">
+                        </kendo-dropdownlist>
+                        <div *ngIf="f.submitted && ROLE.invalid" class="invalid-feedback">
+                            <div *ngIf="ROLE.errors.required">Please select role</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="office">Office</label>
+                <kendo-multiselect
+                        [data]="filteredOfficeList"
+                        [(ngModel)]="model.OFFICE"
+                        [textField]="'OFFICE_NAME'"
+                        [valueField]="'OFFICE_ID'"
+                        name="OFFICE"
+                        #OFFICE="ngModel"
+                        [valuePrimitive]="true"
+                        [filterable]="true"
+                        [autoClose]="false"
+                        (filterChange)="handleFilterChange($event, 'OFFICE')"
+                >
+                </kendo-multiselect>
+            </div>
+            <div class="form-group">
+                <label for="office">Region</label>
+                <kendo-multiselect
+                        [data]="filteredRegionList"
+                        [(ngModel)]="model.REGION"
+                        [textField]="'REGION_NAME'"
+                        [valueField]="'REGION_ID'"
+                        name="REGION"
+                        #REGION="ngModel"
+                        [valuePrimitive]="true"
+                        [filterable]="true"
+                        [autoClose]="false"
+                        (filterChange)="handleFilterChange($event, 'REGION')">
+                </kendo-multiselect>
+            </div>
+            <div class="form-group">
+                <label for="office">Division</label>
+                <kendo-multiselect
+                        [data]="filteredDivisionList"
+                        [(ngModel)]="model.DIVISION"
+                        [textField]="'DIVISION_NAME'"
+                        [valueField]="'ID'"
+                        name="DIVISION"
+                        #DIVISION="ngModel"
+                        [valuePrimitive]="true"
+                        [filterable]="true"
+                        [autoClose]="false"
+                        (filterChange)="handleFilterChange($event, 'DIVISION')">
+                </kendo-multiselect>
+            </div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" name="username" [(ngModel)]="model.EMAIL"
+                       #username="ngModel" [ngClass]="{ 'is-invalid': f.submitted && username.invalid }"
+                       required email/>
+                <div *ngIf="f.submitted && username.invalid" class="invalid-feedback">
+                    <div *ngIf="username.errors.required">Username is required</div>
+                    <div *ngIf="username.errors.username">User name must be valid</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" [(ngModel)]="model.PASSWORD"
+                       #password="ngModel" [ngClass]="{ 'is-invalid': f.submitted && password.invalid }"
+                       required minlength="6"/>
+                <div *ngIf="f.submitted && password.invalid" class="invalid-feedback">
+                    <div *ngIf="password.errors.required">Password is required</div>
+                    <div *ngIf="password.errors.minlength">Password must be at least 6 characters</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" class="form-control" name="address" [(ngModel)]="model.ADDRESS"
+                       #address="ngModel" [ngClass]="{ 'is-invalid': f.submitted && address.invalid }"
+                       required/>
+                <div *ngIf="f.submitted && address.invalid" class="invalid-feedback">
+                    <div *ngIf="address.errors.required">Address is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" class="form-control" name="city" [(ngModel)]="model.CITY"
+                       #city="ngModel" [ngClass]="{ 'is-invalid': f.submitted && city.invalid }"
+                       required/>
+                <div *ngIf="f.submitted && city.invalid" class="invalid-feedback">
+                    <div *ngIf="city.errors.required">City name is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="country">Country</label>
+                <input type="text" class="form-control" name="country" [(ngModel)]="model.COUNTRY"
+                       #country="ngModel" [ngClass]="{ 'is-invalid': f.submitted && country.invalid }"
+                       required/>
+                <div *ngIf="f.submitted && country.invalid" class="invalid-feedback">
+                    <div *ngIf="country.errors.required">Country name is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="zip">ZIP</label>
+                <input type="text" class="form-control" name="zip" [(ngModel)]="model.ZIP"
+                       #zip="ngModel" [ngClass]="{ 'is-invalid': f.submitted && zip.invalid }"
+                       required/>
+                <div *ngIf="f.submitted && zip.invalid" class="invalid-feedback">
+                    <div *ngIf="zip.errors.required">Zip is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-blue mt-3">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
