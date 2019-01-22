@@ -1,15 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 4.6.6deb5
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Nov 30, 2018 at 02:41 PM
--- Server version: 10.1.35-MariaDB
--- PHP Version: 7.1.21
+-- Host: localhost:3306
+-- Generation Time: Dec 20, 2018 at 07:25 PM
+-- Server version: 5.7.24-0ubuntu0.18.04.1
+-- PHP Version: 5.6.39-1+ubuntu18.04.1+deb.sury.org+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -120,7 +118,8 @@ INSERT INTO `CERTIFICATION_SKILLS` (`CERTIFICATION_ID`, `CERTIFICATION_NAME`) VA
 (4, 'LEED'),
 (5, 'OSHA'),
 (6, 'asa'),
-(7, 'vvvv');
+(7, 'vvvv'),
+(8, 'zxcvzxcvzxcvzxcvfedsfsadf');
 
 -- --------------------------------------------------------
 
@@ -191,16 +190,44 @@ CREATE TABLE `CUSTOMER_PROJECTS` (
 --
 
 INSERT INTO `CUSTOMER_PROJECTS` (`PROJECT_ID`, `CUSTOMER_ID`) VALUES
+('PID_003', 'CID_001'),
+('PID_005', 'CID_001'),
+('PID_007', 'CID_001'),
+('PID_009', 'CID_001'),
+('PID_010', 'CID_001'),
+('PID_048', 'CID_001'),
+('PID_051', 'CID_001'),
 ('PID_001', 'CID_002'),
 ('PID_002', 'CID_002'),
-('PID_003', 'CID_001'),
 ('PID_004', 'CID_002'),
-('PID_005', 'CID_001'),
 ('PID_006', 'CID_002'),
-('PID_007', 'CID_001'),
-('PID_008', 'CID_002'),
-('PID_009', 'CID_001'),
-('PID_010', 'CID_001');
+('PID_008', 'CID_002');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `CUSTOM_LABEL`
+--
+
+CREATE TABLE `CUSTOM_LABEL` (
+  `ID` int(11) NOT NULL,
+  `TABLE_NAME` varchar(50) NOT NULL,
+  `FIELD_NAME` varchar(50) NOT NULL,
+  `CUSTOM_FIELD` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `CUSTOM_LABEL`
+--
+
+INSERT INTO `CUSTOM_LABEL` (`ID`, `TABLE_NAME`, `FIELD_NAME`, `CUSTOM_FIELD`) VALUES
+(1, 'ACCESS_TYPE_COMBINATION', 'COMBINATION', 'ACCESS_TYPE_COMIBINATION'),
+(2, 'OFFICE', 'OFFICE_NAME', 'WORKSPACENAME'),
+(3, 'STAFF', 'STAFF_ID', 'STAFF_IDENTITY'),
+(4, 'ACCESS_TYPE', 'ID', '123123'),
+(5, 'ACCESS_TYPE', 'ID', '123123'),
+(6, 'ACCESS_TYPE', 'TYPE', 'tyoe'),
+(7, 'ACCESS_TYPE', 'TYPE', 'trtrt');
 
 -- --------------------------------------------------------
 
@@ -366,7 +393,12 @@ INSERT INTO `PROJECT` (`PROJECT_ID`, `GROUP_ID`, `PROJECT_NO`, `PROJECT_NAME`, `
 ('PID_044', 1, 'SP000038', 'TechOps Center', '$9.0M', '67 Park Ave', 'Arlington', 'VA', '20330', '2018-12-01', '2019-12-01', NULL, 3, 2, 'OID_005', 1, '', '1'),
 ('PID_045', 1, 'SP000039', 'High Street Corp Campus', '$14.0M', '99 West St', 'Alexandria', 'VA', '2206', '2019-02-01', '2020-10-15', NULL, 3, 1, NULL, 5, '', '1'),
 ('PID_046', 1, 'SP000040', 'All Sciences Technology Center', '$58.0M', '44 Blue Bay', 'Bethesda', 'MD', '20810', '2019-02-01', '2020-10-01', NULL, 3, 1, NULL, 1, '', '1'),
-('PID_047', 1, 'SP000041', 'Georgetown Urgent Care', '$100.0M', '1000 1st Street', 'Fredrick', 'MD', '21701', '2019-03-15', '2021-12-31', NULL, 3, 4, NULL, 3, '', '1');
+('PID_047', 1, 'SP000041', 'Georgetown Urgent Care', '$100.0M', '1000 1st Street', 'Fredrick', 'MD', '21701', '2019-03-15', '2021-12-31', NULL, 3, 4, NULL, 3, '', '1'),
+('PID_048', 1, ' ', ' ', ' ', ' ', ' ', ' ', ' ', '2018-12-17', '2018-12-17', NULL, 1, 1, 'OID_009', 1, ' ', '1'),
+('PID_049', 1, '     ', '      ', '     ', NULL, NULL, NULL, NULL, '2018-12-18', '2018-12-18', NULL, 1, 1, 'OID_001', 1, '', '1'),
+('PID_050', 1, '  ', '  ', NULL, NULL, NULL, NULL, NULL, '2018-12-18', '2018-12-18', NULL, 1, 1, 'OID_002', 1, '', '1'),
+('PID_051', 1, '   ', '    ', NULL, NULL, NULL, NULL, NULL, '2018-12-18', '2018-12-18', NULL, 1, 2, 'OID_012', 1, '', '1'),
+('PID_052', 2, 'xcvzxcv', 'zxcvxcvz    ', NULL, NULL, NULL, NULL, NULL, '2018-12-18', '2018-12-18', NULL, 1, 2, 'OID_012', 2, '', '1');
 
 -- --------------------------------------------------------
 
@@ -413,23 +445,23 @@ CREATE TABLE `PROJECT_PEOPLE` (
 
 INSERT INTO `PROJECT_PEOPLE` (`STAFF_ID`, `PROJECT_ID`, `START_DATE`, `END_DATE`, `ALLOCATION`, `PROJECT_ROLE_ID`, `ASSIGNMENT_DURATION`, `CONFIRMED`, `NEXT_AVAILABLE`, `RESUME_SUBMITTED`, `EXPERIENCE_ID`) VALUES
 ('EID_018', 'PID_004', '2018-08-19', '2018-12-31', 25.00, 10, NULL, NULL, NULL, '0', '[4]'),
-('EID_002', 'PID_002', '2018-08-28', '2018-08-29', 100.00, 2, NULL, NULL, NULL, '0', 'undefined'),
-('EID_002', 'PID_001', '2018-08-28', '2018-08-29', 100.00, 1, NULL, NULL, NULL, '0', ''),
+('EID_002', 'PID_002', '2018-08-28', '2018-08-29', 100.00, 2, NULL, NULL, NULL, '0', '[2,3]'),
+('EID_002', 'PID_001', '2018-08-28', '2018-08-29', 100.00, 1, NULL, NULL, NULL, '0', '[2]'),
 ('EID_004', 'PID_005', '2018-08-28', '2018-08-31', 100.00, 4, NULL, NULL, NULL, '0', ''),
 ('EID_001', 'PID_005', '2018-09-02', '2018-12-31', 90.00, 1, NULL, NULL, NULL, '1', ''),
 ('EID_008', 'PID_001', '2018-09-01', '2018-12-31', 45.00, 1, NULL, '1', NULL, '1', ''),
 ('EID_008', 'PID_002', '2018-09-02', '2018-12-31', 58.00, 1, NULL, '2', NULL, '0', ''),
 ('EID_008', 'PID_003', '2018-09-01', '2018-12-31', 45.00, 1, NULL, '1', NULL, '1', ''),
-('EID_002', 'PID_008', '2018-09-02', '2019-03-18', 60.00, 1, NULL, '1', NULL, '0', ''),
+('EID_002', 'PID_008', '2018-09-02', '2019-03-18', 60.00, 1, NULL, '1', NULL, '0', '[3,4,5,6]'),
 ('EID_016', 'PID_003', '2018-09-03', '2018-09-03', 100.00, 7, NULL, NULL, NULL, '0', 'undefined'),
 ('EID_001', 'PID_001', '2018-09-11', '2018-09-30', 100.00, 1, NULL, NULL, NULL, '0', 'undefined'),
 ('EID_025', 'PID_004', '2018-09-10', '2018-09-10', 100.00, 7, NULL, NULL, NULL, '0', '[7,5]'),
 ('EID_004', 'PID_006', '2018-09-10', '2018-09-10', 100.00, 4, NULL, NULL, NULL, '0', NULL),
 ('EID_018', 'PID_006', '2018-09-10', '2018-09-10', 100.00, 9, NULL, NULL, NULL, '0', '[2]'),
-('EID_002', 'PID_006', '2019-01-20', '2019-09-23', 100.00, 2, NULL, '1', NULL, '0', NULL),
+('EID_002', 'PID_006', '2019-01-20', '2019-09-23', 100.00, 2, NULL, '1', NULL, '0', '[1,5,7]'),
 ('EID_031', 'PID_002', '2018-09-14', '2018-09-14', 100.00, 6, NULL, NULL, NULL, '0', NULL),
 ('EID_002', 'PID_045', '2018-11-01', '2018-11-01', 100.00, 2, NULL, '1', NULL, '0', NULL),
-('EID_002', 'PID_009', '2018-11-01', '2018-11-30', 100.00, 2, NULL, '1', NULL, '0', NULL),
+('EID_002', 'PID_009', '2018-11-01', '2018-11-30', 100.00, 2, NULL, '1', NULL, '0', '[1,4,5,6,7]'),
 ('EID_002', 'PID_047', '2018-11-03', '2018-12-11', 100.00, 2, NULL, '1', NULL, '0', NULL),
 ('EID_003', 'PID_001', '2018-11-01', '2018-11-01', 100.00, 3, NULL, NULL, NULL, '0', NULL),
 ('EID_022', 'PID_003', '2018-09-02', '2018-12-31', 59.00, 1, NULL, NULL, NULL, '0', NULL),
@@ -560,7 +592,7 @@ CREATE TABLE `STAFF` (
 
 INSERT INTO `STAFF` (`STAFF_ID`, `FIRST_NAME`, `MIDDLE_INITIAL`, `LAST_NAME`, `PREFERRED_NAME`, `EMAIL_ID`, `PHONE_1`, `PHONE_1_TYPE`, `PHONE_2`, `PHONE_2_TYPE`, `HOME_CITY`, `HOME_STATE`, `HOME_ZIP`, `STAFF_CERTIFICATION`, `STAFF_TRAINING`, `STAFF_PHOTO`, `STAFF_ROLE_ID`, `STAFF_GROUP_ID`, `STAFF_STATUS_ID`, `OFFICE_ID`, `EMPLOYMENT_START_DATE`) VALUES
 ('EID_001', 'Dan ', 'A', ' Erickson', 'Dan ', 'Dan.Erickson@justwoko.com', '(404)375-2626', 'Cell', '(267)569-4849', 'Home', 'Mundelein', 'IL', '60060', 'N', 'N', 'None', 1, 2, 1, 'OID_005', '2015-09-01'),
-('EID_002', 'Ryan ', 'B', ' Banks', 'Ryan ', 'Ryan.Banks@justwoko.com', '(573)685-5726', 'Cell', '(425)361-2197', 'Home', 'Hummelstown', 'PA', '17036', 'N', 'N', 'None', 2, 1, 1, 'OID_012', '2016-08-01'),
+('EID_002', 'Ryan ', 'B', ' Banks', 'Ryan ', 'Ryan.Banks@justwoko.com', '(573)685-5726', 'Cell', '(425)361-2197', 'Home', 'Hummelstown', 'PA', '17036', 'N', 'N', 'EID_002', 2, 1, 1, 'OID_012', '2016-08-01'),
 ('EID_003', 'Horace ', 'C', ' Munoz', 'Horace ', 'Horace.Munoz@justwoko.com', '(684)733-9201', 'Cell', '(475)328-3446', 'Home', 'Glenview', 'IL', '60025', 'N', 'N', 'None', 3, 1, 1, 'OID_005', '2015-01-01'),
 ('EID_004', 'Nelson ', 'D', ' Davis', 'Nelson ', 'Nelson.Davis@justwoko.com', '(667)305-8506', 'Cell', '(432)620-8914', 'Home', 'West Palm Beach', 'FL', '33404', 'N', 'N', 'None', 4, 1, 1, 'OID_013', '2015-02-12'),
 ('EID_005', 'Lynn ', 'E', ' Harrison', 'Lynn ', 'Lynn.Harrison@justwoko.com', '(469)552-9299', 'Cell', '(504)444-1710', 'Home', 'Menasha', 'WI', '54952', 'N', 'N', 'None', 5, 1, 1, 'OID_006', '2015-12-20'),
@@ -688,8 +720,10 @@ CREATE TABLE `STAFF_CERTIFICATION` (
 
 INSERT INTO `STAFF_CERTIFICATION` (`STAFF_ID`, `CERTIFICATION_ID`) VALUES
 ('EID_040', 1),
-('EID_040', 5),
 ('EID_046', 1),
+('EID_002', 2),
+('EID_002', 3),
+('EID_040', 5),
 ('EID_046', 7);
 
 -- --------------------------------------------------------
@@ -895,6 +929,12 @@ ALTER TABLE `CUSTOMER_PROJECTS`
   ADD KEY `FK_CUSTOMER` (`CUSTOMER_ID`);
 
 --
+-- Indexes for table `CUSTOM_LABEL`
+--
+ALTER TABLE `CUSTOM_LABEL`
+  ADD PRIMARY KEY (`ID`);
+
+--
 -- Indexes for table `mysql_migrations_347ertt3e`
 --
 ALTER TABLE `mysql_migrations_347ertt3e`
@@ -1026,61 +1066,56 @@ ALTER TABLE `USER_ACCESS`
 --
 ALTER TABLE `ACCESS_TYPE`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
 --
 -- AUTO_INCREMENT for table `ACCESS_TYPE_COMBINATION`
 --
 ALTER TABLE `ACCESS_TYPE_COMBINATION`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
 --
 -- AUTO_INCREMENT for table `CATEGORY`
 --
 ALTER TABLE `CATEGORY`
   MODIFY `CATEGORY_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
-
 --
 -- AUTO_INCREMENT for table `CERTIFICATION_SKILLS`
 --
 ALTER TABLE `CERTIFICATION_SKILLS`
-  MODIFY `CERTIFICATION_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
+  MODIFY `CERTIFICATION_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `CUSTOM_LABEL`
+--
+ALTER TABLE `CUSTOM_LABEL`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `PLANNED_PROJECT_PEOPLE`
 --
 ALTER TABLE `PLANNED_PROJECT_PEOPLE`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
-
 --
 -- AUTO_INCREMENT for table `PROJECT_GROUP`
 --
 ALTER TABLE `PROJECT_GROUP`
   MODIFY `GROUP_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
 --
 -- AUTO_INCREMENT for table `ROLE`
 --
 ALTER TABLE `ROLE`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
 --
 -- AUTO_INCREMENT for table `STAFF_EXPERIENCE`
 --
 ALTER TABLE `STAFF_EXPERIENCE`
   MODIFY `EXPERIENCE_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
-
 --
 -- AUTO_INCREMENT for table `USERS`
 --
 ALTER TABLE `USERS`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
-
 --
 -- AUTO_INCREMENT for table `USER_ACCESS`
 --
 ALTER TABLE `USER_ACCESS`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- Constraints for dumped tables
 --
@@ -1143,7 +1178,6 @@ ALTER TABLE `STAFF_CERTIFICATION`
 --
 ALTER TABLE `USERS`
   ADD CONSTRAINT `role_id` FOREIGN KEY (`ROLE_ID`) REFERENCES `ROLE` (`ID`);
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
