@@ -26,8 +26,7 @@
                     <div class="col-lg-4">
                         <div class="overlay-main" (click)="projectView('projectInProgress')">
                             <div class="bg-white box1 ">
-                                <h3 class="pb-0">Project in Progress</h3>
-                                <p class="pb-0">On Going</p>
+                                <h3 class="pb-0">In Progress</h3>
                                 <hr/>
                                 <span class="big-text">{{dashboardData && dashboardData.InProgressProjectCount ? dashboardData.InProgressProjectCount : 0}}</span>
                             </div>
@@ -40,9 +39,8 @@
                         <div class="overlay-main" (click)="projectView('projectStartThisYear')">
                             <div class="bg-white box1 ">
                                 <h3 class="pb-0"> <span class="pull-right more-btn">More <i
-                                        class="fa fa-chevron-right" aria-hidden="true"></i></span>Project Started this
+                                        class="fa fa-chevron-right" aria-hidden="true"></i></span>Started this
                                     Year</h3>
-                                <p class="pb-0">On Going</p>
                                 <hr/>
                                 <span class="big-text">{{dashboardData && dashboardData.ProjectStartedThisYear ? dashboardData.ProjectStartedThisYear:0}}</span>
                             </div>
@@ -55,9 +53,8 @@
                         <div class="overlay-main" (click)="projectView('projectEndThisYear')">
                             <div class="bg-white box1 ">
                                 <h3 class="pb-0"><span class="pull-right more-btn">More <i
-                                        class="fa fa-chevron-right" aria-hidden="true"></i></span>Project End this Year
+                                        class="fa fa-chevron-right" aria-hidden="true"></i></span>End this Year
                                 </h3>
-                                <p class="pb-0">On Going</p>
                                 <hr/>
                                 <span class="big-text">{{dashboardData && dashboardData.ProjectEndThisYear ? dashboardData.ProjectEndThisYear : 0}}</span>
                             </div>
@@ -76,7 +73,7 @@
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="projectView('projectRequest')">
                             <div class="bg-white box1 custom-pt border-red"><span class="big-text">{{dashboardData && dashboardData.ProposalProjectCount ? dashboardData.ProposalProjectCount : 0}}</span>
-                                <h4 class="pt-0">Project Requests</h4>
+                                <h4 class="pt-0">Requests</h4>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
@@ -96,7 +93,7 @@
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="projectQuickView('projectStart')">
                             <div class="bg-white box1 custom-pt border-green"><span class="big-text">{{dashboardData && dashboardData.ProjectStarting ? dashboardData.ProjectStarting : 0}}</span>
-                                <h4 class="pt-0">Project Starting</h4>
+                                <h4 class="pt-0">Starting</h4>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
@@ -106,7 +103,7 @@
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="projectQuickView('projectEnd')">
                             <div class="bg-white box1 custom-pt border-yellow"><span class="big-text">{{dashboardData && dashboardData.ProjectEnding ? dashboardData.ProjectEnding :  0}}</span>
-                                <h4 class="pt-0">Project Ending</h4>
+                                <h4 class="pt-0">Ending</h4>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
@@ -129,7 +126,7 @@
                                     <span class="pull-right more-btn">
                                         More 
                                         <i class="fa fa-chevron-right" aria-hidden="true"></i>
-                                    </span>Admin Staff
+                                    </span>Admin
                                 </h3>
                                 <hr/>
                                 <span class="big-text">{{dashboardData && dashboardData.AdminStaff ? dashboardData.AdminStaff : 0}}</span>
@@ -146,7 +143,7 @@
                                     <span class="pull-right more-btn">
                                         More
                                         <i class="fa fa-chevron-right" aria-hidden="true"></i>
-                                    </span>OPS Staff
+                                    </span>OPS
                                 </h3>
                                 <hr/>
                                 <span class="big-text">{{dashboardData && dashboardData.OPSStaff ? dashboardData.OPSStaff : 0}}</span>
@@ -166,7 +163,7 @@
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="staffQuickView('staffGap')">
                             <div class="bg-white box1 custom-pt border-red"><span class="big-text">{{dashboardData && dashboardData.StaffingGap ? dashboardData.StaffingGap : 0}}</span>
-                                <h4 class="pt-0">Staffing Gap</h4>
+                                <h4 class="pt-0">Gap</h4>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
