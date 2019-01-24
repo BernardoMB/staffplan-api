@@ -2,6 +2,7 @@ npm install
 cd public
 npm install
 cd ..
+forever stopall
 forever start app.js
 cd public
 ng build --prod
