@@ -66,6 +66,7 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
     public showLoader = true;
     public allColumns = [];
     public columnListGrouping: Array<string> = ['Clear', 'Project Name', 'Project Role', 'Start Month', 'End Month'];
+    // public columnListGrouping: Array<string> = ['Clear', 'Project Name', 'Project Role', 'Start Month'];
     public openRoleData: any;
     public projectDetail: any;
     public filterValue = '';

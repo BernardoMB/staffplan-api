@@ -91,11 +91,11 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
         group: this.groupby
     };
     public listQuickViews = [
-        {text: 'Next 90 Days', value: 'NEXT_90_DAY'},
-        {text: 'New Staff', value: 'NEW_STAFF'},
+        {text: 'Next 90 Days - Staff Available', value: 'NEXT_90_DAY'},
+        // {text: 'New Staff', value: 'NEW_STAFF'},
         {text: 'Staffing Gaps', value: 'STAFF_GAP'},
         {text: 'Overallocation', value: 'OVER_ALLOC'},
-        {text: 'Upcoming RollOff', value: 'UPCOM_ROLL_OFF'}
+        {text: 'Upcoming Project Roll Off', value: 'UPCOM_ROLL_OFF'}
     ];
     public selectedQuickView = this.listQuickViews[0];
     public tabStatus: number;
@@ -418,8 +418,13 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
                 this.futureColumnListGrouping = ['Clear', 'Next Available Month', 'End Month', 'Staff Name', 'Project Name'];
                 this.groupby = [{field: 'Next Available Month'}];
                 this.filterValue = '';
+            }  else if (value.value === 'OVER_ALLOC') {
+                this.futureColumnListGrouping = ['Clear'];
+                this.groupby = [{field: 'STAFF_NAME'}];
+                this.filterValue = '';
             } else {
-                this.futureColumnListGrouping = ['Clear', 'Staff Name', 'Project Name', 'Start Month', 'End Month'];
+                // this.futureColumnListGrouping = ['Clear', 'Staff Name', 'Project Name', 'Start Month', 'End Month'];
+                this.futureColumnListGrouping = ['Clear', 'Staff Name', 'Project Name', 'Start Month'];
                 this.groupby = [{field: 'STAFF_NAME'}];
                 this.filterValue = '';
             }

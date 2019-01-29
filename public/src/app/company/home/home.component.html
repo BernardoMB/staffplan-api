@@ -62,14 +62,14 @@
                 </div>
                 <div class="row mt-lg-5">
                     <div class="col-lg-6 pl-0">
-                        <h2 class="custom-pl10">Projects</h2>
+                        <h2 class="custom-pl10 page-subtitle">Projects</h2>
                     </div>
                 </div>
                 <div class="row ">
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="projectView('projectRequest')">
                             <div class="bg-white box1 custom-pt border-red"><span class="big-text">{{dashboardData && dashboardData.ProposalProjectCount ? dashboardData.ProposalProjectCount : 0}}</span>
-                                <h4 class="pt-0">Requests</h4>
+                                <h3 class="pt-0">Requests</h3>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
@@ -79,7 +79,7 @@
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="projectQuickView('unassignedRole')">
                             <div class="bg-white box1 custom-pt border-blue"><span class="big-text">{{dashboardData && dashboardData.UnassignedRoleCount ? dashboardData.UnassignedRoleCount : 0}}</span>
-                                <h4 class="pt-0">Unassigned Role</h4>
+                                <h3 class="pt-0">Unassigned Role</h3>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
@@ -89,7 +89,7 @@
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="projectQuickView('projectStart')">
                             <div class="bg-white box1 custom-pt border-green"><span class="big-text">{{dashboardData && dashboardData.ProjectStarting ? dashboardData.ProjectStarting : 0}}</span>
-                                <h4 class="pt-0">Starting</h4>
+                                <h3 class="pt-0">Starting</h3>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
@@ -99,7 +99,7 @@
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="projectQuickView('projectEnd')">
                             <div class="bg-white box1 custom-pt border-yellow"><span class="big-text">{{dashboardData && dashboardData.ProjectEnding ? dashboardData.ProjectEnding :  0}}</span>
-                                <h4 class="pt-0">Ending</h4>
+                                <h3 class="pt-0">Ending</h3>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
@@ -141,15 +141,15 @@
                     </div>
                 </div>
                 <div class="row mt-lg-5">
-                    <div class="col-lg-6 pl-0">
-                        <h2 class="custom-pl10">Staff</h2>
+                    <div class="col-lg-6 pl-0 staff">
+                        <h2 class="custom-pl10 page-subtitle">Staff</h2>
                     </div>
                 </div>
                 <div class="row ">
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="staffQuickView('staffGap')">
                             <div class="bg-white box1 custom-pt border-red"><span class="big-text">{{dashboardData && dashboardData.StaffingGap ? dashboardData.StaffingGap : 0}}</span>
-                                <h4 class="pt-0">Gap</h4>
+                                <h3 class="pt-0">Gap</h3>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
@@ -159,7 +159,7 @@
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="staffQuickView('onBench')">
                             <div class="bg-white box1 custom-pt border-blue"><span class="big-text">{{dashboardData && dashboardData.OnBench ? dashboardData.OnBench : 0}}</span>
-                                <h4 class="pt-0">On Bench</h4>
+                                <h3 class="pt-0">On Bench</h3>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
@@ -169,7 +169,7 @@
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="staffQuickView('overUnder')">
                             <div class="bg-white box1 custom-pt border-yellow"><span class="big-text">{{dashboardData && dashboardData.OverUnderAllocation ? dashboardData.OverUnderAllocation: 0 }}</span>
-                                <h4 class="pt-0">Over/Under Alloc.</h4>
+                                <h3 class="pt-0">Over/Under Alloc.</h3>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
@@ -179,7 +179,7 @@
                     <div class="col-lg-3">
                         <div class="overlay-main" (click)="staffQuickView('assignEnd')">
                             <div class="bg-white box1 custom-pt border-red"><span class="big-text">{{dashboardData && dashboardData.AssignmentEnding ? dashboardData.AssignmentEnding : 0}}</span>
-                                <h4 class="pt-0">Assignment Ending</h4>
+                                <h3 class="pt-0">Assignment Ending</h3>
                             </div>
                             <div class="overlay">
                                 <div class="text">View More</div>
