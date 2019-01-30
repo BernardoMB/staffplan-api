@@ -43,8 +43,12 @@ module.exports = function (app) {
     app.post('/api/authenticate', function(req, res) {
         console.log("In authenticate");
         var mastersConnection = newConnection.masterConnection;
+        // Debug logs to figure the case when the nodejs just hang in authentication call
+        console.log("master connection: " + mastersConnection);
         var subsctiberDomainID = req.body.username;
+        console.log("Subsctiber Email: " + subsctiberDomainID);
         subsctiberDomainID = subsctiberDomainID.substring(subsctiberDomainID.indexOf('@')+1);
+        console.log("Subsctiber Domain ID: " + subsctiberDomainID);
         req.getConnection(function (err, connectionMaster) {
             console.log("In getconnection");
             var query = mastersConnection.query("SELECT * FROM SUBSCRIBER INNER JOIN COMPANY ON COMPANY.COMPANY_ID = SUBSCRIBER.COMPANY_ID WHERE DOMAIN_ID = '" + subsctiberDomainID + "'", function (err, user) {
