@@ -94,7 +94,8 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     public timeLineData = [];
     public timeLineHeader = [];
     public timelineStatus = 'month';
-    public timelineByType = ['month', 'year', 'week'];
+    // public timelineByType = ['month', 'year', 'week'];
+    public timelineByType = ['month', 'year'];
     public customFields;
     public displayProjectType = null;
     public viewPortHeight = 450;
@@ -267,6 +268,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     }
 
     public dataStateChange(state: DataStateChangeEvent): void {
+        debugger;
         this.configs = state;
         console.dir(state);
         this.projectData = process(this.allProjectsData, this.configs);
@@ -420,7 +422,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
             return new Date(e.END_DATE);
         }))));
         // week calculate //
-        if (this.timeLineDataByWeek.length > 0) {
+        if (this.timeLineDataByWeek.length > 0 && this.timeLineData.indexOf('week') !== -1) {
             const totalWeeks = maxDate.diff(minDate, 'week', true);
             this.timeLineData['week'] = Array.from(Array(Math.ceil(totalWeeks)).keys());
             for (let iterator = 0; iterator < totalWeeks; iterator++) {

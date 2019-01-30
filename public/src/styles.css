@@ -2092,8 +2092,8 @@ grid-header .k-i-sort-desc-sm {
 
 .alert-column-dropdown-as-title .k-dropdown .k-dropdown-wrap span.k-input {
     color: #1b1b1b;
-    font-size: 27px;
-    font-weight: 500;
+    /* font-size: 27px; */
+    /* font-weight: 500; */
     line-height: normal;
     padding: 0;
 }

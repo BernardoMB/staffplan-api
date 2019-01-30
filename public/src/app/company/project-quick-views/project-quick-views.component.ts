@@ -79,8 +79,8 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
     };
     public listQuickViews = [
         {text: 'Unassigned Roles', value: 'UNASSIGNED'},
-        {text: 'New Projects Awarded', value: 'NEW_PRO'},
-        {text: 'Projects Starting', value: 'PRO_START'},
+        // {text: 'New Projects Awarded', value: 'NEW_PRO'},
+        {text: 'Upcoming Projects', value: 'PRO_START'},
         {text: 'Projects Ending', value: 'PRO_END'}
     ];
     public selectedQuickView = this.listQuickViews[0];
@@ -123,6 +123,7 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
                 this.getAllPlannedProjectDetail();
             }
         });
+        this.handleValueChange(this.selectedQuickView, 'QUICK-VIEW');
     }
 
     ngOnInit() {
@@ -374,6 +375,13 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
         this.allProjectRelatedData = [];
         this.projectDetail = [];
         if (column === 'QUICK-VIEW') {
+            // Add End Month if the group doesn't have the value
+            if (this.columnListGrouping.indexOf('End Month') === -1) {
+                this.columnListGrouping.splice(this.columnListGrouping.length, 0, 'End Month');
+            }
+            if (this.columnListGrouping.indexOf('Project Name') === -1) {
+                this.columnListGrouping.splice(1, 0, 'Project Name');
+            }
             if (this.columnListGrouping.indexOf('Project Role') !== -1) {
                 this.columnListGrouping.splice(this.columnListGrouping.indexOf('Project Role'), 1);
             }
@@ -382,10 +390,20 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
                 this.getProjectInitiatedList();
             } else if (value.value === 'UNASSIGNED') {
                 this.columnListGrouping.splice(2, 0, 'Project Role');
+                // Remove End Month if the group have the value
+                if (this.columnListGrouping.indexOf('End Month') !== -1) {
+                    this.columnListGrouping.splice(this.columnListGrouping.indexOf('End Month'), 1);
+                }
                 this.filterValue = '';
                 this.getAllPlannedProjectDetail();
             } else if (value.value === 'PRO_START') {
                 this.filterValue = '';
+                if (this.columnListGrouping.indexOf('End Month') !== -1) {
+                    this.columnListGrouping.splice(this.columnListGrouping.indexOf('End Month'), 1);
+                }
+                if (this.columnListGrouping.indexOf('Project Name') !== -1) {
+                    this.columnListGrouping.splice(this.columnListGrouping.indexOf('Project Name'), 1);
+                }
                 this.getProjectStartedList();
             } else {
                 this.filterValue = '';
