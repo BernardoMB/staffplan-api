@@ -113,11 +113,14 @@
 .staff-member-detail {
     color: #363636;
     position: relative;
-    padding-left: 160px;
+    /* padding-left: 160px; */
+    padding-left: 60px;
 }
 .staff-member-detail .avtar {
-    width: 135px;
-    height: 135px;
+    /* width: 135px;
+    height: 135px; */
+    width: 37px;
+    height: 37px;
     border-radius: 100%;
     position: absolute;
     overflow: hidden;

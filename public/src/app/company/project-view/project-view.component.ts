@@ -29,12 +29,12 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     private showLoader = true;
     private timelineType = TIMELINE_TYPE;
     public date_format = DATE_FORMAT;
-    private showInternalLoader = false;
+    // private showInternalLoader = false;
     public projectColumns = [];
     private customColumnsName = {
         'PROJECT_ADDRESS': 'Address',
         'PROJECT_ZIP': 'Zip',
-        'STATUS_NAME': 'Project Status',
+        // 'STATUS_NAME': 'Project Status',
         'PROJECT_ROM': 'Project ROM ($)',
         'GROUP_NAME': 'Project Group',
         'OFFICE_NAME': 'Office',
@@ -59,7 +59,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     };
     public projectData: GridDataResult = process([], this.configs);
     private allProjectsData = [];
-    private gridHeight: any;
+    // private gridHeight: any;
     private modalRef: NgbModalRef;
     public tabStatus: number;
     private timeLineDataByMonth = [];
@@ -94,7 +94,8 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     public timeLineData = [];
     public timeLineHeader = [];
     public timelineStatus = 'month';
-    public timelineByType = ['month', 'year', 'week'];
+    // public timelineByType = ['month', 'year', 'week'];
+    public timelineByType = ['month', 'year'];
     public customFields;
     public displayProjectType = null;
     public viewPortHeight = 450;
@@ -119,7 +120,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
         await this.initiateProjectList();
         this.getCommonList();
         this.getProjectGroupList();
-        this.gridHeight = window.innerHeight - 180;
+        // this.gridHeight = window.innerHeight - 180;
         this.customFields = JSON.parse(localStorage.getItem('customFieldNames'));
         this.viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 330;
     }
@@ -275,17 +276,17 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
         this.tabStatus = tabStatus;
         this.projectIdForClass = dataItem.PROJECT_ID;
         this.selectedProject = null;
-        this.showInternalLoader = true;
+        // this.showInternalLoader = true;
         this.renderTable = false;
         const $that = this;
         this.getProjectDetails(function (response) {
             if (response && response.data) {
-                $that.showInternalLoader = false;
+                // $that.showInternalLoader = false;
                 $that.renderTable = true;
                 $that.selectedProject = response.data;
             }
         }, dataItem.PROJECT_ID);
-        this.modalRef = this.modalService.open(content, {centered: true, size: 'lg'});
+        // this.modalRef = this.modalService.open(content, {centered: true, size: 'lg'});
     }
 
     public openAddProjectModal(addContent) {
@@ -419,7 +420,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
             return new Date(e.END_DATE);
         }))));
         // week calculate //
-        if (this.timeLineDataByWeek.length > 0) {
+        if (this.timeLineDataByWeek.length > 0 && this.timeLineData.indexOf('week') !== -1) {
             const totalWeeks = maxDate.diff(minDate, 'week', true);
             this.timeLineData['week'] = Array.from(Array(Math.ceil(totalWeeks)).keys());
             for (let iterator = 0; iterator < totalWeeks; iterator++) {
