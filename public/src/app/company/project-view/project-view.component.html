@@ -17,7 +17,7 @@
                             <select class="form-control" [(ngModel)]="timelineStatus"
                                     (ngModelChange)="timeLineTypeChange($event)">
                                 <option *ngFor="let level of timelineByType" [ngValue]="level">
-                                      <span *ngIf="level == 'month'">Month</span>
+                                    <span *ngIf="level == 'month'">Month</span>
                                     <span *ngIf="level == 'year'">Year</span>
                                     <span *ngIf="level == 'week'">Week</span>
                                 </option>

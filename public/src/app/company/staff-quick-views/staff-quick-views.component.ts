@@ -184,8 +184,8 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
             }
             if (response.data.FREESTAFF.length > 0) {
                 for (const index in response.data.FREESTAFF) {
-                    response.data.FREESTAFF[index]['FUTURE_DAYS'] = 'Next 30 Days';
-                    response.data.FREESTAFF[index]['Future Days'] = 'Next 30 Days';
+                    response.data.FREESTAFF[index]['FUTURE_DAYS'] = 'Available in 30 Days';
+                    response.data.FREESTAFF[index]['Future Days'] = response.data.FREESTAFF[index]['FUTURE_DAYS'];
                     response.data.FREESTAFF[index]['Next Available Month'] = moment(response.data.FREESTAFF[index]['NEXT_AVAILABLE']).format('MMMM');
                     this.allStaffRelatedDetail.push(response.data.FREESTAFF[index]);
                 }

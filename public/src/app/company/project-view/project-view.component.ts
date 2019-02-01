@@ -268,9 +268,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     }
 
     public dataStateChange(state: DataStateChangeEvent): void {
-        debugger;
         this.configs = state;
-        console.dir(state);
         this.projectData = process(this.allProjectsData, this.configs);
     }
 

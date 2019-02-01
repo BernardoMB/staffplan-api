@@ -27,11 +27,13 @@
                         class="icon-filter-remove"></i></a>
             </div>
             <div class="filter__right  k-toolbar__has-one-btn">
-                <div class="custom-dropdown align-middle">
-                    <kendo-dropdownbutton [popupSettings]="{popupClass: popupClass}" [data]="futureColumnListGrouping"
-                                          (itemClick)="onGroupByColumnSelect($event)">
-                        Group
-                    </kendo-dropdownbutton>
+                <div class="custom-dropdown align-middle" *ngIf="selectedQuickView['value'] !== 'OVER_ALLOC'">
+                    <div *ngIf="selectedQuickView['value'] !== 'NEXT_90_DAY'">
+                        <kendo-dropdownbutton [popupSettings]="{popupClass: popupClass}" [data]="futureColumnListGrouping"
+                                            (itemClick)="onGroupByColumnSelect($event)">
+                            Group
+                        </kendo-dropdownbutton>
+                    </div>
                 </div>
                 <div class="search-wrap">
                     <div class="search-wrap__inner">
@@ -133,7 +135,6 @@
                         [sort]="config.sort"
                         [navigable]="true"
                         (dataStateChange)="dataStateChange($event)"
-                        [height]="viewPortHeight"
                         [resizable]="true">
                     <ng-template kendoGridToolbarTemplate>
                         <button kendoGridPDFCommand class="btn btn-light-gray"><i class="icon-download"></i></button>
@@ -141,8 +142,7 @@
                                 class="icon-excel"></i></button>
                     </ng-template>
                     <kendo-grid-column width="100">
-                        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
-                                     *ngIf="selectedQuickView['value'] == 'UPCOM_ROLL_OFF'">
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                             <div class="dropdown-project-modify">
                                 <div class="dropdown">
                                     <button class="btn" type="button" id="dropdownProject3" data-toggle="dropdown"
@@ -151,7 +151,6 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu--white" aria-labelledby="dropdownProject3">
                                         <ul class="staff-modify__list">
-
                                             <li class="project-team-modify__item">
                                                 <a (click)="openVerticallyCenteredAssignProject(assignContent,dataItem)"
                                                    title="Project Team: Assign or Edit Staff on Project">
@@ -191,7 +190,7 @@
                         </ng-template>
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                                      *ngIf="column.columnId == 'NEXT_AVAILABLE'">
-                            <span> {{dataItem[column.columnId]| date: date_format}} </span>
+                            <!-- <span> {{dataItem[column.columnId]| date: date_format}} </span> -->
                         </ng-template>
 
                     </kendo-grid-column>
@@ -207,7 +206,6 @@
                             [loading]="showLoader"
                             class="word-wrap position-static"
                             [sortable]="true"
-                            [height]="viewPortHeight"
                             [sort]="config.sort"
                             [resizable]="true"
                             [reorderable]="true"
@@ -277,7 +275,6 @@
                         [sort]="config.sort"
                         [navigable]="true"
                         (dataStateChange)="dataStateChange($event)"
-                        [height]="viewPortHeight"
                         [resizable]="true"
                         class="word-wrap position-static">
                     <ng-template kendoGridToolbarTemplate>

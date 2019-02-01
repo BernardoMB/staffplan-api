@@ -800,11 +800,11 @@ exports.getProjectPeoplesList = function (req, res) {
                                     var timeDiff = Math.abs(date2.getTime() - tempCurrentDate);
                                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                                     if (diffDays >= 0 && diffDays <= minDayDiff) {
-                                        element.FUTURE_DAYS = "Next 30 Days";
+                                        element.FUTURE_DAYS = "Available in 30 Days";
                                     } else if (diffDays > minDayDiff && diffDays <= midDaydiff) {
-                                        element.FUTURE_DAYS = "Next 30 to 60 Days";
+                                        element.FUTURE_DAYS = "Available in 30 to 60 Days";
                                     } else if (diffDays > midDaydiff && diffDays <= maxDaydiff) {
-                                        element.FUTURE_DAYS = "Next 60 to 90 Days";
+                                        element.FUTURE_DAYS = "Available in 60 to 90 Days";
                                     } else {
                                         element.FUTURE_DAYS = null;
                                     }
@@ -898,11 +898,11 @@ exports.getProjectPeoplesList = function (req, res) {
                         var timeDiff = Math.abs(date2.getTime() - tempCurrentDate);
                         var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                         if (diffDays >= 0 && diffDays <= minDayDiff) {
-                            element.FUTURE_DAYS = "Next 30 Days";
+                            element.FUTURE_DAYS = "Available in 30 Days";
                         } else if (diffDays > minDayDiff && diffDays <= midDaydiff) {
-                            element.FUTURE_DAYS = "Next 30 to 60 Days";
+                            element.FUTURE_DAYS = "Available in 30 to 60 Days";
                         } else if (diffDays > midDaydiff && diffDays <= maxDaydiff) {
-                            element.FUTURE_DAYS = "Next 60 to 90 Days";
+                            element.FUTURE_DAYS = "Available in 60 to 90 Days";
                         } else {
                             element.FUTURE_DAYS = null;
                         }
@@ -1726,23 +1726,39 @@ exports.getStaffingGap = function (req, res) {
         async.waterfall([
             function (callback) {
                 var DBName = connectionModule.SUBSCRIBERDB;
-                connection.query('SELECT PROJECT_PEOPLE.*, CONCAT(STAFF.FIRST_NAME, STAFF.MIDDLE_INITIAL, STAFF.LAST_NAME) AS STAFF_NAME,PROJECT.PROJECT_NAME,PROJECT.PROJECT_STATUS_ID,PROJECT_STATUS.STATUS_NAME, STAFF_ROLE.ROLE_NAME, STAFF_STATUS.STATUS_NAME AS STAFF_STATUS_NAME,OFFICE.OFFICE_NAME FROM PROJECT_PEOPLE  INNER JOIN STAFF ON PROJECT_PEOPLE.STAFF_ID = STAFF.STAFF_ID INNER JOIN PROJECT ON PROJECT_PEOPLE.PROJECT_ID = PROJECT.PROJECT_ID INNER JOIN STAFF_ROLE ON PROJECT_PEOPLE.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID INNER JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID  where PROJECT_PEOPLE.STAFF_ID not in ( SELECT STAFF_ID FROM PROJECT_PEOPLE WHERE START_DATE <= NOW() AND END_DATE >= NOW())', function (err, StaffingGap) {
+                var staffAllocated = 'SELECT PROJECT_PEOPLE.*, CONCAT(STAFF.FIRST_NAME, STAFF.MIDDLE_INITIAL, STAFF.LAST_NAME) AS STAFF_NAME,PROJECT.PROJECT_NAME,PROJECT.PROJECT_STATUS_ID,PROJECT_STATUS.STATUS_NAME, STAFF_ROLE.ROLE_NAME, STAFF_STATUS.STATUS_NAME AS STAFF_STATUS_NAME,OFFICE.OFFICE_NAME FROM PROJECT_PEOPLE  INNER JOIN STAFF ON PROJECT_PEOPLE.STAFF_ID = STAFF.STAFF_ID INNER JOIN PROJECT ON PROJECT_PEOPLE.PROJECT_ID = PROJECT.PROJECT_ID INNER JOIN STAFF_ROLE ON PROJECT_PEOPLE.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID INNER JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID  where PROJECT_PEOPLE.STAFF_ID not in ( SELECT STAFF_ID FROM PROJECT_PEOPLE WHERE START_DATE <= NOW() AND END_DATE >= NOW())';
+                var newStaff = 'SELECT STAFF_ID, NULL PROJECT_ID, EMPLOYMENT_START_DATE START_DATE, EMPLOYMENT_START_DATE END_DATE, 0 ALLOCATION, 0 PROJECT_ROLE_ID, NULL ASSIGNMENT_DURATION, NULL CONFIRMED, NULL NEXT_AVAILABLE, 0 RESUME_SUBMITTED, NULL EXPERIENCE_ID, CONCAT(STAFF.FIRST_NAME, STAFF.MIDDLE_INITIAL, STAFF.LAST_NAME) AS STAFF_NAME, NULL PROJECT_NAME, NULL PROJECT_STATUS_ID, NULL STATUS_NAME, NULL ROLE_NAME, STAFF_STATUS.STATUS_NAME ASSTAFF_STATUS_NAME, NULL OFFICE_NAME FROM STAFF INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID AND STAFF_STATUS.STATUS_ID = 1 WHERE STAFF_ID not in (SELECT STAFF_ID FROM PROJECT_PEOPLE GROUP BY STAFF_ID)';
+                connection.query(`${staffAllocated} UNION ALL ${newStaff}`, function (err, StaffingGap) {
                     if (err) {
                         callback(null, 'count not found');
                     } else {
+                        debugger;
                         var inactiveProjectPeople = JSON.parse(JSON.stringify(StaffingGap));
                         var responseCounter = 0;
                         var arrayResponse = [];
                         inactiveProjectPeople.forEach(element => {
                             inactiveProjectPeople.forEach(subElement => {
-                                if (element.STAFF_ID == subElement.STAFF_ID && formatDate(element.END_DATE) < formatDate(subElement.START_DATE)) {
-                                    var dayCounts = dayCount(element.END_DATE, subElement.START_DATE);
-                                    if (dayCounts >= 30) {
-                                        arrayResponse.push(subElement);
+                                // if (element.STAFF_ID == subElement.STAFF_ID && formatDate(element.END_DATE) < formatDate(subElement.START_DATE)) {
+                                //     var dayCounts = dayCount(element.END_DATE, subElement.START_DATE);
+                                //     if (dayCounts >= 30) {
+                                //         arrayResponse.push(subElement);
+                                //     }
+                                // }
+                                if (element.STAFF_ID == subElement.STAFF_ID && element.STAFF_NAME) {
+                                    if (subElement.PROJECT_ID !== null && formatDate(element.END_DATE) < formatDate(subElement.START_DATE)) {
+                                        var dayCounts = dayCount(element.END_DATE, subElement.START_DATE);
+                                        if (dayCounts >= 30) {
+                                            arrayResponse.push(subElement);
+                                        }
+                                    } else if (subElement.PROJECT_ID === null) {
+                                        if (element.STAFF_NAME.trim() !== '') {
+                                            arrayResponse.push(subElement);
+                                        }
                                     }
                                 }
                             });
                         });
+                        // console.log(JSON.stringify(arrayResponse));
                         if (arrayResponse.length <= 0) {
                             return res.send({
                                 "error": false,
@@ -2311,11 +2327,11 @@ exports.getProjectPeoplesListFuture = function (req, res) {
                                     var timeDiff = Math.abs(date2.getTime() - tempCurrentDate);
                                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                                     if (diffDays >= 0 && diffDays <= minDayDiff) {
-                                        element.FUTURE_DAYS = "Next 30 Days";
+                                        element.FUTURE_DAYS = "Available in 30 Days";
                                     } else if (diffDays > minDayDiff && diffDays <= midDaydiff) {
-                                        element.FUTURE_DAYS = "Next 30 to 60 Days";
+                                        element.FUTURE_DAYS = "Available in 30 to 60 Days";
                                     } else if (diffDays > midDaydiff && diffDays <= maxDaydiff) {
-                                        element.FUTURE_DAYS = "Next 60 to 90 Days";
+                                        element.FUTURE_DAYS = "Available in 60 to 90 Days";
                                     } else {
                                         element.FUTURE_DAYS = null;
                                     }
@@ -2456,11 +2472,11 @@ exports.getProjectPeoplesListFuture = function (req, res) {
                         var timeDiff = Math.abs(date2.getTime() - tempCurrentDate);
                         var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                         if (diffDays >= 0 && diffDays <= minDayDiff) {
-                            element.FUTURE_DAYS = "Next 30 Days";
+                            element.FUTURE_DAYS = "Available in 30 Days";
                         } else if (diffDays > minDayDiff && diffDays <= midDaydiff) {
-                            element.FUTURE_DAYS = "Next 30 to 60 Days";
+                            element.FUTURE_DAYS = "Available in 30 to 60 Days";
                         } else if (diffDays > midDaydiff && diffDays <= maxDaydiff) {
-                            element.FUTURE_DAYS = "Next 60 to 90 Days";
+                            element.FUTURE_DAYS = "Available in 60 to 90 Days";
                         } else {
                             element.FUTURE_DAYS = null;
                         }
