@@ -73,7 +73,7 @@ module.exports = function (app) {
                     const cipher = crypto.createCipher('aes192', newConnection.ENCRYPTION_KEY);  
                     var encPassword = cipher.update(req.body.password, 'utf8', 'hex');  
                     encPassword += cipher.final('hex');
-                    var UsersDB = "demo_"+user[0].COMPANY_NAME.toLowerCase();
+                    var UsersDB = "demo_"+user[0].COMPANY_NAME.toLowerCase(); //TODO: Please please fix this. Temporary edit this for Demo only
                     req.getConnection(function (err, connection) {
                         connection.query("SELECT "+ UsersDB +".USERS.* ,"+ UsersDB +".ROLE.ROLE_NAME,"+ UsersDB +".ROLE.COMBINATION_ID FROM "+ UsersDB +".USERS INNER JOIN "+ UsersDB +".ROLE ON "+ UsersDB +".USERS.ROLE_ID = "+ UsersDB +".ROLE.ID WHERE EMAIL = '" + req.body.username + "' AND PASSWORD = '" + encPassword + "'", function(err, usersData){
                             console.log("In second query");

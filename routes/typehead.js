@@ -130,6 +130,7 @@ exports.projectInitiatedTypehead = function (req, res) {
     });
 }
 
+// TODO: Please fix the hardcoded demo_staffplan
 exports.staffNewTypehead = function (req, res) {
     var conditionForTypehead = '';
     var queryGetData = '';

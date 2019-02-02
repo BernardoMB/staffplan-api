@@ -31,6 +31,7 @@ exports.getSubscriber = function(req,res){
     });
 }
 
+// TODO: Please fix the hardcoded demo_staffplan
 exports.getTableList = function (req,res) {
     req.getConnection(function (err, connection) {
         var query = connection.query("SELECT table_name FROM information_schema.tables where table_schema= 'demo_staffplan'", function (err, rows) {            
@@ -50,6 +51,7 @@ exports.getTableList = function (req,res) {
     });
 }
 
+// TODO: Please fix the hardcoded demo_staffplan
 exports.getFieldList = function (req,res) {
     var tableName = req.params.tableName;
     req.getConnection(function (err, connection) {
@@ -75,6 +77,7 @@ exports.getFieldList = function (req,res) {
     });
 }
 
+// TODO: Please fix the hardcoded demo_staffplan
 exports.addCustomLabel = function(req,res){
     req.getConnection(function (err, connection) {
         var query = connection.query("INSERT INTO demo_staffplan.CUSTOM_LABEL set ? ", req.body, function (err, rows) {
