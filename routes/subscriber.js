@@ -33,7 +33,7 @@ exports.getSubscriber = function(req,res){
 
 exports.getTableList = function (req,res) {
     req.getConnection(function (err, connection) {
-        var query = connection.query("SELECT table_name FROM information_schema.tables where table_schema= 'sp_staffplan'", function (err, rows) {            
+        var query = connection.query("SELECT table_name FROM information_schema.tables where table_schema= 'demo_staffplan'", function (err, rows) {            
             if (err) {
                 return res.send({"error" : true, "status" : "failed", "message" : "Something went wrong"});
             }
@@ -53,7 +53,7 @@ exports.getTableList = function (req,res) {
 exports.getFieldList = function (req,res) {
     var tableName = req.params.tableName;
     req.getConnection(function (err, connection) {
-        var query = connection.query("SELECT column_name FROM information_schema.columns WHERE table_schema = 'sp_staffplan' AND table_name='" + tableName + "' ORDER BY ordinal_position", function (err, rows) {
+        var query = connection.query("SELECT column_name FROM information_schema.columns WHERE table_schema = 'demo_staffplan' AND table_name='" + tableName + "' ORDER BY ordinal_position", function (err, rows) {
             if (err) {
                 return res.send({"error" : true, "status" : "failed", "message" : "Something went wrong"});
             }
@@ -77,7 +77,7 @@ exports.getFieldList = function (req,res) {
 
 exports.addCustomLabel = function(req,res){
     req.getConnection(function (err, connection) {
-        var query = connection.query("INSERT INTO sp_staffplan.CUSTOM_LABEL set ? ", req.body, function (err, rows) {
+        var query = connection.query("INSERT INTO demo_staffplan.CUSTOM_LABEL set ? ", req.body, function (err, rows) {
 	        if (err) {
 	            return res.send({
 	                "error": true,
