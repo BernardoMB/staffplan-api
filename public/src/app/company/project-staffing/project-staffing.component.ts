@@ -28,7 +28,8 @@ export class ProjectStaffingComponent implements OnInit {
         'ROLE_NAME': 'Project Role',
         'STATUS_NAME': 'Project Status',
         'ALLOCATION': '%Allocation',
-        'STAFF_ASSIGNMENT': 'Assignment Status'
+        'STAFF_ASSIGNMENT': 'Assignment Status',
+        'OFFICE_NAME': 'Office'
     };
     private columnOrdering = {
         'STAFF_NAME': 0,

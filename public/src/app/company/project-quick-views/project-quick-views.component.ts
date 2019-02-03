@@ -28,7 +28,8 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
         'PROJECT_NAME': 'Name',
         'ROLE_NAME': 'Project Role',
         'STATUS_NAME': 'Project Status',
-        'STAFF_ASSIGNMENT': 'Assignment Status'
+        'STAFF_ASSIGNMENT': 'Assignment Status',
+        'OFFICE_NAME': 'Office'
     };
     private columnOrdering = {
         'PROJECT_NAME': 0,
