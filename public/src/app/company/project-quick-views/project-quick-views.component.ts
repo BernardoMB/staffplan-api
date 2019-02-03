@@ -25,6 +25,7 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
     @ViewChild(ProjectViewStaffDetailPopoverComponent) child: ProjectViewStaffDetailPopoverComponent;
     private modalRef: NgbModalRef;
     private customColumnsName = {
+        'PROJECT_NAME': 'Name',
         'ROLE_NAME': 'Project Role',
         'STATUS_NAME': 'Project Status',
         'STAFF_ASSIGNMENT': 'Assignment Status'

@@ -24,6 +24,7 @@ export class ProjectStaffingComponent implements OnInit {
     @ViewChild(ProjectViewStaffDetailPopoverComponent) child: ProjectViewStaffDetailPopoverComponent;
     private modalRef: NgbModalRef;
     private customColumnsName = {
+        'PROJECT_NAME': 'Name',
         'ROLE_NAME': 'Project Role',
         'STATUS_NAME': 'Project Status',
         'ALLOCATION': '%Allocation',
