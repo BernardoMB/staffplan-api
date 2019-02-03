@@ -333,13 +333,13 @@ h2 {
     font-size: 22px;
     font-weight: 500;
     line-height: normal;
-    color: #000;
+    color: #334e68;
     padding: 15px;
 }
 
 h3 {
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: normal;
     color: #000;
     padding: 15px;
@@ -855,7 +855,7 @@ input[type=number]::-webkit-inner-spin-button {
     /* color: #838383; */
     font-size: 20px;
     font-weight: 500;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     margin-bottom: 20px;
 }
 
@@ -1014,13 +1014,14 @@ input[type=number]::-webkit-inner-spin-button {
 
 .table--default thead th {
     color: #254b78;
-    background-color: #eff8ff;
+    /* background-color: #eff8ff; */
+    background-color: #dddfec;
     padding: 18px 10px;
     border-top: 2px solid #e1e7ec;
     border-bottom: 2px solid #e1e7ec;
     vertical-align: top;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 500;
     line-height: normal;
 }
 
