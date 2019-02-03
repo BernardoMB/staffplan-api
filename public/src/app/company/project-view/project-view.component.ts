@@ -35,7 +35,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
         'PROJECT_ADDRESS': 'Address',
         'PROJECT_ZIP': 'Zip',
         // 'STATUS_NAME': 'Project Status',
-        'PROJECT_ROM': 'Project ROM ($)',
+        'PROJECT_ROM': 'ROM ($)',
         'GROUP_NAME': 'Project Group',
         'OFFICE_NAME': 'Office',
         'DATES': 'Start & End Date'

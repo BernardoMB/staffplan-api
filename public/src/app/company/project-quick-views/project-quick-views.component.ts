@@ -36,7 +36,7 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
     };
     private customProjectColumnsName = {
         'STATUS_NAME': 'Project Status',
-        'PROJECT_ROM': 'Project ROM ($)',
+        'PROJECT_ROM': 'ROM ($)',
         'GROUP_NAME': 'Project Group',
         'OFFICE_NAME': 'Office',
         'DATES': 'Start & End Date'
