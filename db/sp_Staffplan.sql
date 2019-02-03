@@ -487,7 +487,7 @@ CREATE TABLE `PROJECT_STATUS` (
 INSERT INTO `PROJECT_STATUS` (`STATUS_ID`, `STATUS_NAME`) VALUES
 (1, 'Proposal'),
 (2, 'Initiated'),
-(3, 'In-Progress'),
+(3, 'In Progress'),
 (4, 'Completed'),
 (5, 'Closed');
 

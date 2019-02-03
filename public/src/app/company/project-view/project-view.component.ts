@@ -83,11 +83,11 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     public projectGroupData = [];
     public filterProjectGroupData = [];
     public model = {
-        status: { STATUS_ID: 3, STATUS_NAME: 'In-Progress' },
+        status: { STATUS_ID: 3, STATUS_NAME: 'In Progress' },
         office: null,
         group: null
     };
-    public viewDataByFilter = {status: { STATUS_ID: 3, STATUS_NAME: 'In-Progress' }, office: null, group: null};
+    public viewDataByFilter = {status: { STATUS_ID: 3, STATUS_NAME: 'In Progress' }, office: null, group: null};
     public filterMenuOpen = false;
     public tableView = 1;
     public projectsForTimeline = [];
