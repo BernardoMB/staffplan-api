@@ -29,7 +29,8 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
         'ROLE_NAME': 'Project Role',
         'STATUS_NAME': 'Project Status',
         'STAFF_ASSIGNMENT': 'Assignment Status',
-        'OFFICE_NAME': 'Office'
+        'OFFICE_NAME': 'Office',
+        'PROJECT_GROUP': 'Group'
     };
     private columnOrdering = {
         'PROJECT_NAME': 0,
@@ -39,7 +40,7 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
     private customProjectColumnsName = {
         'STATUS_NAME': 'Project Status',
         'PROJECT_ROM': 'ROM ($)',
-        'GROUP_NAME': 'Project Group',
+        'GROUP_NAME': 'Group',
         'OFFICE_NAME': 'Office',
         'DATES': 'Start & End Date'
     };
