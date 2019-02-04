@@ -46,11 +46,11 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
         STATUS_NAME: 1,
         DATES: 2,
         TIMELINE_TYPE: 3,
-        PROJECT_MANAGER: 4,
-        PROJECT_ROM: 5,
-        OFFICE_NAME: 6,
-        GROUP_NAME: 7,
-        DURATION: 8
+        DURATION: 4,
+        PROJECT_MANAGER: 5,
+        PROJECT_ROM: 6,
+        OFFICE_NAME: 7,
+        GROUP_NAME: 8
     };
     private configs: State = {
         filter: {

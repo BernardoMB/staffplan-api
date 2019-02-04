@@ -38,8 +38,7 @@ export class ProjectStaffingComponent implements OnInit {
         'PROJECT_NAME': 1,
         'STATUS_NAME': 2,
         'STAFF_STATUS_NAME': 3,
-        'ROLE_NAME': 4,
-
+        'ROLE_NAME': 4
     };
     private allAssignStaffData = [];
     private date_format = DATE_FORMAT;
