@@ -26,11 +26,12 @@ export class ProjectStaffingComponent implements OnInit {
     private customColumnsName = {
         'PROJECT_NAME': 'Name',
         'ROLE_NAME': 'Project Role',
-        'STATUS_NAME': 'Project Status',
+        'STATUS_NAME': 'Status',
         'ALLOCATION': '%Allocation',
         'STAFF_ASSIGNMENT': 'Assignment Status',
         'OFFICE_NAME': 'Office',
-        'GROUP_NAME': 'Group'
+        'GROUP_NAME': 'Group',
+        'DATES': 'Start date - End date'
     };
     private columnOrdering = {
         'STAFF_NAME': 0,

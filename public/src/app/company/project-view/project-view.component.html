@@ -233,7 +233,7 @@
                         </ng-template>
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                                      *ngIf="column.columnId == 'DATES'">
-                            <span> {{dataItem['START_DATE'] | date:date_format}},<br>{{dataItem['END_DATE']| date:date_format}} </span>
+                            <span class='grid-date'>{{dataItem['START_DATE'] | date:date_format}} - {{dataItem['END_DATE']| date:date_format}}</span>
                         </ng-template>
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                                      *ngIf="column.columnId == 'PROJECT_ROM'">

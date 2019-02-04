@@ -35,11 +35,11 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
         'PROJECT_NAME': 'Name',
         'PROJECT_ADDRESS': 'Address',
         'PROJECT_ZIP': 'Zip',
-        // 'STATUS_NAME': 'Project Status',
+        'STATUS_NAME': 'Status',
         'PROJECT_ROM': 'ROM ($)',
         'GROUP_NAME': 'Group',
         'OFFICE_NAME': 'Office',
-        'DATES': 'Start & End Date'
+        'DATES': 'Start date - End date'
     };
     private columnOrdering = {
         PROJECT_NAME: 0,
