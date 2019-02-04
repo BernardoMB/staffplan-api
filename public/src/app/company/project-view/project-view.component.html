@@ -281,8 +281,7 @@
                 <thead>
                 <tr>
                     <th>Project</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th>Start date - End date</th>
                     <th class="text-nowrap" *ngFor="let type of timeLineHeader">
                         <span *ngIf="timelineStatus == 'week'">{{type['month']}}' {{type['year']}}<br>{{type['week']}}</span>
                         <span *ngIf="timelineStatus == 'month'">{{type['timelineByMonth']}}' {{type['timelineByYear']}}</span>
@@ -317,8 +316,7 @@
                         </div>
                     </td>
                     <td class="align-middle"><span
-                            class="td-highlighted">{{project.START_DATE| date: date_format}}</span></td>
-                    <td class="align-middle"><span class="td-highlighted">{{project.END_DATE| date: date_format}}</span>
+                            class="td-highlighted w-200">{{project.START_DATE| date: date_format}} - {{project.END_DATE| date: date_format}}</span>
                     </td>
                     <ng-container *ngIf="timelineStatus == 'week'">
                         <td class="no-padding align-middle" *ngFor="let data of timeLineData['week']">

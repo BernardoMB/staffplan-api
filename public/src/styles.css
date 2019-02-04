@@ -1951,6 +1951,10 @@ grid-header .k-i-sort-desc-sm {
     width: 250px;
 }
 
+.w-200 {
+    width: 200px;
+}
+
 .filter-tag select.form-control,
 .filter__btn .dropdown-menu-right .form-control {
     height: 40px !important;

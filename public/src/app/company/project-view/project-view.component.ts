@@ -94,9 +94,9 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     public projectsForTimeline = [];
     public timeLineData = [];
     public timeLineHeader = [];
-    public timelineStatus = 'month';
+    public timelineStatus = 'year';
     // public timelineByType = ['month', 'year', 'week'];
-    public timelineByType = ['month', 'year'];
+    public timelineByType = ['year', 'month'];
     public customFields;
     public displayProjectType = null;
     public viewPortHeight = 450;
@@ -495,8 +495,8 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
                 }
             });
         }
-        this.timelineStatus = 'month';
-        this.timeLineTypeChange('month');
+        // this.timelineStatus = 'month';
+        this.timeLineTypeChange(this.timelineStatus);
     }
 
     public timeLineTypeChange(type) {
