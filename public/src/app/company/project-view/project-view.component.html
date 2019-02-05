@@ -28,7 +28,7 @@
                     <span class="project-legend__item">
                             <i class="fa fa-circle initiated-status-color"></i> Initiated</span>
                     <span class="project-legend__item">
-                            <i class="fa fa-circle in-progress-status-color"></i> In-Progress</span>
+                            <i class="fa fa-circle in-progress-status-color"></i> In Progress</span>
                     <span class="project-legend__item">
                             <i class="fa fa-circle completed-status-color"></i> Completed</span>
                     <span class="project-legend__item">
@@ -233,7 +233,7 @@
                         </ng-template>
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                                      *ngIf="column.columnId == 'DATES'">
-                            <span> {{dataItem['START_DATE'] | date:date_format}},<br>{{dataItem['END_DATE']| date:date_format}} </span>
+                            <span class='grid-date'>{{dataItem['START_DATE'] | date:date_format}} - {{dataItem['END_DATE']| date:date_format}}</span>
                         </ng-template>
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                                      *ngIf="column.columnId == 'PROJECT_ROM'">
@@ -281,8 +281,7 @@
                 <thead>
                 <tr>
                     <th>Project</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th>Start date - End date</th>
                     <th class="text-nowrap" *ngFor="let type of timeLineHeader">
                         <span *ngIf="timelineStatus == 'week'">{{type['month']}}' {{type['year']}}<br>{{type['week']}}</span>
                         <span *ngIf="timelineStatus == 'month'">{{type['timelineByMonth']}}' {{type['timelineByYear']}}</span>
@@ -317,14 +316,13 @@
                         </div>
                     </td>
                     <td class="align-middle"><span
-                            class="td-highlighted">{{project.START_DATE| date: date_format}}</span></td>
-                    <td class="align-middle"><span class="td-highlighted">{{project.END_DATE| date: date_format}}</span>
+                            class="td-highlighted w-200">{{project.START_DATE| date: date_format}} - {{project.END_DATE| date: date_format}}</span>
                     </td>
                     <ng-container *ngIf="timelineStatus == 'week'">
                         <td class="no-padding align-middle" *ngFor="let data of timeLineData['week']">
                             <div *ngIf="project['week' + data] != undefined" class="field-exists mt-0"
                                  placement="bottom" [ngbTooltip]="projectDetailTooltip"
-                                 [ngClass]="project.STATUS_NAME=='Proposal' ? 'proposal-status' : ( project.STATUS_NAME=='In-Progress' ? 'in-progress-status' :(project.STATUS_NAME == 'Completed'?'completed-status':(project.STATUS_NAME == 'Initiated'?'initiated-status':'close-status')))">
+                                 [ngClass]="project.STATUS_NAME=='Proposal' ? 'proposal-status' : ( project.STATUS_NAME=='In Progress' ? 'in-progress-status' :(project.STATUS_NAME == 'Completed'?'completed-status':(project.STATUS_NAME == 'Initiated'?'initiated-status':'close-status')))">
                                 <ng-template #projectDetailTooltip>
                                     <div class="font-weight-bold text-body">{{project.PROJECT_NAME}}</div>
                                     <div class="">Start Date: {{project.START_DATE| date: date_format}}</div>
@@ -340,7 +338,7 @@
                             <div *ngIf="project['month' + data] !== undefined"
                                  class="field-exists m-t0"
                                  placement="bottom" [ngbTooltip]="projectDetailTooltip"
-                                 [ngClass]="project.STATUS_NAME=='Proposal' ? 'proposal-status' : ( project.STATUS_NAME=='In-Progress' ? 'in-progress-status' :(project.STATUS_NAME == 'Completed'?'completed-status':(project.STATUS_NAME == 'Initiated'?'initiated-status':'close-status')))">
+                                 [ngClass]="project.STATUS_NAME=='Proposal' ? 'proposal-status' : ( project.STATUS_NAME=='In Progress' ? 'in-progress-status' :(project.STATUS_NAME == 'Completed'?'completed-status':(project.STATUS_NAME == 'Initiated'?'initiated-status':'close-status')))">
                                 <ng-template #projectDetailTooltip>
                                     <div class="font-weight-bold text-body">{{project.PROJECT_NAME}}</div>
                                     <div class="">Start Date: {{project.START_DATE| date: date_format}}</div>
@@ -356,7 +354,7 @@
                             <div *ngIf="project['year' + data] !== undefined"
                                  class="field-exists mt-0"
                                  placement="bottom" [ngbTooltip]="projectDetailTooltip"
-                                 [ngClass]="project.STATUS_NAME=='Proposal' ? 'proposal-status' : ( project.STATUS_NAME=='In-Progress' ? 'in-progress-status' :(project.STATUS_NAME == 'Completed'?'completed-status':(project.STATUS_NAME == 'Initiated'?'initiated-status':'close-status')))">
+                                 [ngClass]="project.STATUS_NAME=='Proposal' ? 'proposal-status' : ( project.STATUS_NAME=='In Progress' ? 'in-progress-status' :(project.STATUS_NAME == 'Completed'?'completed-status':(project.STATUS_NAME == 'Initiated'?'initiated-status':'close-status')))">
                                 <ng-template #projectDetailTooltip>
                                     <div class="font-weight-bold text-body">{{project.PROJECT_NAME}}</div>
                                     <div class="">Start Date: {{project.START_DATE| date: date_format}}</div>

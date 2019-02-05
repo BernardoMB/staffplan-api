@@ -25,9 +25,12 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
     @ViewChild(ProjectViewStaffDetailPopoverComponent) child: ProjectViewStaffDetailPopoverComponent;
     private modalRef: NgbModalRef;
     private customColumnsName = {
+        'PROJECT_NAME': 'Name',
         'ROLE_NAME': 'Project Role',
         'STATUS_NAME': 'Project Status',
-        'STAFF_ASSIGNMENT': 'Assignment Status'
+        'STAFF_ASSIGNMENT': 'Assignment Status',
+        'OFFICE_NAME': 'Office',
+        'PROJECT_GROUP': 'Group'
     };
     private columnOrdering = {
         'PROJECT_NAME': 0,
@@ -35,22 +38,22 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
         'STATUS_NAME': 2
     };
     private customProjectColumnsName = {
-        'STATUS_NAME': 'Project Status',
-        'PROJECT_ROM': 'Project ROM ($)',
-        'GROUP_NAME': 'Project Group',
+        'STATUS_NAME': 'Status',
+        'PROJECT_ROM': 'ROM ($)',
+        'GROUP_NAME': 'Group',
         'OFFICE_NAME': 'Office',
-        'DATES': 'Start & End Date'
+        'DATES': 'Start date - End date'
     };
     private columnProjectOrdering = {
         PROJECT_NAME: 0,
         STATUS_NAME: 1,
         DATES: 2,
         TIMELINE_TYPE: 3,
-        PROJECT_MANAGER: 4,
-        PROJECT_ROM: 5,
-        OFFICE_NAME: 6,
-        GROUP_NAME: 7,
-        DURATION: 8
+        DURATION: 4,
+        PROJECT_MANAGER: 5,
+        PROJECT_ROM: 6,
+        OFFICE_NAME: 7,
+        GROUP_NAME: 8
     };
     private allProjectRelatedData = [];
     private date_format = DATE_FORMAT;
@@ -119,9 +122,9 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
                 this.handleValueChange(this.selectedQuickView, 'QUICK-VIEW');
                 this.selectedOfficeId = res.officeId;
             }
-            if (res == null) {
-                this.getAllPlannedProjectDetail();
-            }
+            // if (res == null) {
+            //     this.getAllPlannedProjectDetail();
+            // }
         });
         this.handleValueChange(this.selectedQuickView, 'QUICK-VIEW');
     }
@@ -150,6 +153,7 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
                 this.allColumns = getColumnsList(response.data[0], HIDDEN_OPEN_ROLL_COLUMNS, this.customColumnsName, this.columnOrdering);
             }
             this.allColumns = customFieldNames(this.allColumns, this.customLabel);
+            console.log(JSON.stringify(this.allColumns));
             for (const index in response.data) {
                 response.data[index]['END_DATE'] = new Date(response.data[index]['END_DATE']);
                 response.data[index]['START_DATE'] = new Date(response.data[index]['START_DATE']);

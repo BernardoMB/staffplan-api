@@ -21,6 +21,15 @@ app.use(express.methodOverride());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req, res, next) {
+  console.info(`START ${req.path}`);
+  const startTime = Date.now();
+  res.on('header', () => {
+    console.info(`END ${req.path} ${(Date.now() - startTime) / 1000}Sec`);
+  })
+  next();
+});
+
 var fs = require('fs');
 var morgan = require('morgan');
 var path = require('path');

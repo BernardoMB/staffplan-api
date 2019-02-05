@@ -24,18 +24,21 @@ export class ProjectStaffingComponent implements OnInit {
     @ViewChild(ProjectViewStaffDetailPopoverComponent) child: ProjectViewStaffDetailPopoverComponent;
     private modalRef: NgbModalRef;
     private customColumnsName = {
+        'PROJECT_NAME': 'Name',
         'ROLE_NAME': 'Project Role',
-        'STATUS_NAME': 'Project Status',
+        'STATUS_NAME': 'Status',
         'ALLOCATION': '%Allocation',
-        'STAFF_ASSIGNMENT': 'Assignment Status'
+        'STAFF_ASSIGNMENT': 'Assignment Status',
+        'OFFICE_NAME': 'Office',
+        'GROUP_NAME': 'Group',
+        'DATES': 'Start date - End date'
     };
     private columnOrdering = {
         'STAFF_NAME': 0,
         'PROJECT_NAME': 1,
         'STATUS_NAME': 2,
         'STAFF_STATUS_NAME': 3,
-        'ROLE_NAME': 4,
-
+        'ROLE_NAME': 4
     };
     private allAssignStaffData = [];
     private date_format = DATE_FORMAT;

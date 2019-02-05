@@ -480,7 +480,7 @@ export const TIMELINE_TYPE = [
     }
 ];
 export const USER_ROLE = ['C-Level'];
-export const PROJECT_STATUS_IN_PROGRESS = 'In-Progress';
+export const PROJECT_STATUS_IN_PROGRESS = 'In Progress';
 export const STATIC_IMAGE = '../assets/common-images/avatar.png';
 export const STAFF_PLAN_LOGO = '../assets/common-images/logo.png';
 export const IMAGE_PATH = 'http://';

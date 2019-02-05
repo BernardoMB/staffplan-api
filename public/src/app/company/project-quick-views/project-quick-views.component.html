@@ -138,7 +138,6 @@
                         [sort]="config.sort"
                         [navigable]="true"
                         (dataStateChange)="dataStateChange($event)"
-                        [height]="viewPortHeight"
                         [resizable]="true">
                     <ng-template kendoGridToolbarTemplate>
                         <button kendoGridPDFCommand class="btn btn-light-gray"><i class="icon-download"></i></button>
@@ -202,7 +201,6 @@
                         [data]="projectDetail"
                         [loading]="showLoader"
                         [sortable]="true"
-                        [height]="viewPortHeight"
                         [sort]="config.sort"
                         [resizable]="true"
                         [reorderable]="true"

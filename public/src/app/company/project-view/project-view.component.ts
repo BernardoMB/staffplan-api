@@ -32,24 +32,25 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     // private showInternalLoader = false;
     public projectColumns = [];
     private customColumnsName = {
+        'PROJECT_NAME': 'Name',
         'PROJECT_ADDRESS': 'Address',
         'PROJECT_ZIP': 'Zip',
-        // 'STATUS_NAME': 'Project Status',
-        'PROJECT_ROM': 'Project ROM ($)',
-        'GROUP_NAME': 'Project Group',
+        'STATUS_NAME': 'Status',
+        'PROJECT_ROM': 'ROM ($)',
+        'GROUP_NAME': 'Group',
         'OFFICE_NAME': 'Office',
-        'DATES': 'Start & End Date'
+        'DATES': 'Start date - End date'
     };
     private columnOrdering = {
         PROJECT_NAME: 0,
         STATUS_NAME: 1,
         DATES: 2,
         TIMELINE_TYPE: 3,
-        PROJECT_MANAGER: 4,
-        PROJECT_ROM: 5,
-        OFFICE_NAME: 6,
-        GROUP_NAME: 7,
-        DURATION: 8
+        DURATION: 4,
+        PROJECT_MANAGER: 5,
+        PROJECT_ROM: 6,
+        OFFICE_NAME: 7,
+        GROUP_NAME: 8
     };
     private configs: State = {
         filter: {
@@ -83,19 +84,19 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     public projectGroupData = [];
     public filterProjectGroupData = [];
     public model = {
-        status: { STATUS_ID: 3, STATUS_NAME: 'In-Progress' },
+        status: { STATUS_ID: 3, STATUS_NAME: 'In Progress' },
         office: null,
         group: null
     };
-    public viewDataByFilter = {status: { STATUS_ID: 3, STATUS_NAME: 'In-Progress' }, office: null, group: null};
+    public viewDataByFilter = {status: { STATUS_ID: 3, STATUS_NAME: 'In Progress' }, office: null, group: null};
     public filterMenuOpen = false;
     public tableView = 1;
     public projectsForTimeline = [];
     public timeLineData = [];
     public timeLineHeader = [];
-    public timelineStatus = 'month';
+    public timelineStatus = 'year';
     // public timelineByType = ['month', 'year', 'week'];
-    public timelineByType = ['month', 'year'];
+    public timelineByType = ['year', 'month'];
     public customFields;
     public displayProjectType = null;
     public viewPortHeight = 450;
@@ -494,8 +495,8 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
                 }
             });
         }
-        this.timelineStatus = 'month';
-        this.timeLineTypeChange('month');
+        // this.timelineStatus = 'month';
+        this.timeLineTypeChange(this.timelineStatus);
     }
 
     public timeLineTypeChange(type) {
