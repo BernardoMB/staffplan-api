@@ -59,6 +59,9 @@
                         (selectionChange)="selectionChange($event)"
                         (dataStateChange)="dataStateChange($event)"
                         (detailExpand)="rowExpand($event)">
+                        <ng-template kendoGridNoRecordsTemplate>
+                            <span *ngIf="!showLoader"> No records available. </span>
+                        </ng-template>
                         <kendo-grid-column field="{{column.columnId}}" title="{{column.columnLabel}}" width="150" *ngFor="let column of staffColumns"  [hidden]="hiddenColumn(column.columnId)">
                                         <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="column.columnId == 'STAFF_NAME'">
                                 <button type="button" class="btn btn-link btn-popover-link" container="body" placement="right-top"
