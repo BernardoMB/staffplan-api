@@ -32,7 +32,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     // private showInternalLoader = false;
     public projectColumns = [];
     private customColumnsName = {
-        'PROJECT_NAME': 'Name',
+        'PROJECT_NAME': 'Project',
         'PROJECT_ADDRESS': 'Address',
         'PROJECT_ZIP': 'Zip',
         'STATUS_NAME': 'Status',
