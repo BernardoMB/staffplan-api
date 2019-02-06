@@ -287,7 +287,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
                 $that.selectedProject = response.data;
             }
         }, dataItem.PROJECT_ID);
-        // this.modalRef = this.modalService.open(content, {centered: true, size: 'lg'});
+        this.modalRef = this.modalService.open(content, {centered: true, size: 'lg'});
     }
 
     public openAddProjectModal(addContent) {
