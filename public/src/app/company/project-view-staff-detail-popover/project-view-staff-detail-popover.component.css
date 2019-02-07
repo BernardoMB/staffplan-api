@@ -105,12 +105,13 @@
 
 .project-panel__left {
     background: #FFFFFF;
-    padding: 30px 20px;
+    margin-top: 10px;
+    padding: 10px 10px;
 }
 
 .project-panel__right {
     position: relative;
-    padding: 10px 20px 30px 20px;
+    padding: 10px 10px;
     z-index: 2;
 }
 
@@ -162,8 +163,8 @@
     font-size: 16px;
     font-weight: 500;
     text-transform: uppercase;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .project-panel__bg {

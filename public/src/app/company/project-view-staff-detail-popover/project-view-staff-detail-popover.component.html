@@ -269,6 +269,99 @@
                                             trim="blur">
                                  </textarea>
                                 </div>
+                               
+                                <div class="text-md-right mt-2">
+                                    <button class="btn btn-blue mr-2" type="submit" title="Submit"
+                                            (click)="saveProjectDetail();" [disabled]="isSaveProjectDetail">Save
+                                    </button>
+                                    <button class="btn btn-blue-outline" type="submit" title="Cancel"
+                                            (click)="projectAddFormReset(true);">Cancel
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /.project-panel__left -->
+                        </div>
+                        <div class="col-md-5 project-panel__bg">
+                            <div class="project-panel__right">
+                                <div *ngIf="renderTable">
+                                    <div class="title">
+                                        Project Owner
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Project Executive</label>
+                                        <span class="form-control form-control--gray"
+                                              *ngIf="projectInstance.PROJECT_EXECUTIVE"> {{projectInstance.PROJECT_EXECUTIVE}} </span>
+                                        <span class="form-control form-control--gray"
+                                              *ngIf="!projectInstance.PROJECT_EXECUTIVE"> {{" NA "}}</span>
+                                        <!--<input type="text" class="form-control form-control&#45;&#45;gray" id="projectExecutive"-->
+                                        <!--placeholder="NA"/>-->
+                                    </div>
+                                </div>
+                                <div class="title">
+                                    Project Timeline
+                                    <div class="form-hint d-inline-block">
+                          <span class="font-size light-header font-italic"
+                                *ngIf="!editProjectTimeline"> (click to edit) </span>
+                                        <button *ngIf="!editProjectTimeline" kendoButton class="edit-form"
+                                                (click)="editProjectTimeline = true" [look]="'bare'">
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 px-2">
+                                        <div class="form-group is-date-field">
+                                            <label for="projectStartDate">{{ addFormLabels.START_DATE }}</label>
+                                            <kendo-datepicker
+                                                    [attr.disabled]="!editProjectTimeline ? true : null"
+                                                    [(ngModel)]="addProjectModel.START_DATE"
+                                                    required
+                                                    name="START_DATE"
+                                                    #START_DATE="ngModel"
+                                                    required
+                                                    class="form-control form-control--gray" id="projectStartDate"
+                                                    id="projectStartDate"
+                                                    (valueChange)="handleValueChange($event, 'START_DATE')"
+                                            ></kendo-datepicker>
+                                            <div *ngIf="errorStartDate.isError"
+                                                 class="form-invalid-message k-text-error">
+                                                {{ errorStartDate.errorMessage}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 px-2">
+                                        <div class="form-group is-date-field">
+                                            <label for="projectEndDate">{{ addFormLabels.END_DATE }}</label>
+                                            <kendo-datepicker
+                                                    [attr.disabled]="!editProjectTimeline ? true : null"
+                                                    [(ngModel)]="addProjectModel.END_DATE"
+                                                    required
+                                                    name="END_DATE"
+                                                    class="form-control form-control--gray"
+                                                    id="projectEndDate"
+                                                    #END_DATE="ngModel"
+                                                    (valueChange)="handleValueChange($event, 'END_DATE')"
+                                            ></kendo-datepicker>
+                                            <div *ngIf="errorEndDate.isError" class="form-invalid-message k-text-error">
+                                                {{ errorEndDate.errorMessage}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="radio-btn-holder">
+                                    <label class="radio-btn__label">{{ addFormLabels.TIMELINE_TYPE }}</label>
+                                    <div class="radio-btn__item" *ngFor="let timeLine of timelineType">
+                                        <input [attr.disabled]="!editProjectTimeline ? true : null"
+                                               id="timeLine_{{timeLine.TIMELINE_TYPE_KEY}}"
+                                               class="k-radio" [value]='timeLine.TIMELINE_TYPE_KEY'
+                                               type="radio" name="TIMELINE_TYPE" required
+                                               [(ngModel)]="addProjectModel.TIMELINE_TYPE">
+                                        <label class="radio-btn__text"
+                                               for="timeLine_{{timeLine.TIMELINE_TYPE_KEY}}">
+                                            {{timeLine.TIMELINE_TYPE_VALUE}}</label>
+                                    </div>
+                                    <!-- /.radio-btn-holder -->
+                                </div>
                                 <div class="title">
                                     Client Detail
                                     <div class="form-hint d-inline-block">
@@ -360,98 +453,6 @@
                                                    [(ngModel)]="addProjectModel.PROJECT_ZIP"/>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="text-md-right mt-2">
-                                    <button class="btn btn-blue mr-2" type="submit" title="Submit"
-                                            (click)="saveProjectDetail();" [disabled]="isSaveProjectDetail">Submit
-                                    </button>
-                                    <button class="btn btn-blue-outline" type="submit" title="Cancel"
-                                            (click)="projectAddFormReset(true);">Cancel
-                                    </button>
-                                </div>
-                            </div>
-                            <!-- /.project-panel__left -->
-                        </div>
-                        <div class="col-md-5 project-panel__bg">
-                            <div class="project-panel__right">
-                                <div *ngIf="renderTable">
-                                    <div class="title">
-                                        Project Owner
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Project Executive</label>
-                                        <span class="form-control form-control--gray"
-                                              *ngIf="projectInstance.PROJECT_EXECUTIVE"> {{projectInstance.PROJECT_EXECUTIVE}} </span>
-                                        <span class="form-control form-control--gray"
-                                              *ngIf="!projectInstance.PROJECT_EXECUTIVE"> {{" NA "}}</span>
-                                        <!--<input type="text" class="form-control form-control&#45;&#45;gray" id="projectExecutive"-->
-                                        <!--placeholder="NA"/>-->
-                                    </div>
-                                </div>
-                                <div class="title">
-                                    Project Timeline
-                                    <div class="form-hint d-inline-block">
-                          <span class="font-size light-header font-italic"
-                                *ngIf="!editProjectTimeline"> (click to edit) </span>
-                                        <button *ngIf="!editProjectTimeline" kendoButton class="edit-form"
-                                                (click)="editProjectTimeline = true" [look]="'bare'">
-                                            <i class="fa fa-pencil"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6 px-2">
-                                        <div class="form-group is-date-field">
-                                            <label for="projectStartDate">{{ addFormLabels.START_DATE }}</label>
-                                            <kendo-datepicker
-                                                    [attr.disabled]="!editProjectTimeline ? true : null"
-                                                    [(ngModel)]="addProjectModel.START_DATE"
-                                                    required
-                                                    name="START_DATE"
-                                                    #START_DATE="ngModel"
-                                                    required
-                                                    class="form-control form-control--gray" id="projectStartDate"
-                                                    id="projectStartDate"
-                                                    (valueChange)="handleValueChange($event, 'START_DATE')"
-                                            ></kendo-datepicker>
-                                            <div *ngIf="errorStartDate.isError"
-                                                 class="form-invalid-message k-text-error">
-                                                {{ errorStartDate.errorMessage}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 px-2">
-                                        <div class="form-group is-date-field">
-                                            <label for="projectEndDate">{{ addFormLabels.END_DATE }}</label>
-                                            <kendo-datepicker
-                                                    [attr.disabled]="!editProjectTimeline ? true : null"
-                                                    [(ngModel)]="addProjectModel.END_DATE"
-                                                    required
-                                                    name="END_DATE"
-                                                    class="form-control form-control--gray"
-                                                    id="projectEndDate"
-                                                    #END_DATE="ngModel"
-                                                    (valueChange)="handleValueChange($event, 'END_DATE')"
-                                            ></kendo-datepicker>
-                                            <div *ngIf="errorEndDate.isError" class="form-invalid-message k-text-error">
-                                                {{ errorEndDate.errorMessage}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="radio-btn-holder">
-                                    <label class="radio-btn__label">{{ addFormLabels.TIMELINE_TYPE }}</label>
-                                    <div class="radio-btn__item" *ngFor="let timeLine of timelineType">
-                                        <input [attr.disabled]="!editProjectTimeline ? true : null"
-                                               id="timeLine_{{timeLine.TIMELINE_TYPE_KEY}}"
-                                               class="k-radio" [value]='timeLine.TIMELINE_TYPE_KEY'
-                                               type="radio" name="TIMELINE_TYPE" required
-                                               [(ngModel)]="addProjectModel.TIMELINE_TYPE">
-                                        <label class="radio-btn__text"
-                                               for="timeLine_{{timeLine.TIMELINE_TYPE_KEY}}">
-                                            {{timeLine.TIMELINE_TYPE_VALUE}}</label>
-                                    </div>
-                                    <!-- /.radio-btn-holder -->
                                 </div>
                                 <!-- /.project-panel__right -->
                             </div>
