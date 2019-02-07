@@ -39,7 +39,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
         'PROJECT_ROM': 'ROM ($)',
         'GROUP_NAME': 'Group',
         'OFFICE_NAME': 'Office',
-        'DATES': 'Start date - End date'
+        'DATES': 'Timeline'
     };
     private columnOrdering = {
         PROJECT_NAME: 0,

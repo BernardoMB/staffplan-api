@@ -42,7 +42,7 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
         'PROJECT_ROM': 'ROM ($)',
         'GROUP_NAME': 'Group',
         'OFFICE_NAME': 'Office',
-        'DATES': 'Start date - End date'
+        'DATES': 'Timeline'
     };
     private columnProjectOrdering = {
         PROJECT_NAME: 0,

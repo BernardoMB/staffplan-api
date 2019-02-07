@@ -31,7 +31,7 @@ export class ProjectStaffingComponent implements OnInit {
         'STAFF_ASSIGNMENT': 'Assignment Status',
         'OFFICE_NAME': 'Office',
         'GROUP_NAME': 'Group',
-        'DATES': 'Start date - End date'
+        'DATES': 'Timeline'
     };
     private columnOrdering = {
         'STAFF_NAME': 0,
