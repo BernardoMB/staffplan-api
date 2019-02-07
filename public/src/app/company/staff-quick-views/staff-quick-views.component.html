@@ -4,6 +4,7 @@
             <kendo-dropdownlist [data]="listQuickViews" textField="text"
                                 valueField="value" [(ngModel)]="selectedQuickView"
                                 [popupSettings]="{popupClass: popupClassQuickView}"
+                                style="width: 225px;"
                                 (valueChange)="handleValueChange($event,'QUICK-VIEW')">
             </kendo-dropdownlist>
             <!--<span class="page-subtitle__status">{{assignStaffData.total}} Project</span>-->
