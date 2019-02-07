@@ -4,6 +4,7 @@
             <kendo-dropdownlist [data]="listQuickViews" textField="text"
                                 valueField="value" [(ngModel)]="selectedQuickView"
                                 [popupSettings]="{popupClass: popupClassQuickView}"
+                                style="width: 225px;"
                                 (valueChange)="handleValueChange($event,'QUICK-VIEW')">
             </kendo-dropdownlist>
             <!--<span class="page-subtitle__status">{{assignStaffData.total}} Project</span>-->
@@ -141,6 +142,9 @@
                         <button kendoGridExcelCommand class="btn btn-light-gray" type="button"><i
                                 class="icon-excel"></i></button>
                     </ng-template>
+                    <ng-template kendoGridNoRecordsTemplate>
+                        <span *ngIf="!showLoader"> No records available. </span>
+                    </ng-template>
                     <kendo-grid-column width="100">
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                             <div class="dropdown-project-modify">
@@ -216,6 +220,9 @@
                         <button kendoGridExcelCommand class="btn btn-light-gray" type="button"><i
                                 class="icon-excel"></i></button>
                     </ng-template>
+                    <ng-template kendoGridNoRecordsTemplate>
+                        <span *ngIf="!showLoader"> No records available. </span>
+                    </ng-template>
                     <kendo-grid-column width="100">
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
                             <div class="dropdown-project-modify">
@@ -281,6 +288,9 @@
                         <button kendoGridPDFCommand class="btn btn-light-gray"><i class="icon-download"></i></button>
                         <button kendoGridExcelCommand class="btn btn-light-gray" type="button"><i
                                 class="icon-excel"></i></button>
+                    </ng-template>
+                    <ng-template kendoGridNoRecordsTemplate>
+                        <span *ngIf="!showLoader"> No records available. </span>
                     </ng-template>
                     <kendo-grid-column width="100">
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem">

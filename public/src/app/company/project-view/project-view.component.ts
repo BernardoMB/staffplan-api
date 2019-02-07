@@ -32,14 +32,14 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     // private showInternalLoader = false;
     public projectColumns = [];
     private customColumnsName = {
-        'PROJECT_NAME': 'Name',
+        'PROJECT_NAME': 'Project',
         'PROJECT_ADDRESS': 'Address',
         'PROJECT_ZIP': 'Zip',
         'STATUS_NAME': 'Status',
         'PROJECT_ROM': 'ROM ($)',
         'GROUP_NAME': 'Group',
         'OFFICE_NAME': 'Office',
-        'DATES': 'Start date - End date'
+        'DATES': 'Timeline'
     };
     private columnOrdering = {
         PROJECT_NAME: 0,
@@ -287,7 +287,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
                 $that.selectedProject = response.data;
             }
         }, dataItem.PROJECT_ID);
-        // this.modalRef = this.modalService.open(content, {centered: true, size: 'lg'});
+        this.modalRef = this.modalService.open(content, {centered: true, size: 'lg'});
     }
 
     public openAddProjectModal(addContent) {

@@ -184,6 +184,9 @@
                         <button kendoGridExcelCommand class="btn btn-light-gray" type="button"><i
                                 class="icon-excel"></i></button>
                     </ng-template>
+                    <ng-template kendoGridNoRecordsTemplate>
+                        <span *ngIf="!showLoader"> No records available. </span>
+                    </ng-template>
                     <!-- <kendo-grid-column width="100"> -->
                     <kendo-grid-column>
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
@@ -281,7 +284,7 @@
                 <thead>
                 <tr>
                     <th>Project</th>
-                    <th>Start date - End date</th>
+                    <th>Timeline</th>
                     <th class="text-nowrap" *ngFor="let type of timeLineHeader">
                         <span *ngIf="timelineStatus == 'week'">{{type['month']}}' {{type['year']}}<br>{{type['week']}}</span>
                         <span *ngIf="timelineStatus == 'month'">{{type['timelineByMonth']}}' {{type['timelineByYear']}}</span>

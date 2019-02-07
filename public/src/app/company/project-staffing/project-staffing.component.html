@@ -123,16 +123,17 @@
                         [sortable]="true"
                         [selectable]="true"
                         [sort]="config.sort"
-                        [height]="viewPortHeight"
                         [navigable]="true"
                         (dataStateChange)="dataStateChange($event)"
-                        [height]="gridHeight"
                         [resizable]="true"
                         class="word-wrap position-static">
                     <ng-template kendoGridToolbarTemplate>
                         <button kendoGridPDFCommand class="btn btn-light-gray"><i class="icon-download"></i></button>
                         <button kendoGridExcelCommand class="btn btn-light-gray" type="button"><i
                                 class="icon-excel"></i></button>
+                    </ng-template>
+                    <ng-template kendoGridNoRecordsTemplate>
+                        <span *ngIf="!showLoader"> No records available. </span>
                     </ng-template>
                     <kendo-grid-column width="100">
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem">

@@ -20,10 +20,10 @@
 }
 
 .current-project .overlay-main .bg-white h3 {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    position: relative;
-    overflow: hidden;
+    /* text-overflow: ellipsis; */
+    /* white-space: nowrap; */
+    /* position: relative; */
+    /* overflow: hidden; */
 }
 
 .current-project .box1 .big-text {
