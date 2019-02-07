@@ -46,7 +46,6 @@
                         [filter]="config.filter"
                         [navigable]="true"
                         (dataStateChange)="dataStateChange($event)"
-                        [height]="gridHeight"
                         [resizable]="true">
                         <ng-template kendoGridNoRecordsTemplate>
                             <span *ngIf="!showLoader"> No records available. </span>
