@@ -166,7 +166,12 @@ export class AssignStaffPopoverComponent implements OnInit {
             if (response && response.data) {
                 this.staffList = response.data;
                 for (const key in this.staffList) {
-                    this.staffList[key]['STAFF_NAME'] = this.staffList[key]['FIRST_NAME'] + this.staffList[key]['MIDDLE_INITIAL'] + this.staffList[key]['LAST_NAME'];
+                    const dataItem = this.staffList[key];
+                    if (dataItem['PREFERRED_NAME'] && dataItem['PREFERRED_NAME'] !== '') {
+                        dataItem['STAFF_NAME'] = `${dataItem['PREFERRED_NAME']} ${dataItem['LAST_NAME']}`;
+                    } else {
+                        dataItem['STAFF_NAME'] = `${dataItem['FIRST_NAME']} ${dataItem['LAST_NAME']}`;
+                    }
                 }
                 this.filteredStaffList = this.staffList.slice();
                 return resolve('done');
