@@ -26,13 +26,15 @@
                     <span class="project-legend__item">
                             <i class="fa fa-circle proposal-status-color"></i> Proposal</span>
                     <span class="project-legend__item">
-                            <i class="fa fa-circle initiated-status-color"></i> Initiated</span>
+                            <i class="fa fa-circle potential-status-color"></i> Potential</span>
                     <span class="project-legend__item">
                             <i class="fa fa-circle in-progress-status-color"></i> In Progress</span>
                     <span class="project-legend__item">
-                            <i class="fa fa-circle completed-status-color"></i> Completed</span>
+                        <i class="fa fa-circle completed-status-color"></i> Completed / Closed</span>
                     <span class="project-legend__item">
-                            <i class="fa fa-circle close-status-color"></i> Closed</span>
+                        <i class="fa fa-circle lost-status-color"></i> Lost</span>
+                    <span class="project-legend__item">
+                            <i class="fa fa-circle pre-con-status-color"></i> Pre-con</span>
                 </div>
             </div>
         </div>
@@ -325,7 +327,7 @@
                         <td class="no-padding align-middle" *ngFor="let data of timeLineData['week']">
                             <div *ngIf="project['week' + data] != undefined" class="field-exists mt-0"
                                  placement="bottom" [ngbTooltip]="projectDetailTooltip"
-                                 [ngClass]="project.STATUS_NAME=='Proposal' ? 'proposal-status' : ( project.STATUS_NAME=='In Progress' ? 'in-progress-status' :(project.STATUS_NAME == 'Completed'?'completed-status':(project.STATUS_NAME == 'Initiated'?'initiated-status':'close-status')))">
+                                 [ngClass]="project.STATUS_NAME.toLowerCase().replace(' ','-')+'-status'">
                                 <ng-template #projectDetailTooltip>
                                     <div class="font-weight-bold text-body">{{project.PROJECT_NAME}}</div>
                                     <div class="">Start Date: {{project.START_DATE| date: date_format}}</div>
