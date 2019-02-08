@@ -218,7 +218,7 @@ exports.getProjectInitiatedList = function(req,res){
                 projectDataArg.forEach(element => {
                     var PMNameArrayManager = [];
                     var PMNameArrayExecutive = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT (FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ", FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
@@ -428,7 +428,7 @@ exports.getProjectStartingList = function(req,res){
                 projectDataArg.forEach(element => {
                     var PMNameArrayManager = [];
                     var PMNameArrayExecutive = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT (FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ", FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
@@ -638,7 +638,7 @@ exports.getProjectEndingList = function(req,res){
                 projectDataArg.forEach(element => {
                     var PMNameArrayManager = [];
                     var PMNameArrayExecutive = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT (FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ", FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
@@ -881,7 +881,7 @@ exports.getProjectList = function (req, res) {
                 projectDataArg.forEach(element => {
                     var PMNameArrayManager = [];
                     var PMNameArrayExecutive = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT (FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ", FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
@@ -917,8 +917,8 @@ exports.getProjectList = function (req, res) {
             //     projectDataArg.forEach(element => {
             //         var PMNameArray = [];
             //         // Getting Project executive of project
-            //         console.log('SELECT CONCAT (FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Executive FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"');
-            //         var GetEmpExcuQuery = connection.query('SELECT CONCAT (FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Executive,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"', function (err, ProExcuData) {
+            //         console.log('SELECT CONCAT_WS(" ", FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Executive FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"');
+            //         var GetEmpExcuQuery = connection.query('SELECT CONCAT_WS(" ", FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Executive,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"', function (err, ProExcuData) {
             //             console.log(ProExcuData);
             //             if (err) {
             //                 return res.send({
@@ -1164,7 +1164,7 @@ exports.getProjectListTest = function (req, res) {
                 var DataArray = [];
                 projectDataArg.forEach(element => {
                     var PMNameArray = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT (FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8"', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ", FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8"', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
@@ -1528,7 +1528,7 @@ exports.getProjectDetails = function (req, res) {
                     callback(null, ProPeoList);
             },
             function(proData, callback){
-                var GetEmpQuery = connection.query('SELECT CONCAT (FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Executive FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + proData.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"', function (err, executiveName) {
+                var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ", FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Executive FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + proData.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"', function (err, executiveName) {
                     if (err) {
                         return res.send({
                             "error": true,
@@ -1546,7 +1546,7 @@ exports.getProjectDetails = function (req, res) {
                 });
             },
             function(proData, callback){
-                var GetEmpQuery = connection.query('SELECT CONCAT (FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + proData.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8"', function (err, projectManagerName) {
+                var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ", FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + proData.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8"', function (err, projectManagerName) {
                     if (err) {
                         return res.send({
                             "error": true,
@@ -1613,7 +1613,7 @@ exports.projectTypehead = function (req, res) {
                 var DataArray = [];
                 arg1.forEach(element => {
                     var PMNameArray = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT (FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE PROJECT_PEOPLE.PROJECT_ROLE_ID = "8" AND PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '"', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ", FIRST_NAME,MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE PROJECT_PEOPLE.PROJECT_ROLE_ID = "8" AND PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '"', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
