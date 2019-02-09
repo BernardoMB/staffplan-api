@@ -383,11 +383,11 @@ export class ProjectViewStaffDetailPopoverComponent
         if (response && response.data) {
           this.peopleList = response.data;
           for (const key in this.peopleList) {
-            if (this.peopleList[key]['FIRST_NAME']) {
-              this.peopleList[key]['STAFF_NAME'] =
-                this.peopleList[key]['FIRST_NAME'] +
-                this.peopleList[key]['MIDDLE_INITIAL'] +
-                this.peopleList[key]['LAST_NAME'];
+            const dataItem = this.peopleList[key];
+            if (dataItem['PREFERRED_NAME'] && dataItem['PREFERRED_NAME'] !== '') {
+              dataItem['STAFF_NAME'] = `${dataItem['PREFERRED_NAME']} ${dataItem['LAST_NAME']}`;
+            } else {
+              dataItem['STAFF_NAME'] = `${dataItem['FIRST_NAME']} ${dataItem['LAST_NAME']}`;
             }
           }
           this.filteredPeopleList = this.peopleList.slice();

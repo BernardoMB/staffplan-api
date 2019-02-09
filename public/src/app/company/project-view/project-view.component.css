@@ -55,11 +55,11 @@
 }
 
 .proposal-status {
-    background-color: #ffd246;
+    background-color: #B3CCFF;
 }
 
 .in-progress-status {
-    background-color: #17a2b8;
+    background-color: #E6FFBF;
 }
 
 .initiated-status {
@@ -67,19 +67,44 @@
 }
 
 .completed-status {
-    background-color: #00b0ff;
+    background-color: #CBD2D9;
 }
 
 .close-status {
-    background-color: #f31700;
+    background-color: #CBD2D9;
+}
+
+
+.pre-con-status {
+    background-color: #DAC4FF;
+}
+
+.pre-con-status-color {
+    color: #DAC4FF;
+}
+
+.lost-status {
+    background-color: #FFD0B5;
+}
+
+.lost-status-color {
+    color: #FFD0B5;
+}
+
+.potential-status {
+    color: #FFF3C4;
+}
+
+.potential-status-color {
+    background-color: #FFF3C4;
 }
 
 .proposal-status-color {
-    color: #ffd246;
+    color: #B3CCFF;
 }
 
 .in-progress-status-color {
-    color: #17a2b8;
+    color: #E6FFBF;
 }
 
 .initiated-status-color {
@@ -87,11 +112,11 @@
 }
 
 .completed-status-color {
-    color: #00b0ff;
+    color: #CBD2D9;
 }
 
 .close-status-color {
-    color: #f31700;
+    color: #CBD2D9;
 }
 
 .progress {
