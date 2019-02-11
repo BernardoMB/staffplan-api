@@ -31,7 +31,7 @@
                                 </div>
 
                                 <div class="detail pt-md-2">
-                                    <div class="font-size-16 font-weight-500 mb-2">{{staffInstance.FIRST_NAME}}
+                                    <div class="font-size-16 font-weight-500 mb-2">{{staffInstance.PREFERRED_NAME != null && staffInstance.PREFERRED_NAME != '' ? staffInstance.PREFERRED_NAME : staffInstance.FIRST_NAME}}
                                         {{staffInstance.LAST_NAME}}
                                     </div>
                                     <ul>

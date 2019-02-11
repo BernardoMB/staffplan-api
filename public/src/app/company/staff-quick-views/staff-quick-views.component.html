@@ -262,7 +262,7 @@
                                     (click)="openVerticallyCenteredEditStaff(editContent,dataItem)"
                                     appHandlePopoverClose>
                                 <span class="td-highlighted" *ngIf="dataItem.PREFERRED_NAME != null && dataItem.PREFERRED_NAME != ''; else other_content"> {{dataItem.PREFERRED_NAME}} {{dataItem.LAST_NAME}}</span>
-                                <ng-template #other_content><span class="td-highlighted"> {{dataItem.FIRST_NAME}} {{dataItem.LAST_NAME}}</span></ng-template>
+                                <ng-template #other_content><span class="td-highlighted"> {{dataItem.PREFERRED_NAME != null && dataItem.PREFERRED_NAME != '' ? dataItem.PREFERRED_NAME : dataItem.FIRST_NAME}} {{dataItem.LAST_NAME}}</span></ng-template>
                             </button>
                         </ng-template>
                     </kendo-grid-column>
