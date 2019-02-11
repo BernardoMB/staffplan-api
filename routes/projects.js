@@ -346,7 +346,7 @@ exports.getProjectStartingList = function(req,res){
 
                             if (pmNamesArray.length < 1) {
                                 con = con + " AND (PROJECT_NAME LIKE '%" + advance_search + "%' OR PROJECT_ROM LIKE '%" + advance_search + "%' OR PROJECT_ADDRESS LIKE '%" + advance_search + "%' OR PROJECT_CITY LIKE '%" + advance_search + "%' OR PROJECT_STATE LIKE '%" + advance_search + "%' OR STATUS_NAME LIKE '%" + advance_search + "%' OR TYPE_NAME LIKE '%" + advance_search + "%' OR PROJECT_ZIP LIKE '%" + advance_search + "%')";
-                                var query = connection.query("SELECT *, DATE_FORMAT(START_DATE, '%Y-%m-%d') AS START_DATE,DATE_FORMAT(END_DATE, '%Y-%m-%d') AS END_DATE, CATEGORY.CATEGORY_NAME, PROJECT_GROUP.GROUP_ID,OFFICE.OFFICE_NAME,OFFICE.OFFICE_CITY FROM PROJECT INNER JOIN CATEGORY ON PROJECT.CATEGORY_ID = CATEGORY.CATEGORY_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN PROJECT_TYPE ON PROJECT.PROJECT_TYPE_ID = PROJECT_TYPE.TYPE_ID INNER JOIN PROJECT_GROUP ON PROJECT.GROUP_ID = PROJECT_GROUP.GROUP_ID INNER JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID " + con + " AND DATEDIFF(START_DATE, NOW()) > 90", function (err, rows) {
+                                var query = connection.query("SELECT *, DATE_FORMAT(START_DATE, '%Y-%m-%d') AS START_DATE,DATE_FORMAT(END_DATE, '%Y-%m-%d') AS END_DATE, CATEGORY.CATEGORY_NAME, PROJECT_GROUP.GROUP_ID,OFFICE.OFFICE_NAME,OFFICE.OFFICE_CITY FROM PROJECT INNER JOIN CATEGORY ON PROJECT.CATEGORY_ID = CATEGORY.CATEGORY_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN PROJECT_TYPE ON PROJECT.PROJECT_TYPE_ID = PROJECT_TYPE.TYPE_ID INNER JOIN PROJECT_GROUP ON PROJECT.GROUP_ID = PROJECT_GROUP.GROUP_ID INNER JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID " + con + " AND DATEDIFF(START_DATE, NOW()) ", function (err, rows) {
                                     if (err) {
                                         return res.send({
                                             "error": true,
@@ -374,7 +374,7 @@ exports.getProjectStartingList = function(req,res){
                                     tempPMname.push("\'" + element.PROJECT_ID + "\'");
                                 });
                                 con = con + " AND (PROJECT_ID IN (" + tempPMname + ") )";
-                                var query = connection.query("SELECT *, DATE_FORMAT(START_DATE, '%Y-%m-%d') AS START_DATE,DATE_FORMAT(END_DATE, '%Y-%m-%d') AS END_DATE, PROJECT_GROUP.GROUP_NAME,OFFICE.OFFICE_NAME FROM PROJECT INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN PROJECT_TYPE ON PROJECT.PROJECT_TYPE_ID = PROJECT_TYPE.TYPE_ID INNER JOIN PROJECT_GROUP ON PROJECT.GROUP_ID = PROJECT_GROUP.GROUP_ID INNER JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID " + con + " AND DATEDIFF(START_DATE, NOW()) > 90", function (err, rows) {
+                                var query = connection.query("SELECT *, DATE_FORMAT(START_DATE, '%Y-%m-%d') AS START_DATE,DATE_FORMAT(END_DATE, '%Y-%m-%d') AS END_DATE, PROJECT_GROUP.GROUP_NAME,OFFICE.OFFICE_NAME FROM PROJECT INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN PROJECT_TYPE ON PROJECT.PROJECT_TYPE_ID = PROJECT_TYPE.TYPE_ID INNER JOIN PROJECT_GROUP ON PROJECT.GROUP_ID = PROJECT_GROUP.GROUP_ID INNER JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID " + con + " AND DATEDIFF(START_DATE, NOW()) ", function (err, rows) {
                                     if (err) {
                                         return res.send({
                                             "error": true,
@@ -399,7 +399,7 @@ exports.getProjectStartingList = function(req,res){
                         });
                     }
                 } else {
-                    connection.query("SELECT *, DATE_FORMAT(START_DATE, '%Y-%m-%d') AS START_DATE,DATE_FORMAT(END_DATE, '%Y-%m-%d') AS END_DATE, CATEGORY.CATEGORY_NAME, PROJECT_GROUP.GROUP_NAME,OFFICE.OFFICE_NAME FROM PROJECT INNER JOIN CATEGORY ON PROJECT.CATEGORY_ID = CATEGORY.CATEGORY_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN PROJECT_TYPE ON PROJECT.PROJECT_TYPE_ID = PROJECT_TYPE.TYPE_ID INNER JOIN PROJECT_GROUP ON PROJECT_GROUP. GROUP_ID = PROJECT.GROUP_ID LEFT JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID " + con + " AND DATEDIFF(START_DATE, NOW()) > 90", function (err, rows) {
+                    connection.query("SELECT *, DATE_FORMAT(START_DATE, '%Y-%m-%d') AS START_DATE,DATE_FORMAT(END_DATE, '%Y-%m-%d') AS END_DATE, CATEGORY.CATEGORY_NAME, PROJECT_GROUP.GROUP_NAME,OFFICE.OFFICE_NAME FROM PROJECT INNER JOIN CATEGORY ON PROJECT.CATEGORY_ID = CATEGORY.CATEGORY_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN PROJECT_TYPE ON PROJECT.PROJECT_TYPE_ID = PROJECT_TYPE.TYPE_ID INNER JOIN PROJECT_GROUP ON PROJECT_GROUP. GROUP_ID = PROJECT.GROUP_ID LEFT JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID " + con + " AND DATEDIFF(START_DATE, NOW()) ", function (err, rows) {
                         if (err) {
                             console.log(err);
                             return res.send({
@@ -768,9 +768,9 @@ exports.getProjectList = function (req, res) {
 
                 if(req.body.PROJECT){
                     if(req.body.PROJECT === 'START'){
-                        con = con + " AND DATEDIFF(START_DATE, NOW()) > 90";
+                        con = con + " AND DATEDIFF(START_DATE, NOW()) ";
                     } else {
-                        con = con + " AND DATEDIFF(END_DATE, NOW()) > 90";
+                        con = con + " AND DATEDIFF(END_DATE, NOW()) ";
                     }
                 }
 
@@ -1868,7 +1868,7 @@ exports.getDashboardDetails = function (req,res){
                 })
             },
             ProjectStarting: function(callback){
-                conn.query("SELECT COUNT(START_DATE) AS PROJECT_STARTING FROM "+ DBName +".PROJECT WHERE DATEDIFF("+ DBName +".PROJECT.START_DATE, NOW()) > 90 AND " + additionalCondition, function (err, StartInDate) {
+                conn.query("SELECT COUNT(START_DATE) AS PROJECT_STARTING FROM "+ DBName +".PROJECT WHERE DATEDIFF("+ DBName +".PROJECT.START_DATE, NOW())  AND " + additionalCondition, function (err, StartInDate) {
                     if (err) {
                         callback(null, '0');
                     } else {
