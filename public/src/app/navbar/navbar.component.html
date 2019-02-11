@@ -125,7 +125,7 @@
                                 aria-haspopup="true"
                                 aria-expanded="false"> 
                                 <span class="avtar"><img src="../assets/common-images/profile-img.png" alt=""/> </span> 
-                                <span class="text-responsive">{{userData.FIRST_NAME}} {{userData.LAST_NAME}}</span> 
+                                <span class="text-responsive">{{(userData.PREFERRED_NAME != null && userData.PREFERRED_NAME != '') ? userData.PREFERRED_NAME : userData.FIRST_NAME}} {{userData.LAST_NAME}}</span> 
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" (click)="auth.logout()">Sign Out </a>
