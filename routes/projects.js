@@ -917,9 +917,7 @@ exports.getProjectList = function (req, res) {
             //     projectDataArg.forEach(element => {
             //         var PMNameArray = [];
             //         // Getting Project executive of project
-            //         console.log('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Executive FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"');
             //         var GetEmpExcuQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Executive,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"', function (err, ProExcuData) {
-            //             console.log(ProExcuData);
             //             if (err) {
             //                 return res.send({
             //                     "error": true,
@@ -961,7 +959,6 @@ exports.getProjectList = function (req, res) {
             //     ProPeoList.forEach(element => {
             //         tempCondition++;
             //         tempAssignment = calculateProjectAssignment(new Date(element.START_DATE),new Date(element.END_DATE));
-            //         console.log(tempAssignment);
             //         tempArray.push(element);
             //         if (tempCondition === ProPeoList.length) {
             //             callback(null, tempArray);

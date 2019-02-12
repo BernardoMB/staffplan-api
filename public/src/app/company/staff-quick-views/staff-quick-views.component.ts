@@ -92,7 +92,7 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
     };
     public listQuickViews = [
         {text: 'Next 90 Days - Staff Available', value: 'NEXT_90_DAY'},
-        // {text: 'New Staff', value: 'NEW_STAFF'},
+        {text: 'Bench', value: 'NEW_STAFF'},
         {text: 'Staffing Gaps', value: 'STAFF_GAP'},
         {text: 'Overallocation', value: 'OVER_ALLOC'},
         {text: 'Upcoming Project Roll Off', value: 'UPCOM_ROLL_OFF'}
@@ -468,15 +468,17 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
         if (this.model.office != null) {
             filter['OFFICE_NAME'] = this.model.office.OFFICE_NAME;
         }
-        const staff = this.allStaffRelatedDetail.filter(function (item) {
-            for (const key in filter) {
-                if (item[key] === undefined || item[key] !== filter[key]) {
-                    return false;
+        if (this.allStaffRelatedDetail) {
+            const staff = this.allStaffRelatedDetail.filter(function (item) {
+                for (const key in filter) {
+                    if (item[key] === undefined || item[key] !== filter[key]) {
+                        return false;
+                    }
                 }
-            }
-            return true;
-        });
-        this.updateDisplayRecord(staff);
+                return true;
+            });
+            this.updateDisplayRecord(staff);
+        }
         this.viewDataByFilter = {...this.model};
         this.filterMenuOpen = false;
     }

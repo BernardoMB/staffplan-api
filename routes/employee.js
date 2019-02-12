@@ -118,7 +118,6 @@ exports.getEmployeeDetails = async function (req, res) {
 										ProTempObj.ProInnerObj.PROJECT_DATA = ProIdArry;
 										ProTempObj.ProInnerObj.CURRENT_PROJECT = currentPeojectArray;
 										ProTempObj.ProInnerObj.NEXT_PROJECT = nextPeojectArray;
-										// console.log(ProTempObj.ProInnerObj);
 										empD(projectLength,index,ProTempObj.ProInnerObj, req, res, connection);
 									} else {
 										var withoutSquareBreckets = empProdatas[0].EXPERIENCE_ID.replace(/[\[\]']+/g, '');
@@ -1177,7 +1176,6 @@ exports.getAvailableStaff = function(req,res){
 						if (err) {
 							callback(null, 'OPS count not found');
 						} else {
-							console.log(StaffIDList);
 							return;
 							StaffIDList.forEach(element => {
 								staffIdArray.push('"' + element.STAFF_ID + '"');
@@ -1190,7 +1188,6 @@ exports.getAvailableStaff = function(req,res){
 						if (err) {
 							callback(null, err);
 						} else {
-							console.log('see data...', StaffIDList);
 							StaffIDList.forEach(element => {
 								data.push('"' + element.STAFF_ID + '"');
 							});
@@ -1410,7 +1407,6 @@ exports.getAvailableStaff2 = function(req,res){
 						if (err) {
 							callback(null, 'Something went wrong');
 						} else {
-							// console.log(StaffIDList);
 							StaffIDList.forEach(element => {
 								staffAllocationArray.push({
 									START_DATE: moment().format('YYYY-MM-DD'),
@@ -1460,7 +1456,6 @@ exports.getAvailableStaff2 = function(req,res){
 						if (err) {
 							callback(null, 'Something went wrong');
 						} else {
-							// console.log(StaffIDList);
 							StaffIDList.forEach(element => {
 								staffAllocationArray.push({
 									START_DATE: moment().format('YYYY-MM-DD'),
@@ -1515,7 +1510,6 @@ exports.getAvailableStaff2 = function(req,res){
 						if (err) {
 							callback(null, 'Something went wrong');
 						} else {
-							// console.log(StaffIDList);
 							StaffIDList.forEach(element => {
 								staffAllocationArray.push({
 									START_DATE: moment().format('YYYY-MM-DD'),
