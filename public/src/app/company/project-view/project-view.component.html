@@ -242,7 +242,7 @@
                         </ng-template>
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                                      *ngIf="column.columnId == 'PROJECT_ROM'">
-                            <span> {{dataItem[column.columnId]}} </span>
+                            <span> {{formatter.format(dataItem[column.columnId])}} </span>
                         </ng-template>
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                                      *ngIf="column.columnId == 'DURATION'">
