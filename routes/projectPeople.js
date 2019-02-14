@@ -1197,7 +1197,7 @@ exports.bulkAddProjectPeople = function (req, res) {
                         var tempString = '';
                         var finalResponseArray = [];
                         duplicateArray.forEach(duplicateElement => {
-                            var queryDuplicate = connection.query("SELECT CONCAT (STAFF.FIRST_NAME,STAFF.MIDDLE_INITIAL,STAFF.LAST_NAME) AS STAFF_NAME,PROJECT.PROJECT_NAME FROM PROJECT_PEOPLE INNER JOIN STAFF ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID INNER JOIN PROJECT ON PROJECT.PROJECT_ID = PROJECT_PEOPLE.PROJECT_ID WHERE PROJECT_PEOPLE.PROJECT_ID = '" + duplicateElement.PROJECT_ID + "' AND STAFF.STAFF_ID = '" + duplicateElement.STAFF_ID + "'", function (err, rowsDuplicate) {
+                            var queryDuplicate = connection.query("SELECT CONCAT_WS(' ',  (CASE STAFF.PREFERRED_NAME WHEN '' THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END), STAFF.MIDDLE_INITIAL,STAFF.LAST_NAME) AS STAFF_NAME, PROJECT.PROJECT_NAME FROM PROJECT_PEOPLE INNER JOIN STAFF ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID INNER JOIN PROJECT ON PROJECT.PROJECT_ID = PROJECT_PEOPLE.PROJECT_ID WHERE PROJECT_PEOPLE.PROJECT_ID = '" + duplicateElement.PROJECT_ID + "' AND STAFF.STAFF_ID = '" + duplicateElement.STAFF_ID + "'", function (err, rowsDuplicate) {
                                 counter++;
                                 if (err) {
                                     return res.send({

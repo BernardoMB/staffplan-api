@@ -168,7 +168,7 @@
 
                         <div class="bb-1 pb-2 my-4"><!-- border Separator --></div>
                         <div *ngIf="selectedStaff !== null && selectedStaff.PROJECT_DATA.length > 0">
-                            <div class="title mb-0"> {{selectedStaff.FIRST_NAME + " " + selectedStaff.LAST_NAME}}'s
+                            <div class="title mb-0"> {{selectedStaff.PREFERRED_NAME && selectedStaff.PREFERRED_NAME !== '' ? selectedStaff.PREFERRED_NAME : selectedStaff.FIRST_NAME + " " + selectedStaff.LAST_NAME}}'s
                                 Current Assignment
                             </div>
                             <div class="row mx-0 bb-1 py-3 align-items-center"

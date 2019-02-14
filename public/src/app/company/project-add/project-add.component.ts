@@ -116,9 +116,9 @@ export class ProjectAddComponent implements OnInit {
                 for (let key in this.peopleList) {
                     const dataItem = this.peopleList[key];
                     if (dataItem['PREFERRED_NAME'] && dataItem['PREFERRED_NAME'] !== '') {
-                    dataItem['STAFF_NAME'] = `${dataItem['PREFERRED_NAME']} ${dataItem['LAST_NAME']}`;
+                        dataItem['STAFF_NAME'] = `${dataItem['PREFERRED_NAME']} ${dataItem['LAST_NAME']}`;
                     } else {
-                    dataItem['STAFF_NAME'] = `${dataItem['FIRST_NAME']} ${dataItem['LAST_NAME']}`;
+                        dataItem['STAFF_NAME'] = `${dataItem['FIRST_NAME']} ${dataItem['LAST_NAME']}`;
                     }
                 }
                 this.filteredPeopleList = this.peopleList.slice();
