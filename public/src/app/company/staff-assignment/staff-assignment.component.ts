@@ -43,8 +43,10 @@ export class StaffAssignmentComponent implements OnInit, OnDestroy {
         'STAFF_NAME': 0,
         'PROJECT_NAME': 1,
         'STATUS_NAME': 2,
-        'STAFF_STATUS_NAME': 3,
-        'ROLE_NAME': 4,
+        'START_DATE': 3,
+        'END_DATE': 4,
+        'STAFF_STATUS_NAME': 5,
+        'ROLE_NAME': 6
     };
     private subscription;
     public groups: GroupDescriptor[] = [{field: 'STAFF_NAME'}];

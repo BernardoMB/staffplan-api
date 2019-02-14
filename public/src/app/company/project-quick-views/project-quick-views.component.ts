@@ -105,6 +105,7 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
     public filteredProjectTypeList = [];
     public editDataItem: any;
     public selectedOfficeId;
+    public formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
 
     constructor(private chRef: ChangeDetectorRef,
         private toastr: ToastrService,
@@ -153,7 +154,6 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
                 this.allColumns = getColumnsList(response.data[0], HIDDEN_OPEN_ROLL_COLUMNS, this.customColumnsName, this.columnOrdering);
             }
             this.allColumns = customFieldNames(this.allColumns, this.customLabel);
-            console.log(JSON.stringify(this.allColumns));
             for (const index in response.data) {
                 response.data[index]['END_DATE'] = new Date(response.data[index]['END_DATE']);
                 response.data[index]['START_DATE'] = new Date(response.data[index]['START_DATE']);

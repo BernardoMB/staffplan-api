@@ -101,6 +101,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     public displayProjectType = null;
     public viewPortHeight = 450;
     public selectedOfficeId;
+    public formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
 
     constructor(private route: ActivatedRoute,
         private chRef: ChangeDetectorRef,
