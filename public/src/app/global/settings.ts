@@ -522,5 +522,5 @@ export const convertToUTC = function(date) {
 //         date.getUTCSeconds());
 // };
 export const convertDateToUTC = function(date) {
-    return new Date(moment(date).valueOf());
+    return new Date(moment(date));
 };
