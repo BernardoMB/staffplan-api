@@ -521,8 +521,8 @@ export class ProjectViewStaffDetailPopoverComponent
     $that.addProjectModel.PROJECT_CITY = this.projectInstance.PROJECT_CITY;
     $that.addProjectModel.PROJECT_STATE = this.projectInstance.PROJECT_STATE;
     $that.addProjectModel.PROJECT_ZIP = this.projectInstance.PROJECT_ZIP;
-    this.assignRoleModel.START_DATE = new Date(this.projectInstance.START_DATE);
-    this.assignRoleModel.END_DATE = new Date(this.projectInstance.END_DATE);
+    this.assignRoleModel.START_DATE = convertDateToUTC(this.projectInstance.START_DATE);
+    this.assignRoleModel.END_DATE = convertDateToUTC(this.projectInstance.END_DATE);
     this.assignStaffModel.START_DATE = convertDateToUTC(startDate);
     this.assignStaffModel.END_DATE = convertDateToUTC(endDate);
     if (typeof $that.addProjectModel.CUSTOMER !== 'undefined') {
