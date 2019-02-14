@@ -512,12 +512,15 @@ export const customFieldLabels = function (columns, customField) {
 export const convertToUTC = function(date) {
     return moment.utc(date).format('YYYY-MM-DD');
 };
+// export const convertDateToUTC = function(date) {
+//     return new Date(
+//         date.getUTCFullYear(),
+//         date.getUTCMonth(),
+//         date.getUTCDate(),
+//         date.getUTCHours(),
+//         date.getUTCMinutes(),
+//         date.getUTCSeconds());
+// };
 export const convertDateToUTC = function(date) {
-    return new Date(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        date.getUTCHours(),
-        date.getUTCMinutes(),
-        date.getUTCSeconds());
+    return new Date(moment(date));
 };
