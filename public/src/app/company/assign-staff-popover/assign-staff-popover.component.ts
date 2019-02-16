@@ -8,6 +8,8 @@ import {
     STATIC_IMAGE,
     dateValidation,
     IMAGE_PATH,
+    convertToUTC,
+    convertDateToUTC
 } from '../../global/settings';
 import {DatePipe} from '@angular/common';
 import {toInteger} from '@ng-bootstrap/ng-bootstrap/util/util';
@@ -213,8 +215,8 @@ export class AssignStaffPopoverComponent implements OnInit {
         this.apiService.getAvailableProject(postJson).subscribe((response: any) => {
             if (response && response.data) {
                 for (let key in response.data) {
-                    response.data[key]['START_DATE'] = new Date(response.data[key]['PLANNED_START_DATE']);
-                    response.data[key]['END_DATE'] = new Date(response.data[key]['PLANNED_END_DATE']);
+                    response.data[key]['START_DATE'] = convertToUTC(response.data[key]['PLANNED_START_DATE']);
+                    response.data[key]['END_DATE'] = convertToUTC(response.data[key]['PLANNED_END_DATE']);
                 }
                 this.availableProject = response.data;
                 this.availableAllProject = response.data;
@@ -275,8 +277,8 @@ export class AssignStaffPopoverComponent implements OnInit {
             $that.showDetailsLoader = true;
             $that.getDependentList(value, column);
             console.log(value);
-            $that.assignStaffModel.START_DATE = new Date(value.START_DATE);
-            $that.assignStaffModel.END_DATE = new Date(value.END_DATE);
+            $that.assignStaffModel.START_DATE = convertDateToUTC(value.START_DATE);
+            $that.assignStaffModel.END_DATE = convertDateToUTC(value.END_DATE);
         }
         if (this.staffIdForEditStaff || this.addForm == 1 || this.model && this.model.ID) {
             if ($that.assignStaffModel.ROLE_DETAIL != null && $that.assignStaffModel.PROJECT_DETAIL != null) {

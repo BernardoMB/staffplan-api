@@ -4,7 +4,11 @@ import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DatePipe} from '@angular/common';
 import {Router} from '@angular/router';
-import {ERROR_MESSAGE} from '../../global/settings';
+import {
+    ERROR_MESSAGE,
+    convertDateToUTC,
+    convertToUTC,
+} from '../../global/settings';
 import {ApiService} from '../../api.service';
 
 @Component({
@@ -152,8 +156,8 @@ export class ProjectAddComponent implements OnInit {
                 $that.getProjectDetails(function (projectDetail) {
                     if (projectDetail && projectDetail.data) {
                         $that.addProjectModel.PROJECT_NAME = projectDetail.data.PROJECT_NAME;
-                        $that.addProjectModel.START_DATE = new Date(projectDetail.data.START_DATE);
-                        $that.addProjectModel.END_DATE = new Date(projectDetail.data.END_DATE);
+                        $that.addProjectModel.START_DATE = convertDateToUTC(new Date(projectDetail.data.START_DATE));
+                        $that.addProjectModel.END_DATE = convertDateToUTC(new Date(projectDetail.data.END_DATE));
                         $that.addProjectModel.PROJECT_STATUS = $that.projectStatusList.find(x => x.STATUS_ID == projectDetail.data.PROJECT_STATUS_ID);
                         $that.addProjectModel.OFFICE = $that.officeList.find(x => x.OFFICE_ID == projectDetail.data.OFFICE_ID);
                         $that.addProjectModel.PROJECT_CATEGORY = $that.addProjectModel.OFFICE['CATEGORY_NAME'];

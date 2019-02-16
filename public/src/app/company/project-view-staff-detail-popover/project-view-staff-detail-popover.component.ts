@@ -491,8 +491,8 @@ export class ProjectViewStaffDetailPopoverComponent
     this.dataPopulate = false;
     const $that = this;
     this.projectIdForUpdate = this.projectInstance.PROJECT_ID;
-    const startDate = new Date(this.projectInstance.START_DATE);
-    const endDate = new Date(this.projectInstance.END_DATE);
+    const startDate = convertDateToUTC(this.projectInstance.START_DATE);
+    const endDate = convertDateToUTC(this.projectInstance.END_DATE);
     $that.addProjectModel.PROJECT_NO = this.projectInstance.PROJECT_NO;
     $that.addProjectModel.PROJECT_NAME = this.projectInstance.PROJECT_NAME;
     $that.addProjectModel.START_DATE = convertDateToUTC(startDate);
@@ -945,8 +945,8 @@ export class ProjectViewStaffDetailPopoverComponent
     this.columnEditable = 4;
     this.activeRolePanel = 'role-list';
     this.assignRoleModel = {
-      START_DATE: this.addProjectModel.START_DATE,
-      END_DATE: this.addProjectModel.END_DATE,
+      START_DATE: convertDateToUTC(this.addProjectModel.START_DATE),
+      END_DATE: convertDateToUTC(this.addProjectModel.END_DATE),
       ALLOCATION: 100,
       ROLE_DETAIL: null,
       RESUME_SUBMITTED: 0,
@@ -1093,8 +1093,8 @@ export class ProjectViewStaffDetailPopoverComponent
     this.columnEditable = 1;
     this.activeStaffPanel = 'staff-list';
     this.assignStaffModel = {
-      START_DATE: this.addProjectModel.START_DATE,
-      END_DATE: this.addProjectModel.END_DATE,
+      START_DATE: convertDateToUTC(this.addProjectModel.START_DATE),
+      END_DATE: convertDateToUTC(this.addProjectModel.END_DATE),
       ALLOCATION: 100,
       ROLE_DETAIL: null,
       RESUME_SUBMITTED: 0,
