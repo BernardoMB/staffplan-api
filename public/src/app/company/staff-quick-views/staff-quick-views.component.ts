@@ -30,7 +30,11 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
     private customColumnsName = {
         'ROLE_NAME': 'Project Role',
         'STAFF_STATUS_NAME': 'Staff Status',
-        'GROUP_NAME': 'Staff Group'
+        'GROUP_NAME': 'Staff Group',
+        'STAFF_NAME': 'Staff',
+        'PROJECT_NAME': 'Project',
+        'OFFICE_NAME': 'Office',
+        'STAFF_ASSIGNMENT': 'Assignment Status'
     };
     private columnOrdering = {
         'STAFF_NAME': 0,
@@ -44,7 +48,7 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
         'CATEGORY_NAME': 'Category',
         'OFFICE_NAME': 'Office',
         'GROUP_NAME': 'Staff Group',
-        'PREFFERED_NAME': 'Name'
+        'PREFERRED_NAME': 'Staff'
     };
     private columnNewStaffOrdering = {
         'STAFF_NAME': 0,
@@ -57,14 +61,18 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
         'ROLE_NAME': 'Project Role',
         'STATUS_NAME': 'Project Status',
         'ALLOCATION': '%Allocation',
-        'STAFF_ASSIGNMENT': 'Assignment Status'
+        'STAFF_ASSIGNMENT': 'Assignment Status',
+        'STAFF_NAME': 'Staff',
+        'PROJECT_NAME': 'Project',
+        'ALLOCATION_TOTAL': 'Total Allocation'
     };
     private columnAssignOrdering = {
         'STAFF_NAME': 0,
         'PROJECT_NAME': 1,
         'STATUS_NAME': 2,
-        'STAFF_STATUS_NAME': 3,
-        'ROLE_NAME': 4,
+        'PROJECT_ROLE': 3,
+        'STAFF_STATUS_NAME': 4,
+        'ROLE_NAME': 5
     };
     private allStaffRelatedDetail = [];
     public date_format = DATE_FORMAT;
@@ -93,9 +101,9 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
     public listQuickViews = [
         {text: 'Next 90 Days - Staff Available', value: 'NEXT_90_DAY'},
         {text: 'Bench', value: 'NEW_STAFF'},
-        {text: 'Staffing Gaps', value: 'STAFF_GAP'},
-        {text: 'Overallocation', value: 'OVER_ALLOC'},
-        {text: 'Upcoming Project Roll Off', value: 'UPCOM_ROLL_OFF'}
+        {text: 'Staffing Gap', value: 'STAFF_GAP'},
+        {text: 'Allocation Gap', value: 'OVER_ALLOC'},
+        {text: 'Assignment Ending', value: 'UPCOM_ROLL_OFF'}
     ];
     public selectedQuickView = this.listQuickViews[0];
     public tabStatus: number;
@@ -168,6 +176,7 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
                 this.allColumns = STAFF_ALL_PROJECT_DETAILS_COLUMNS;
             }
             this.allColumns = customFieldNames(this.allColumns, this.customLabel);
+            console.dir(this.allColumns);
             this.allStaffRelatedDetail = [];
             if (response.data.ASSIGNEDSTAFF.length > 0) {
                 const asssignStaff = response.data.ASSIGNEDSTAFF;

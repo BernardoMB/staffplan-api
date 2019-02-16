@@ -31,7 +31,8 @@ export const HIDDEN_PROJECT_COLUMNS = [
     'CATEGORY_NAME',
     'TYPE_NAME',
     'PROJECT_EXECUTIVE',
-    'PROJECT_CITY'
+    'PROJECT_CITY',
+    'GROUP_NAME'
 ];
 export const HIDDEN_PROJECT_DETAILS_COLUMNS = [
     'ID',
@@ -118,7 +119,8 @@ export const HIDDEN_NEW_STAFF_COLUMNS = [
     'OFFICE_TYPE',
     'OFFICE_ZIP',
     'REGION_ID',
-    'STAFF_ASSIGNMENT'
+    'STAFF_ASSIGNMENT',
+    'STATUS_NAME'
 ];
 
 export const HIDDEN_STAFF_DETAILS_COLUMNS = [
@@ -140,7 +142,8 @@ export const HIDDEN_OPEN_ROLL_COLUMNS = [
     'PROJECT_STATUS_ID',
     'EXPERIENCE_ID',
     'GROUP_ID',
-    'OFFICE_CITY'
+    'OFFICE_CITY',
+    'TYPE_NAME'
 ];
 
 export const HIDDEN_STAFF_DETAILS_POPOVER_COLUMNS = [
@@ -239,10 +242,10 @@ export const STAFF_PROJECT_DETAILS_COLUMNS = [{
 ];
 export const STAFF_ALL_PROJECT_DETAILS_COLUMNS = [{
     'columnId': 'STAFF_NAME',
-    'columnLabel': 'Staff Name'
+    'columnLabel': 'Staff'
 }, {
     'columnId': 'PROJECT_NAME',
-    'columnLabel': 'Project Name'
+    'columnLabel': 'Project'
 }, {
     'columnId': 'ROLE_NAME',
     'columnLabel': 'Project Role'
@@ -258,10 +261,10 @@ export const STAFF_ALL_PROJECT_DETAILS_COLUMNS = [{
 }];
 export const STAFF_ASSIGNMENT_ALL_COLUMNS = [{
     'columnId': 'STAFF_NAME',
-    'columnLabel': 'Staff Name'
+    'columnLabel': 'Staff'
 }, {
     'columnId': 'PROJECT_NAME',
-    'columnLabel': 'Project Name'
+    'columnLabel': 'Project'
 }, {
     'columnId': 'STATUS_NAME',
     'columnLabel': 'Project Status'
