@@ -180,9 +180,7 @@
                             >
                                 {{dataItem.STAFF_NAME}}
                             </button>
-                            <span *ngIf="!dataItem.STAFF_NAME" class="unassigned-staff">
-                (Unassigned)
-                </span>
+                            <span *ngIf="!dataItem.STAFF_NAME" class="unassigned-staff">(Unassigned)</span>
                         </ng-template>
                         <ng-template kendoGridCellTemplate let-dataItem="dataItem"
                                      *ngIf="column.columnId == 'PROJECT_NAME'">

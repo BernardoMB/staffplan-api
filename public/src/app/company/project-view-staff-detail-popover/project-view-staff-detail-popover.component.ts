@@ -917,8 +917,8 @@ export class ProjectViewStaffDetailPopoverComponent
     this.assignRoleModel.ROLE_DETAIL = this.roleList.find(
       x => x.ROLE_ID === dataItem.PROJECT_ROLE_ID
     );
-    this.assignRoleModel.START_DATE = new Date(dataItem.START_DATE);
-    this.assignRoleModel.END_DATE = new Date(dataItem.END_DATE);
+    this.assignRoleModel.START_DATE = convertDateToUTC(dataItem.START_DATE);
+    this.assignRoleModel.END_DATE = convertDateToUTC(dataItem.END_DATE);
     this.assignRoleModel.ALLOCATION = dataItem.ALLOCATION;
     this.assignRoleModel.RESUME_SUBMITTED = parseInt(dataItem.RESUME_SUBMITTED);
     this.assignRoleModel.ID = dataItem.ID;
@@ -1057,8 +1057,8 @@ export class ProjectViewStaffDetailPopoverComponent
     this.assignStaffModel.ROLE_DETAIL = this.roleList.find(
       x => x.ROLE_ID === dataItem.PROJECT_ROLE_ID
     );
-    this.assignStaffModel.START_DATE = new Date(dataItem.START_DATE);
-    this.assignStaffModel.END_DATE = new Date(dataItem.END_DATE);
+    this.assignStaffModel.START_DATE = convertDateToUTC(dataItem.START_DATE);
+    this.assignStaffModel.END_DATE = convertDateToUTC(dataItem.END_DATE);
     this.assignStaffModel.ALLOCATION = dataItem.ALLOCATION;
     this.assignStaffModel.RESUME_SUBMITTED = parseInt(dataItem.RESUME_SUBMITTED);
     if (!('STAFF_ID' in dataItem)) {
