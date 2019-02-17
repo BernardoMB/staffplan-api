@@ -6,7 +6,9 @@ import {
     DATE_FORMAT,
     ERROR_MESSAGE,
     STAFF_ASSIGNMENT_ALL_COLUMNS,
-    customFieldNames
+    customFieldNames,
+    convertToUTC,
+    convertDateToUTC
 } from '../../global/settings';
 import {ToastrService} from 'ngx-toastr';
 import {ApiService} from '../../api.service';
@@ -153,8 +155,8 @@ export class StaffAssignmentComponent implements OnInit, OnDestroy {
             this.assignedData = [];
             this.unAssignedData = [];
             for (const index in response.data) {
-                response.data[index]['END_DATE'] = new Date(response.data[index]['END_DATE']);
-                response.data[index]['START_DATE'] = new Date(response.data[index]['START_DATE']);
+                response.data[index]['END_DATE'] = convertToUTC(response.data[index]['END_DATE']);
+                response.data[index]['START_DATE'] = convertToUTC(response.data[index]['START_DATE']);
                 response.data[index]['RESUME_SUBMITTED'] = (response.data[index]['RESUME_SUBMITTED'] == '0') ? 'No' : 'Yes';
                 if ('STAFF_ID' in response.data[index]) {
                     this.assignedData.push(response.data[index]);

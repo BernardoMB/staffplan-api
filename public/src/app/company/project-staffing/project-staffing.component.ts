@@ -6,7 +6,9 @@ import {
     DATE_FORMAT,
     ERROR_MESSAGE,
     STAFF_ASSIGNMENT_ALL_COLUMNS,
-    customFieldNames
+    customFieldNames,
+    convertToUTC,
+    convertDateToUTC
 } from '../../global/settings';
 import {ToastrService} from 'ngx-toastr';
 import {process, State, GroupDescriptor} from '@progress/kendo-data-query';
@@ -114,8 +116,8 @@ export class ProjectStaffingComponent implements OnInit {
             }
             $that.allColumns = customFieldNames($that.allColumns, $that.customColumnNames);
             for (let index in response.data) {
-                response.data[index]['END_DATE'] = new Date(response.data[index]['END_DATE']);
-                response.data[index]['START_DATE'] = new Date(response.data[index]['START_DATE']);
+                response.data[index]['END_DATE'] = convertToUTC(response.data[index]['END_DATE']);
+                response.data[index]['START_DATE'] = convertToUTC(response.data[index]['START_DATE']);
                 response.data[index]['RESUME_SUBMITTED'] = (response.data[index]['RESUME_SUBMITTED'] == '0') ? 'No' : 'Yes';
             }
             $that.allAssignStaffData = response.data;

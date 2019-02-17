@@ -7,7 +7,9 @@ import {
     HIDDEN_STAFF_DETAILS_COLUMNS,
     STAFF_PROJECT_DETAILS_COLUMNS,
     ERROR_MESSAGE_REQUIRED,
-    DATE_FORMAT
+    DATE_FORMAT,
+    convertToUTC,
+    convertDateToUTC
 } from '../../global/settings';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {GridDataResult} from '@progress/kendo-angular-grid';
@@ -78,8 +80,8 @@ export class StaffViewProjectDetailsGridComponent implements OnInit {
                 this.staffDetailColumns = STAFF_PROJECT_DETAILS_COLUMNS;
             }
             for (let index in response.data) {
-                response.data[index]['START_DATE'] = new Date(response.data[index]['START_DATE']);
-                response.data[index]['END_DATE'] = new Date(response.data[index]['END_DATE']);
+                response.data[index]['START_DATE'] = convertToUTC(response.data[index]['START_DATE']);
+                response.data[index]['END_DATE'] = convertToUTC(response.data[index]['END_DATE']);
                 if (response.data[index]['CONFIRMED'] == null || response.data[index]['CONFIRMED'] == 0) {
                     response.data[index]['CONFIRMED'] = false;
                 } else if (response.data[index]['CONFIRMED'] == 1) {
@@ -184,8 +186,8 @@ export class StaffViewProjectDetailsGridComponent implements OnInit {
 
     public saveHandler({sender, rowIndex, formGroup, isNew}) {
         const formValues = formGroup.value;
-        let SDate = new Date(formValues.START_DATE);
-        let EDate = new Date(formValues.END_DATE);
+        let SDate = convertDateToUTC(formValues.START_DATE);
+        let EDate = convertDateToUTC(formValues.END_DATE);
         if (SDate > EDate) {
             this.toastr.error('End date must be bigger than start date');
         } else if (formValues.PROJECT_ID == null || formValues.ROLE_ID == null || formValues.ALLOCATION == null) {

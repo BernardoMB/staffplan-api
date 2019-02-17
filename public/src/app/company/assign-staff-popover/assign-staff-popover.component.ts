@@ -98,8 +98,8 @@ export class AssignStaffPopoverComponent implements OnInit {
 
     private staffAssignFormEdit() {
         if (this.model != null) {
-            this.assignStaffModel.START_DATE = this.model.START_DATE;
-            this.assignStaffModel.END_DATE = this.model.END_DATE;
+            this.assignStaffModel.START_DATE = convertDateToUTC(this.model.START_DATE);
+            this.assignStaffModel.END_DATE = convertDateToUTC(this.model.END_DATE);
             this.assignStaffModel.ALLOCATION = toInteger(this.model.ALLOCATION);
             this.assignStaffModel.ROLE_DETAIL = this.rolesList.find(x => x.ROLE_ID == this.model.PROJECT_ROLE_ID);
             if (!('STAFF_ID' in this.model)) {
@@ -486,10 +486,10 @@ export class AssignStaffPopoverComponent implements OnInit {
         const staffDetail = {...this.assignStaffModel.STAFF_DETAIL};
         this.assignStaffModel.PROJECT_DETAIL = this.projectList.find(x => x.PROJECT_ID == data.PROJECT_ID);
         this.assignStaffModel.STAFF_DETAIL = staffDetail;
-        this.assignStaffModel.START_DATE = new Date(data.PLANNED_START_DATE);
+        this.assignStaffModel.START_DATE = convertDateToUTC(data.PLANNED_START_DATE);
         this.assignStaffModel.ALLOCATION = data.ALLOCATION;
         this.columnEditable = 1;
-        this.assignStaffModel.END_DATE = new Date(data.PLANNED_END_DATE);
+        this.assignStaffModel.END_DATE = convertDateToUTC(data.PLANNED_END_DATE);
         this.plannedProjectId = data.ID;
         const obj = {
             PROJECT_ID: data.PROJECT_ID

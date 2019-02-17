@@ -5,6 +5,8 @@ import {
     HIDDEN_OPEN_ROLL_COLUMNS,
     DATE_FORMAT,
     ERROR_MESSAGE,
+    convertToUTC,
+    convertDateToUTC
 } from '../../global/settings';
 import {ToastrService} from 'ngx-toastr';
 import {ApiService} from '../../api.service';
@@ -70,8 +72,8 @@ export class OpenRoleComponent implements OnInit {
             }
             this.allData = [];
             for (let index in response.data) {
-                response.data[index]['END_DATE'] = new Date(response.data[index]['END_DATE']);
-                response.data[index]['START_DATE'] = new Date(response.data[index]['START_DATE']);
+                response.data[index]['END_DATE'] = convertToUTC(response.data[index]['END_DATE']);
+                response.data[index]['START_DATE'] = convertToUTC(response.data[index]['START_DATE']);
             }
             this.allData = response.data;
             this.openRoleData = process(this.allData, this.config);

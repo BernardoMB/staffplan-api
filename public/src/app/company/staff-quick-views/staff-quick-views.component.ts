@@ -11,6 +11,7 @@ import {
     HIDDEN_NEW_STAFF_COLUMNS,
     HIDDEN_STAFF_ASSIGNMENT_COLUMNS,
     STAFF_ASSIGNMENT_ALL_COLUMNS,
+    convertToUTC
 } from '../../global/settings';
 import {ApiService} from '../../api.service';
 import {process, State} from '@progress/kendo-data-query';
@@ -247,8 +248,8 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
             }
             $that.allColumns = customFieldNames($that.allColumns, $that.customLabel);
             for (const index in response.data) {
-                response.data[index]['END_DATE'] = new Date(response.data[index]['END_DATE']);
-                response.data[index]['START_DATE'] = new Date(response.data[index]['START_DATE']);
+                response.data[index]['END_DATE'] = convertToUTC(response.data[index]['END_DATE']);
+                response.data[index]['START_DATE'] = convertToUTC(response.data[index]['START_DATE']);
                 response.data[index]['Start Month'] = moment(response.data[index]['START_DATE']).format('MMMM');
                 response.data[index]['End Month'] = moment(response.data[index]['END_DATE']).format('MMMM');
                 response.data[index]['RESUME_SUBMITTED'] = (response.data[index]['RESUME_SUBMITTED'] == '0') ? 'No' : 'Yes';
@@ -279,8 +280,8 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
             }
             $that.allColumns = customFieldNames($that.allColumns, $that.customLabel);
             for (const index in response.data) {
-                response.data[index]['END_DATE'] = new Date(response.data[index]['END_DATE']);
-                response.data[index]['START_DATE'] = new Date(response.data[index]['START_DATE']);
+                response.data[index]['END_DATE'] = convertToUTC(response.data[index]['END_DATE']);
+                response.data[index]['START_DATE'] = convertToUTC(response.data[index]['START_DATE']);
                 response.data[index]['Start Month'] = moment(response.data[index]['START_DATE']).format('MMMM');
                 response.data[index]['End Month'] = moment(response.data[index]['END_DATE']).format('MMMM');
                 response.data[index]['RESUME_SUBMITTED'] = (response.data[index]['RESUME_SUBMITTED'] == '0') ? 'No' : 'Yes';
@@ -311,8 +312,8 @@ export class StaffQuickViewsComponent implements OnInit, OnDestroy {
             }
             $that.allColumns = customFieldNames($that.allColumns, $that.customLabel);
             for (const index in response.data) {
-                response.data[index]['END_DATE'] = new Date(response.data[index]['END_DATE']);
-                response.data[index]['START_DATE'] = new Date(response.data[index]['START_DATE']);
+                response.data[index]['END_DATE'] = convertToUTC(response.data[index]['END_DATE']);
+                response.data[index]['START_DATE'] = convertToUTC(response.data[index]['START_DATE']);
                 response.data[index]['Start Month'] = moment(response.data[index]['START_DATE']).format('MMMM');
                 response.data[index]['End Month'] = moment(response.data[index]['END_DATE']).format('MMMM');
                 response.data[index]['Next Available Month'] = moment(response.data[index]['NEXT_AVAILABLE']).format('MMMM');
