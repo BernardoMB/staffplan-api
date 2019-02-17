@@ -37,16 +37,18 @@ export class StaffAssignmentComponent implements OnInit, OnDestroy {
         'ROLE_NAME': 'Project Role',
         'STATUS_NAME': 'Project Status',
         'ALLOCATION': '%Allocation',
-        'STAFF_ASSIGNMENT': 'Assignment Status'
+        'STAFF_ASSIGNMENT': 'Assignment Status',
+        'STAFF_NAME': 'Staff',
+        'PROJECT_NAME': 'Project'
     };
     private columnOrdering = {
         'STAFF_NAME': 0,
         'PROJECT_NAME': 1,
-        'STATUS_NAME': 2,
-        'START_DATE': 3,
-        'END_DATE': 4,
-        'STAFF_STATUS_NAME': 5,
-        'ROLE_NAME': 6
+        'ROLE_NAME': 2,
+        'STATUS_NAME': 3,
+        'START_DATE': 4,
+        'END_DATE': 5,
+        'STAFF_STATUS_NAME': 6
     };
     private subscription;
     public groups: GroupDescriptor[] = [{field: 'STAFF_NAME'}];

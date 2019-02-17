@@ -33,19 +33,20 @@ export class StaffViewComponent implements OnInit, OnDestroy {
         'HOME_ZIP': 'Zip',
         'STAFF_CERTIFICATION': 'Certification',
         'STAFF_TRAINING': 'Training',
+        'STAFF_NAME': 'Staff',
         'STATUS_NAME': 'Status',
         'ROLE_NAME': 'Staff Role',
         'CATEGORY_NAME': 'Category',
         'OFFICE_NAME': 'Office',
-        'GROUP_NAME': 'Staff Group',
-        'PREFFERED_NAME': 'Name'
+        'GROUP_NAME': 'Group',
+        'PREFERRED_NAME': 'Staff'
     };
     private columnOrdering = {
         'STAFF_NAME': 0,
-        'STATUS_NAME': 1,
-        'ROLE_NAME': 2,
-        'GROUP_NAME': 3,
-        'OFFICE_NAME': 4
+        'ROLE_NAME': 1,
+        'STATUS_NAME': 2,
+        'OFFICE_NAME': 3,
+        'GROUP_NAME': 4
     };
 
     private allStaffData = [];

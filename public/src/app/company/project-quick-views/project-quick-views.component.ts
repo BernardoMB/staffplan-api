@@ -38,8 +38,8 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
         'STATUS_NAME': 2
     };
     private customProjectColumnsName = {
-        'STATUS_NAME': 'Status',
-        'PROJECT_ROM': 'ROM ($)',
+        'STATUS_NAME': 'Project Status',
+        'PROJECT_ROM': 'Project Value',
         'GROUP_NAME': 'Group',
         'OFFICE_NAME': 'Office',
         'DATES': 'Timeline'
@@ -81,10 +81,10 @@ export class ProjectQuickViewsComponent implements OnInit, OnDestroy {
         group: [{field: 'PROJECT_NAME'}]
     };
     public listQuickViews = [
-        {text: 'Unassigned Roles', value: 'UNASSIGNED'},
+        {text: 'Unassigned Role(s)', value: 'UNASSIGNED'},
         // {text: 'New Projects Awarded', value: 'NEW_PRO'},
-        {text: 'Upcoming Projects', value: 'PRO_START'},
-        {text: 'Projects Ending', value: 'PRO_END'}
+        {text: 'Upcoming Project(s)', value: 'PRO_START'},
+        {text: 'Project(s) Ending', value: 'PRO_END'}
     ];
     public selectedQuickView = this.listQuickViews[0];
     public tabStatus: number;
