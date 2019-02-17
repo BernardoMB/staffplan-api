@@ -1725,40 +1725,36 @@ exports.getStaffingGap = function (req, res) {
     req.getConnection(function (err, connection) {
         async.waterfall([
             function (callback) {
-                var DBName = connectionModule.SUBSCRIBERDB;
-                var staffAllocated = 'SELECT PROJECT_PEOPLE.*, CONCAT_WS(" ",  (CASE STAFF.PREFERRED_NAME WHEN "" THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END),  STAFF.MIDDLE_INITIAL, STAFF.LAST_NAME) AS STAFF_NAME,PROJECT.PROJECT_NAME,PROJECT.PROJECT_STATUS_ID,PROJECT_STATUS.STATUS_NAME, STAFF_ROLE.ROLE_NAME, STAFF_STATUS.STATUS_NAME AS STAFF_STATUS_NAME,OFFICE.OFFICE_NAME FROM PROJECT_PEOPLE  INNER JOIN STAFF ON PROJECT_PEOPLE.STAFF_ID = STAFF.STAFF_ID INNER JOIN PROJECT ON PROJECT_PEOPLE.PROJECT_ID = PROJECT.PROJECT_ID INNER JOIN STAFF_ROLE ON PROJECT_PEOPLE.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID INNER JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID  where PROJECT_PEOPLE.STAFF_ID not in ( SELECT STAFF_ID FROM PROJECT_PEOPLE WHERE START_DATE <= NOW() AND END_DATE >= NOW())';
-                // var newStaff = 'SELECT STAFF_ID, NULL PROJECT_ID, DATE("1000-01-01") START_DATE, DATE("9999-12-31") END_DATE, 0 ALLOCATION, 0 PROJECT_ROLE_ID, NULL ASSIGNMENT_DURATION, NULL CONFIRMED, NULL NEXT_AVAILABLE, 0 RESUME_SUBMITTED, NULL EXPERIENCE_ID, CONCAT_WS(" ",  (CASE STAFF.PREFERRED_NAME WHEN "" THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END),  STAFF.MIDDLE_INITIAL, STAFF.LAST_NAME) AS STAFF_NAME, NULL PROJECT_NAME, NULL PROJECT_STATUS_ID, NULL STATUS_NAME, NULL ROLE_NAME, STAFF_STATUS.STATUS_NAME ASSTAFF_STATUS_NAME, NULL OFFICE_NAME FROM STAFF INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID AND STAFF_STATUS.STATUS_ID = 1 WHERE STAFF_ID not in (SELECT STAFF_ID FROM PROJECT_PEOPLE GROUP BY STAFF_ID)';
-                // var newStaff = 'SELECT STAFF_ID, NULL PROJECT_ID, null START_DATE, null END_DATE, 0 ALLOCATION, 0 PROJECT_ROLE_ID, NULL ASSIGNMENT_DURATION, NULL CONFIRMED, NULL NEXT_AVAILABLE, 0 RESUME_SUBMITTED, NULL EXPERIENCE_ID, CONCAT_WS(" ",  (CASE STAFF.PREFERRED_NAME WHEN "" THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END),  STAFF.MIDDLE_INITIAL, STAFF.LAST_NAME) AS STAFF_NAME, NULL PROJECT_NAME, NULL PROJECT_STATUS_ID, NULL STATUS_NAME, NULL ROLE_NAME, STAFF_STATUS.STATUS_NAME ASSTAFF_STATUS_NAME, NULL OFFICE_NAME FROM STAFF INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID AND STAFF_STATUS.STATUS_ID = 1 WHERE STAFF_ID not in (SELECT STAFF_ID FROM PROJECT_PEOPLE GROUP BY STAFF_ID)';
+                const DBName = connectionModule.SUBSCRIBERDB;
+                const staffAllocated = 'SELECT PROJECT_PEOPLE.*, CONCAT_WS(" ",  (CASE STAFF.PREFERRED_NAME WHEN "" THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END),  STAFF.MIDDLE_INITIAL, STAFF.LAST_NAME) AS STAFF_NAME,PROJECT.PROJECT_NAME,PROJECT.PROJECT_STATUS_ID,PROJECT_STATUS.STATUS_NAME, STAFF_ROLE.ROLE_NAME, STAFF_STATUS.STATUS_NAME AS STAFF_STATUS_NAME,OFFICE.OFFICE_NAME FROM PROJECT_PEOPLE  INNER JOIN STAFF ON PROJECT_PEOPLE.STAFF_ID = STAFF.STAFF_ID INNER JOIN PROJECT ON PROJECT_PEOPLE.PROJECT_ID = PROJECT.PROJECT_ID INNER JOIN STAFF_ROLE ON PROJECT_PEOPLE.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID INNER JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID  WHERE PROJECT_PEOPLE.STAFF_ID in ( SELECT STAFF_ID FROM PROJECT_PEOPLE WHERE START_DATE >= NOW() GROUP BY STAFF_ID) AND PROJECT_PEOPLE.START_DATE >= NOW() ORDER BY PROJECT_PEOPLE.STAFF_ID ASC, PROJECT_PEOPLE.START_DATE ASC';
                 connection.query(`${staffAllocated}`, function (err, StaffingGap) {
                     if (err) {
                         callback(null, 'count not found');
                     } else {
                         debugger;
-                        var inactiveProjectPeople = JSON.parse(JSON.stringify(StaffingGap));
-                        var responseCounter = 0;
-                        var arrayResponse = [];
-                        inactiveProjectPeople.forEach(element => {
-                            inactiveProjectPeople.forEach(subElement => {
-                                // if (element.STAFF_ID == subElement.STAFF_ID && formatDate(element.END_DATE) < formatDate(subElement.START_DATE)) {
-                                //     var dayCounts = dayCount(element.END_DATE, subElement.START_DATE);
-                                //     if (dayCounts >= 30) {
-                                //         arrayResponse.push(subElement);
-                                //     }
-                                // }
-                                if (element.STAFF_ID == subElement.STAFF_ID && element.STAFF_NAME) {
-                                    if (subElement.PROJECT_ID !== null && formatDate(element.END_DATE) < formatDate(subElement.START_DATE)) {
-                                        var dayCounts = dayCount(element.END_DATE, subElement.START_DATE);
-                                        if (dayCounts >= 30) {
-                                            arrayResponse.push(subElement);
-                                        }
-                                    } else if (subElement.PROJECT_ID === null) {
-                                        if (element.STAFF_NAME.trim() !== '') {
-                                            arrayResponse.push(subElement);
+                        const futureProjectPeople = JSON.parse(JSON.stringify(StaffingGap));
+                        let arrayResponse = [];
+                        // we will get a list of future projects order by Staff ID and then order by start date.
+                        // For each staff, we will compare the end date of project n with start date of project n+1.
+                        // If there is a gap, we will push this to our response
+                        if (futureProjectPeople.length > 0) {
+                            let currentStaffId = futureProjectPeople[0].STAFF_ID;
+                            for (let i = 0; i < futureProjectPeople.length - 1; i++) {
+                                let nextRecord = futureProjectPeople[i+1];
+                                if (currentStaffId === nextRecord.STAFF_ID) {
+                                    if (formatDate(futureProjectPeople[i].END_DATE) < formatDate(futureProjectPeople[i+1].START_DATE)) {
+                                        arrayResponse.push(futureProjectPeople[i]);
+                                        // If the last record is also in the gap list, add it here
+                                        if (i+1 === futureProjectPeople.length - 1) {
+                                            arrayResponse.push(futureProjectPeople[i+1]);
                                         }
                                     }
+                                } else {
+                                    currentStaffId = nextRecord.STAFF_ID;
                                 }
-                            });
-                        });
+                            }
+                        }
+                        
                         if (arrayResponse.length <= 0) {
                             return res.send({
                                 "error": false,
@@ -1804,7 +1800,8 @@ exports.getStaffingGap = function (req, res) {
                 } else {
                     callback(null, bothData);
                 }
-            }, function (ProPeoList, callback) {
+            }, 
+            function (ProPeoList, callback) {
                 var tempCondition = 0;
                 var tempArray = [];
                 var tempAssignment = '';

@@ -1910,22 +1910,37 @@ exports.getDashboardDetails = function (req,res){
                 })
             },
             StaffingGap: function(callback) {
-                conn.query('SELECT PROJECT_PEOPLE.*,PROJECT.PROJECT_ID,PROJECT.OFFICE_ID FROM ' + DBName + '.PROJECT_PEOPLE INNER JOIN PROJECT ON PROJECT_PEOPLE.PROJECT_ID = PROJECT.PROJECT_ID where STAFF_ID not in ( SELECT STAFF_ID FROM ' + DBName + '.PROJECT_PEOPLE WHERE START_DATE <= NOW() AND END_DATE >= NOW()) AND ' + additionalCondition, function (err, StaffingGap) {
+                conn.query('SELECT PROJECT_PEOPLE.*,PROJECT.PROJECT_ID,PROJECT.OFFICE_ID FROM ' + DBName + '.PROJECT_PEOPLE INNER JOIN PROJECT ON PROJECT_PEOPLE.PROJECT_ID = PROJECT.PROJECT_ID where STAFF_ID IN ( SELECT STAFF_ID FROM ' + DBName + '.PROJECT_PEOPLE WHERE START_DATE >= NOW() GROUP BY STAFF_ID) AND PROJECT_PEOPLE.START_DATE >= NOW() AND ' + additionalCondition + ' ORDER BY PROJECT_PEOPLE.STAFF_ID ASC, PROJECT_PEOPLE.START_DATE ASC', function (err, StaffingGap) {
                     if (err) {
+                        console.log("Error:" + err);
                         callback(null, '0');
                     } else {
-                        var inactiveProjectPeople = JSON.parse(JSON.stringify(StaffingGap));
-                        var responseCounter = 0;
-                        inactiveProjectPeople.forEach(element => {
-                            inactiveProjectPeople.forEach(subElement => {
-                                if(element.STAFF_ID == subElement.STAFF_ID && formatDate(element.END_DATE) < formatDate(subElement.START_DATE)){
-                                    var dayCounts = dayCount(element.END_DATE, subElement.START_DATE);
-                                    if(dayCounts >= 30 ){
+                        const futureProjectPeople = JSON.parse(JSON.stringify(StaffingGap));
+                        console.log(futureProjectPeople);
+                        let arrayResponse = [];
+                        let responseCounter = 0;
+                        // we will get a list of future projects order by Staff ID and then order by start date.
+                        // For each staff, we will compare the end date of project n with start date of project n+1.
+                        // If there is a gap, we will push this to our response
+                        if (futureProjectPeople.length > 0) {
+                            let currentStaffId = futureProjectPeople[0].STAFF_ID;
+                            for (let i = 0; i < futureProjectPeople.length - 1; i++) {
+                                let nextRecord = futureProjectPeople[i+1];
+                                if (currentStaffId === nextRecord.STAFF_ID) {
+                                    if (formatDate(futureProjectPeople[i].END_DATE) < formatDate(futureProjectPeople[i+1].START_DATE)) {
+                                        arrayResponse.push(futureProjectPeople[i]);
                                         responseCounter++;
+                                        // If the last record is also in the gap list, add it here
+                                        if (i+1 === futureProjectPeople.length - 1) {
+                                            arrayResponse.push(futureProjectPeople[i+1]);
+                                            responseCounter++;
+                                        }
                                     }
+                                } else {
+                                    currentStaffId = nextRecord.STAFF_ID;
                                 }
-                            }); 
-                        });
+                            }
+                        }
                         callback(null, responseCounter);
                     }
                 })

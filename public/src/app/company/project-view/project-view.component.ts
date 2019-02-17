@@ -6,7 +6,7 @@ import {
     HIDDEN_PROJECT_COLUMNS,
     TIMELINE_TYPE,
     ERROR_MESSAGE,
-    customFieldNames, convert,
+    customFieldNames,
 } from '../../global/settings';
 import {GridDataResult, DataStateChangeEvent, GridComponent} from '@progress/kendo-angular-grid';
 import {ApiService} from '../../api.service';
