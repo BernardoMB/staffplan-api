@@ -437,27 +437,22 @@ export const dateValidation = function (projectDate, assignDate) {
             key: '',
             validationString: ''
         };
-        if (convert(assignDate.START_DATE.toString()) < convert(projectDate.START_DATE.toString())) {
+        const assignStartDate = assignDate.START_DATE;
+        const projectStartDate = projectDate.START_DATE;
+        const assignEndDate = assignDate.END_DATE;
+        const projectEndDate = projectDate.END_DATE;
+        if (assignStartDate < projectStartDate) {
             validation['key'] = 'START_DATE';
             validation['validationString'] = 'Start date must be equal to or greater than project start date';
-        } else if (convert(assignDate.END_DATE.toString()) > convert(projectDate.END_DATE.toString())) {
+        } else if (assignEndDate > projectEndDate) {
             validation['key'] = 'END_DATE';
             validation['validationString'] = 'End date must be equal to or less than project end date';
-        } else if (convert(assignDate.START_DATE.toString()) > convert(assignDate.END_DATE.toString())) {
+        } else if (assignStartDate > assignEndDate) {
             validation['key'] = 'START_DATE';
             validation['validationString'] = 'Start date must be equal to or less than end date';
         }
         return validation;
     }
-};
-export const convert = function (str) {
-   let mnths = {
-            Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
-            Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12'
-        },
-        date = str.split(' ');
-
-    return new Date([date[3], mnths[date[1]], date[2]].join('-'));
 };
 
 export const ERROR_MESSAGE = {

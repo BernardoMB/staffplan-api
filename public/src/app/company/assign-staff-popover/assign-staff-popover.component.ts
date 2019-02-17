@@ -303,8 +303,8 @@ export class AssignStaffPopoverComponent implements OnInit {
     public onSave(e): void {
         if (this.selectedProject != null) {
             const obj = {
-                'START_DATE': new Date(this.selectedProject.START_DATE),
-                'END_DATE': new Date(this.selectedProject.END_DATE),
+                'START_DATE': convertDateToUTC(this.selectedProject.START_DATE),
+                'END_DATE': convertDateToUTC(this.selectedProject.END_DATE),
             };
             const validation = dateValidation(obj, this.assignStaffModel);
             if (validation.key == 'START_DATE') {

@@ -495,8 +495,8 @@ export class ProjectViewStaffDetailPopoverComponent
     const endDate = convertDateToUTC(this.projectInstance.END_DATE);
     $that.addProjectModel.PROJECT_NO = this.projectInstance.PROJECT_NO;
     $that.addProjectModel.PROJECT_NAME = this.projectInstance.PROJECT_NAME;
-    $that.addProjectModel.START_DATE = convertDateToUTC(startDate);
-    $that.addProjectModel.END_DATE = convertDateToUTC(endDate);
+    $that.addProjectModel.START_DATE = startDate;
+    $that.addProjectModel.END_DATE = endDate;
     $that.addProjectModel.PROJECT_STATUS = $that.projectStatusList.find(
       x => x.STATUS_ID === this.projectInstance.PROJECT_STATUS_ID
     );
@@ -523,8 +523,8 @@ export class ProjectViewStaffDetailPopoverComponent
     $that.addProjectModel.PROJECT_ZIP = this.projectInstance.PROJECT_ZIP;
     this.assignRoleModel.START_DATE = convertDateToUTC(this.projectInstance.START_DATE);
     this.assignRoleModel.END_DATE = convertDateToUTC(this.projectInstance.END_DATE);
-    this.assignStaffModel.START_DATE = convertDateToUTC(startDate);
-    this.assignStaffModel.END_DATE = convertDateToUTC(endDate);
+    this.assignStaffModel.START_DATE = startDate;
+    this.assignStaffModel.END_DATE = endDate;
     if (typeof $that.addProjectModel.CUSTOMER !== 'undefined') {
       $that.addProjectModel.CUSTOMER_CONTACT =
         $that.addProjectModel.CUSTOMER['CUSTOMER_CONTACT'];
@@ -945,8 +945,8 @@ export class ProjectViewStaffDetailPopoverComponent
     this.columnEditable = 4;
     this.activeRolePanel = 'role-list';
     this.assignRoleModel = {
-      START_DATE: convertDateToUTC(this.addProjectModel.START_DATE),
-      END_DATE: convertDateToUTC(this.addProjectModel.END_DATE),
+      START_DATE: this.addProjectModel.START_DATE,
+      END_DATE: this.addProjectModel.END_DATE,
       ALLOCATION: 100,
       ROLE_DETAIL: null,
       RESUME_SUBMITTED: 0,
@@ -1093,8 +1093,8 @@ export class ProjectViewStaffDetailPopoverComponent
     this.columnEditable = 1;
     this.activeStaffPanel = 'staff-list';
     this.assignStaffModel = {
-      START_DATE: convertDateToUTC(this.addProjectModel.START_DATE),
-      END_DATE: convertDateToUTC(this.addProjectModel.END_DATE),
+      START_DATE: this.addProjectModel.START_DATE,
+      END_DATE: this.addProjectModel.END_DATE,
       ALLOCATION: 100,
       ROLE_DETAIL: null,
       RESUME_SUBMITTED: 0,
