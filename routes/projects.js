@@ -218,7 +218,7 @@ exports.getProjectInitiatedList = function(req,res){
                 projectDataArg.forEach(element => {
                     var PMNameArrayManager = [];
                     var PMNameArrayExecutive = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE WHEN PREFERRED_NAME = "" THEN FIRST_NAME WHEN PREFERRED_NAME IS NULL THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
@@ -428,7 +428,7 @@ exports.getProjectStartingList = function(req,res){
                 projectDataArg.forEach(element => {
                     var PMNameArrayManager = [];
                     var PMNameArrayExecutive = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE WHEN PREFERRED_NAME = "" THEN FIRST_NAME WHEN PREFERRED_NAME IS NULL THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
@@ -638,7 +638,7 @@ exports.getProjectEndingList = function(req,res){
                 projectDataArg.forEach(element => {
                     var PMNameArrayManager = [];
                     var PMNameArrayExecutive = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE WHEN PREFERRED_NAME = "" THEN FIRST_NAME WHEN PREFERRED_NAME IS NULL THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
@@ -881,7 +881,7 @@ exports.getProjectList = function (req, res) {
                 projectDataArg.forEach(element => {
                     var PMNameArrayManager = [];
                     var PMNameArrayExecutive = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE WHEN PREFERRED_NAME = "" THEN FIRST_NAME WHEN PREFERRED_NAME IS NULL THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8") OR (PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7")', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
@@ -917,7 +917,7 @@ exports.getProjectList = function (req, res) {
             //     projectDataArg.forEach(element => {
             //         var PMNameArray = [];
             //         // Getting Project executive of project
-            //         var GetEmpExcuQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Executive,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"', function (err, ProExcuData) {
+            //         var GetEmpExcuQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE WHEN PREFERRED_NAME = "" THEN FIRST_NAME WHEN PREFERRED_NAME IS NULL THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Executive,PROJECT_PEOPLE.PROJECT_ROLE_ID FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"', function (err, ProExcuData) {
             //             if (err) {
             //                 return res.send({
             //                     "error": true,
@@ -1161,7 +1161,7 @@ exports.getProjectListTest = function (req, res) {
                 var DataArray = [];
                 projectDataArg.forEach(element => {
                     var PMNameArray = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8"', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE WHEN PREFERRED_NAME = "" THEN FIRST_NAME WHEN PREFERRED_NAME IS NULL THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8"', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
@@ -1450,7 +1450,7 @@ exports.getProjectDetails = function (req, res) {
             function (ProjectData, callback) {
                 var projectPeopleArray = [];
                 var itemsProcessed = 0;
-                var ProjectPeopleQuery = connection.query('SELECT PROJECT_PEOPLE.*,DATE_FORMAT(PROJECT_PEOPLE.START_DATE, "%Y-%m-%d") AS START_DATE,DATE_FORMAT(PROJECT_PEOPLE.END_DATE, "%Y-%m-%d") AS END_DATE, CONCAT_WS(" ",  (CASE STAFF.PREFERRED_NAME WHEN "" THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END), STAFF.MIDDLE_INITIAL,STAFF.LAST_NAME) AS STAFF_NAME, STAFF_ROLE.ROLE_NAME, STAFF_STATUS.STATUS_NAME, STAFF.STAFF_PHOTO FROM PROJECT_PEOPLE INNER JOIN STAFF ON PROJECT_PEOPLE.STAFF_ID = STAFF.STAFF_ID INNER JOIN STAFF_ROLE ON PROJECT_PEOPLE.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID WHERE PROJECT_ID = "' + ProjectData.PROJECT_ID + '"', function (err, ProjectPeopleData) {
+                var ProjectPeopleQuery = connection.query('SELECT PROJECT_PEOPLE.*,DATE_FORMAT(PROJECT_PEOPLE.START_DATE, "%Y-%m-%d") AS START_DATE,DATE_FORMAT(PROJECT_PEOPLE.END_DATE, "%Y-%m-%d") AS END_DATE, CONCAT_WS(" ",  (CASE WHEN STAFF.PREFERRED_NAME = "" THEN STAFF.FIRST_NAME WHEN STAFF.PREFERRED_NAME IS NULL THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END), STAFF.MIDDLE_INITIAL,STAFF.LAST_NAME) AS STAFF_NAME, STAFF_ROLE.ROLE_NAME, STAFF_STATUS.STATUS_NAME, STAFF.STAFF_PHOTO FROM PROJECT_PEOPLE INNER JOIN STAFF ON PROJECT_PEOPLE.STAFF_ID = STAFF.STAFF_ID INNER JOIN STAFF_ROLE ON PROJECT_PEOPLE.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID WHERE PROJECT_ID = "' + ProjectData.PROJECT_ID + '"', function (err, ProjectPeopleData) {
                     if (err) {
                         return res.send({
                             "error": true,
@@ -1525,7 +1525,7 @@ exports.getProjectDetails = function (req, res) {
                     callback(null, ProPeoList);
             },
             function(proData, callback){
-                var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Executive FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + proData.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"', function (err, executiveName) {
+                var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE WHEN PREFERRED_NAME = "" THEN FIRST_NAME WHEN PREFERRED_NAME IS NULL THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Executive FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + proData.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "7"', function (err, executiveName) {
                     if (err) {
                         return res.send({
                             "error": true,
@@ -1543,7 +1543,7 @@ exports.getProjectDetails = function (req, res) {
                 });
             },
             function(proData, callback){
-                var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + proData.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8"', function (err, projectManagerName) {
+                var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE WHEN PREFERRED_NAME = "" THEN FIRST_NAME WHEN PREFERRED_NAME IS NULL THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE  PROJECT_PEOPLE.PROJECT_ID = "' + proData.PROJECT_ID + '" AND PROJECT_PEOPLE.PROJECT_ROLE_ID = "8"', function (err, projectManagerName) {
                     if (err) {
                         return res.send({
                             "error": true,
@@ -1610,7 +1610,7 @@ exports.projectTypehead = function (req, res) {
                 var DataArray = [];
                 arg1.forEach(element => {
                     var PMNameArray = [];
-                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE PREFERRED_NAME WHEN "" THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE PROJECT_PEOPLE.PROJECT_ROLE_ID = "8" AND PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '"', function (err, ProData) {
+                    var GetEmpQuery = connection.query('SELECT CONCAT_WS(" ",  (CASE WHEN PREFERRED_NAME = "" THEN FIRST_NAME WHEN PREFERRED_NAME IS NULL THEN FIRST_NAME ELSE PREFERRED_NAME END), MIDDLE_INITIAL,LAST_NAME) AS Project_Manager FROM STAFF INNER JOIN PROJECT_PEOPLE ON STAFF.STAFF_ID = PROJECT_PEOPLE.STAFF_ID WHERE PROJECT_PEOPLE.PROJECT_ROLE_ID = "8" AND PROJECT_PEOPLE.PROJECT_ID = "' + element.PROJECT_ID + '"', function (err, ProData) {
                         if (err) {
                             return res.send({
                                 "error": true,
