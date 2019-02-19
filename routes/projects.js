@@ -1919,6 +1919,7 @@ exports.getDashboardDetails = function (req,res){
                         console.log(futureProjectPeople);
                         let arrayResponse = [];
                         let responseCounter = 0;
+                        // May want to get cleaner logic here, this is faster since we only go through the loop one but may be confusion and harder for maintenance 
                         // we will get a list of future projects order by Staff ID and then order by start date.
                         // For each staff, we will compare the end date of project n with start date of project n+1.
                         // If there is a gap, we will push this to our response
@@ -1937,6 +1938,11 @@ exports.getDashboardDetails = function (req,res){
                                         }
                                     }
                                 } else {
+                                    // We are moving to check next staff. Add the last project of this staff in the list as well if its in the gap comparison 
+                                    if (i > 0 && formatDate(futureProjectPeople[i-1].END_DATE) < formatDate(futureProjectPeople[i].START_DATE)) {
+                                        arrayResponse.push(futureProjectPeople[i]);
+                                        responseCounter++;
+                                    }
                                     currentStaffId = nextRecord.STAFF_ID;
                                 }
                             }
