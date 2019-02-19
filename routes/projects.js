@@ -1916,7 +1916,6 @@ exports.getDashboardDetails = function (req,res){
                         callback(null, '0');
                     } else {
                         const futureProjectPeople = JSON.parse(JSON.stringify(StaffingGap));
-                        console.log(futureProjectPeople);
                         let arrayResponse = [];
                         let responseCounter = 0;
                         // May want to get cleaner logic here, this is faster since we only go through the loop one but may be confusion and harder for maintenance 
@@ -1952,11 +1951,11 @@ exports.getDashboardDetails = function (req,res){
                 })
             },
             OverUnderAllocation: function(callback) {
-                conn.query('SELECT COUNT(ALLOCATION) AS ALLOCATION FROM ( SELECT SUM(ALLOCATION) AS ALLOCATION,STAFF_ID, PROJECT.PROJECT_ID FROM '+ DBName +'.PROJECT_PEOPLE INNER JOIN PROJECT ON PROJECT_PEOPLE.PROJECT_ID = PROJECT.PROJECT_ID WHERE PROJECT_PEOPLE.START_DATE <= NOW() AND PROJECT_PEOPLE.END_DATE >= NOW()  AND ' + additionalCondition + '" GROUP BY STAFF_ID ) AS ALLOCATION_COUNT WHERE ALLOCATION < 100 OR ALLOCATION > 100', function (err, OUAllocation) {
+                conn.query('SELECT PROJECT_PEOPLE.*, CONCAT_WS(" ",  (CASE WHEN STAFF.PREFERRED_NAME = "" THEN STAFF.FIRST_NAME WHEN STAFF.PREFERRED_NAME IS NULL THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END), STAFF.LAST_NAME) AS STAFF_NAME,PROJECT.PROJECT_NAME,PROJECT.PROJECT_STATUS_ID,PROJECT_STATUS.STATUS_NAME, STAFF_ROLE.ROLE_NAME,OFFICE.OFFICE_NAME, STAFF_STATUS.STATUS_NAME AS STAFF_STATUS_NAME, (SELECT SUM(ALLOCATION) as ALLOCATION_TOTAL FROM PROJECT_PEOPLE WHERE PROJECT_PEOPLE.STAFF_ID = STAFF.STAFF_ID AND PROJECT_PEOPLE.START_DATE <= NOW() AND PROJECT_PEOPLE.END_DATE >= NOW()) as ALLOCATION_TOTAL  FROM PROJECT_PEOPLE  INNER JOIN STAFF ON PROJECT_PEOPLE.STAFF_ID = STAFF.STAFF_ID INNER JOIN PROJECT ON PROJECT_PEOPLE.PROJECT_ID = PROJECT.PROJECT_ID INNER JOIN STAFF_ROLE ON PROJECT_PEOPLE.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID INNER JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID WHERE PROJECT_PEOPLE.START_DATE <= NOW() AND PROJECT_PEOPLE.END_DATE >= NOW() HAVING ALLOCATION_TOTAL > 100', function (err, OUAllocation) {
                     if (err) {
                         callback(null, '0');
                     } else {
-                        callback(null, OUAllocation[0].ALLOCATION);
+                        callback(null, OUAllocation.length);
                     }
                 })
             },
