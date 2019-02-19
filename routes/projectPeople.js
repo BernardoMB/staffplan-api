@@ -1745,9 +1745,7 @@ exports.getStaffingGap = function (req, res) {
                                     if (formatDate(futureProjectPeople[i].END_DATE) < formatDate(futureProjectPeople[i+1].START_DATE)) {
                                         arrayResponse.push(futureProjectPeople[i]);
                                         // If the last record is also in the gap list, add it here
-                                        if (i+1 === futureProjectPeople.length - 1) {
-                                            arrayResponse.push(futureProjectPeople[i+1]);
-                                        }
+                                        arrayResponse.push(futureProjectPeople[i+1]);
                                     }
                                 } else {
                                     currentStaffId = nextRecord.STAFF_ID;
