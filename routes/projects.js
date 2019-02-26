@@ -1942,6 +1942,11 @@ exports.getDashboardDetails = function (req,res){
                                         arrayResponse.push(futureProjectPeople[i]);
                                         responseCounter++;
                                     }
+                                    // If this staff only has one future project, then add that to the gap response
+                                    if (i > 0 && currentStaffId !== futureProjectPeople[i-1].STAFF_ID) {
+                                        arrayResponse.push(futureProjectPeople[i]);
+                                        responseCounter++;
+                                    }
                                     currentStaffId = nextRecord.STAFF_ID;
                                 }
                             }

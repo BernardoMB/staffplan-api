@@ -1751,8 +1751,13 @@ exports.getStaffingGap = function (req, res) {
                                         }
                                     }
                                 } else {
-                                    // We are moving to check next staff. Add the last project of this staff in the list as well if its in the gap comparison 
+                                    // We are moving to check next staff.
+                                    // Add the last project of this staff in the list as well if its in the gap comparison 
                                     if (i > 0 && formatDate(futureProjectPeople[i-1].END_DATE) < formatDate(futureProjectPeople[i].START_DATE)) {
+                                        arrayResponse.push(futureProjectPeople[i]);
+                                    }
+                                    // If this staff only has one future project, then add that to the gap response
+                                    if (i > 0 && currentStaffId !== futureProjectPeople[i-1].STAFF_ID) {
                                         arrayResponse.push(futureProjectPeople[i]);
                                     }
                                     currentStaffId = nextRecord.STAFF_ID;
