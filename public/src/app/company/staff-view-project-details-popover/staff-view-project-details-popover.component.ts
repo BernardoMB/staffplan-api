@@ -15,7 +15,9 @@ import {
     DATE_FORMAT,
     TIMELINE_TYPE,
     ERROR_MESSAGE,
-    STATIC_IMAGE, IMAGE_PATH
+    STATIC_IMAGE,
+    IMAGE_PATH,
+    convertToUTC
 } from '../../global/settings';
 import {SortDescriptor, orderBy} from '@progress/kendo-data-query';
 import {GridDataResult} from '@progress/kendo-angular-grid';
@@ -103,8 +105,8 @@ export class StaffViewProjectDetailsPopoverComponent implements OnInit, OnChange
                             $that.staffDetailColumns = STAFF_PROJECT_DETAILS_COLUMNS;
                         }
                         for (let index in $that.staffInstance['PROJECT_DATA']) {
-                            $that.staffInstance['PROJECT_DATA'][index]['START_DATE'] = new Date($that.staffInstance['PROJECT_DATA'][index]['START_DATE']);
-                            $that.staffInstance['PROJECT_DATA'][index]['END_DATE'] = new Date($that.staffInstance['PROJECT_DATA'][index]['END_DATE']);
+                            $that.staffInstance['PROJECT_DATA'][index]['START_DATE'] = convertToUTC($that.staffInstance['PROJECT_DATA'][index]['START_DATE']);
+                            $that.staffInstance['PROJECT_DATA'][index]['END_DATE'] = convertToUTC($that.staffInstance['PROJECT_DATA'][index]['END_DATE']);
                             if ($that.staffInstance['PROJECT_DATA'][index]['CONFIRMED'] == null || $that.staffInstance['PROJECT_DATA'][index]['CONFIRMED'] == 0) {
                                 $that.staffInstance['PROJECT_DATA'][index]['CONFIRMED'] = false;
                             } else if ($that.staffInstance['PROJECT_DATA'][index]['CONFIRMED'] == 1) {
