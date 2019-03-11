@@ -1,5 +1,4 @@
 module.exports = function (app) {
-    var express = require('express');
     var Projects = require('./routes/projects');
     var ProjectsPeople = require('./routes/projectPeople');
     var Employee = require('./routes/employee');
@@ -17,7 +16,6 @@ module.exports = function (app) {
     var jwt = require('jsonwebtoken');
     var newConnection = require('./connection');
     var crypto = require('crypto');
-    var cookieParser = require('cookie-parser');
     const tokenList = {};
     // var upload = multer({dest: './public/assets/images/Profilepic/'});
     var storage = multer.diskStorage({
@@ -35,7 +33,6 @@ module.exports = function (app) {
     var upload = multer({
         storage: storage
     })
-    app.use(cookieParser())
 
     app.set('superSecret', newConnection.ENCRYPTION_KEY);
     app.set('superSecretRefresh', newConnection.ENCRYPTION_KEY);
