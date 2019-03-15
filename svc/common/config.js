@@ -7,5 +7,6 @@ const encryption = {
 }
 
 module.exports = {
-  DB: { ...masterDB }
+  DB: { ...masterDB },
+  AUTH: { ...encryption }
 }

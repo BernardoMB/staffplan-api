@@ -4,7 +4,7 @@ var http = require('http');
 var cors = require('cors');
 var cookieParser = require('cookie-parser');
 
-// Configure expess settings
+// Configure express settings
 var app = express();
 app.use(cors());
 app.use(express.json());
@@ -16,7 +16,7 @@ app.use(cookieParser());
 const mysql = require('mysql');
 const connection  = require('express-myconnection');
 const config = require('./common/config');
-app.set('DB', connection(mysql, config.DB, 'pool'));
+app.use(connection(mysql, config.DB, 'request'));
 
 // Configure logging
 require('./common/logger')(app, express);

@@ -93,3 +93,105 @@ req.getConnection(function (err, connectionMaster) {
       }
   })
 });
+
+
+
+
+
+
+
+// const errorResponse = (res, message = "Something went wrong") => {
+//   res.send({
+//     "error": true,
+//     "status": "failed",
+//     "message": message
+//   });
+// };
+
+// const hasError = (err, res, reject) => {
+//   if (err) {
+//     console.log(`Subscriber error`, err);
+//     errorResponse(res);
+//     reject(err);
+//     return true;
+//   }
+//   return false;
+// };
+
+
+
+
+
+
+
+
+const db = require('../../common/connection');
+const util = require("../../common/util");
+const config = require('../../common/config');
+const SQL = require('./query');
+
+const validateSubscription = (domainID, app, req, res, next) => {
+  return new Promise((resolve, reject) => {
+    db.masterDB(app, req, res, next).then((connection) => {
+      db.execute(connection, SQL.auth(domainID)).then((company) => {
+        if (company && !company.length) {
+          reject(`Authentication failed. Subscription not found`);
+        } else {
+          resolve({ connection, dbName: company[0].COMPANY_DB });
+        }
+      }).catch(e => util.errorResponse(res, e, next));
+    }).catch(e => util.errorResponse(res, e, next));
+  })
+}
+
+const fetchOffices = (userId, connection, res, next) => {
+  return new Promise((resolve, reject) => {
+    db.execute(connection, SQL.office(userId)).then((offices) => {
+      resolve(offices);
+    }).catch(e => util.errorResponse(res, e, next));
+  })
+}
+
+const encryptPassword = (password) => {
+  const crypto = require('crypto');
+  const cipher = crypto.createCipher('aes192', config.AUTH.KEY);  
+  var encPassword = cipher.update(password, 'utf8', 'hex');  
+  encPassword += cipher.final('hex');
+  return encPassword;
+}
+
+module.exports = (app) => {
+  app.post('/api/authenticate', (req, res, next) => {
+    const userName = req.body.username;
+    const domainID = userName.substring(userName.indexOf('@') + 1);
+    // console.log('called 1');
+    // util.successResponse(res, next, {})
+    validateSubscription(domainID, app, req, res, next).then(({ connection, dbName }) => {
+      // util.successResponse(res, next, {})
+      // console.log('called 2');
+        db.userDB(connection, dbName).then(() => {
+        const encPassword = encryptPassword(req.body.password);
+        db.execute(connection, SQL.validate(userName, encPassword)).then((user) => {
+          // console.log('called 3');
+          if (user && user.length) {
+            const userId = user[0].ID;
+            const tokenizer = require('./tokenization');
+            const response = tokenizer.generateToken(userId, dbName);
+            let userObj = {};
+            userObj.user = user[0];
+            userObj.token = response.token;
+            // res.cookie('auth', response.token);
+            fetchOffices(userId, connection, res).then((offices) => {
+              userObj.user.OFFICE_LIST = offices;
+              // console.log('called 4');
+              util.successResponse(res, userObj);
+              // console.log('called 5');
+            }).catch(e => util.errorResponse(res, e));
+          } else {
+            util.errorResponse(res, 'Authentication failed', next);
+          }
+        }).catch(e => util.errorResponse(res, e, next));
+      }).catch(e => util.errorResponse(res, e, next));
+    }).catch(e => util.errorResponse(res, e, next));
+  })
+}
