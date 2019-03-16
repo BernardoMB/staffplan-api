@@ -1,9 +1,8 @@
 var crypto = require('crypto');
-var connectionModule = require('../connection');
-
+var config = require('../common/config');
 
 exports.userLogin = function (req, res) {
-	const cipher = crypto.createCipher('aes192', connectionModule.ENCRYPTION_KEY);  
+	const cipher = crypto.createCipher('aes192', config.AUTH.KEY);  
 	var encrypted = cipher.update(req.body.password, 'utf8', 'hex');  
 	encrypted += cipher.final('hex');
    
@@ -29,11 +28,11 @@ exports.userLogin = function (req, res) {
 }
 
 exports.masterLogin = function (req,res) {
-    var mastersConnection = connectionModule.masterConneection;
+    // var mastersConnection = connectionModule.masterConneection;
     var subsctiberDomainID = req.body.username;
     subsctiberDomainID = subsctiberDomainID.substring(subsctiberDomainID.indexOf('@')+1);
     req.getConnection(function (err, connectionMaster) {
-        var query = mastersConnection.query("SELECT * FROM SUBSCRIBER WHERE DOMAIN_ID = '" + subsctiberDomainID + "'", function (err, rows) {
+        var query = connectionMaster.query("SELECT * FROM SUBSCRIBER WHERE DOMAIN_ID = '" + subsctiberDomainID + "'", function (err, rows) {
             if (err) {
                 return res.send("Something went wrong");
             }
@@ -45,7 +44,7 @@ exports.masterLogin = function (req,res) {
                 });
                 return;
             } else {
-                const cipher = crypto.createCipher('aes192', connectionModule.ENCRYPTION_KEY);  
+                const cipher = crypto.createCipher('aes192', config.AUTH.KEY);  
                 var encrypted = cipher.update(req.body.password, 'utf8', 'hex');  
                 encrypted += cipher.final('hex');
                 req.getConnection(function (err,connection) {
@@ -75,7 +74,7 @@ exports.masterLogin = function (req,res) {
 exports.addUser = function (req,res) {
 	req.getConnection(function (err, connection) {
         var userPass = req.body.PASSWORD;
-        const cipher = crypto.createCipher('aes192', connectionModule.ENCRYPTION_KEY);  
+        const cipher = crypto.createCipher('aes192', config.AUTH.KEY);  
         var encrypted = cipher.update(userPass, 'utf8', 'hex');  
         encrypted += cipher.final('hex');
         req.body.PASSWORD = encrypted;
@@ -120,7 +119,7 @@ exports.getUser = function(req,res){
 exports.updateUser = function(req,res){
     if(req.body.PASSWORD){
         var userPass = req.body.PASSWORD;
-        const cipher = crypto.createCipher('aes192', connectionModule.ENCRYPTION_KEY);  
+        const cipher = crypto.createCipher('aes192', config.AUTH.KEY);  
         var encrypted = cipher.update(userPass, 'utf8', 'hex');  
         encrypted += cipher.final('hex');
         req.body.PASSWORD = encrypted;

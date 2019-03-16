@@ -22,7 +22,9 @@ app.use(connection(mysql, config.DB, 'request'));
 require('./common/logger')(app, express);
 
 // Create app routes
-require('./modules/auth/authenticate')(app); // TODO: Move to app routing
+require('./modules/route')(app);
+// TODO: It's Old Route need to be removed after refactoring
+require('./routes')(app);
 
 // Host http server
 app.set('port', process.env.PORT || 4300);

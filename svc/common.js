@@ -7,7 +7,6 @@ function getPoints(arr) {
     tempArr.push(p.START_DATE);
     tempArr.push(p.END_DATE);
   });
-//   console.log('<><><><><', tempArr);
   return _.uniq(_.sortBy(tempArr, x => x), d => convertToUTC(d));
 }
 
@@ -48,6 +47,5 @@ function getFinalOutput(pointsArr, mainArr) {
 
 exports.getDurationViseAllocationByStaffID = (arr) => {
     const overlappingPointsArr = getPoints(arr);
-    // console.log('hjb..', overlappingPointsArr);
     return getFinalOutput(overlappingPointsArr, arr);
 }

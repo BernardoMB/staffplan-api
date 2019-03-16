@@ -6,6 +6,7 @@ exports.commonListing = function(req,res){
     req.getConnection(function (err, connection) {
         var query = connection.query('SELECT * FROM ' + modelName , function (err, rows) {            
             if (err) {
+                console.log(err);
                 return res.send({"error" : true, "status" : "failed", "message" : "Something went wrong"});
             }
             res.send({"error" : false, "status" : "success", "data" : rows});

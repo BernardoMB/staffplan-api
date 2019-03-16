@@ -3,7 +3,6 @@ var async = require('async');
 var _ = require('lodash');
 var fs = require('fs');
 var moment = require('moment');
-var connectionModule = require('../connection');
 
 exports.projectInitiatedTypehead = function (req, res) {
     var search_string = req.params.projectInitiatedTypehead;
@@ -145,7 +144,7 @@ exports.staffNewTypehead = function (req, res) {
             "message": "Url not found"
         });
     }
-    var DBName = connectionModule.SUBSCRIBERDB;
+    var DBName = req.payload.DB;
     req.getConnection(function (err, connection) {
         var search_string = req.params.staffNewTypehead;
         var query = connection.query(queryGetData, function (err, rows) {
@@ -250,7 +249,7 @@ exports.staffingGapTypehead = function (req, res) {
     req.getConnection(function (err, connection) {
         async.waterfall([
             function (callback) {
-                var DBName = connectionModule.SUBSCRIBERDB;
+                var DBName = req.payload.DB;
                 connection.query('SELECT PROJECT_PEOPLE.*,STAFF.FIRST_NAME, STAFF.MIDDLE_INITIAL, STAFF.LAST_NAME, CONCAT_WS(" ",  (CASE WHEN STAFF.PREFERRED_NAME = "" THEN STAFF.FIRST_NAME WHEN STAFF.PREFERRED_NAME IS NULL THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END), STAFF.LAST_NAME) AS STAFF_NAME,PROJECT.PROJECT_NAME,PROJECT.PROJECT_STATUS_ID,PROJECT_STATUS.STATUS_NAME, STAFF_ROLE.ROLE_NAME, STAFF_STATUS.STATUS_NAME AS STAFF_STATUS_NAME FROM PROJECT_PEOPLE  INNER JOIN STAFF ON PROJECT_PEOPLE.STAFF_ID = STAFF.STAFF_ID INNER JOIN PROJECT ON PROJECT_PEOPLE.PROJECT_ID = PROJECT.PROJECT_ID INNER JOIN STAFF_ROLE ON PROJECT_PEOPLE.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID  where PROJECT_PEOPLE.STAFF_ID not in ( SELECT STAFF_ID FROM PROJECT_PEOPLE WHERE START_DATE <= NOW() AND END_DATE >= NOW())', function (err, StaffingGap) {
                     if (err) {
                         callback(null, 'count not found');

@@ -2,11 +2,10 @@ var MagicIncrement = require('magic-increment');
 var async = require('async');
 var _ = require('lodash');
 var fs = require('fs');
-var connectionModule = require('../connection');
 
 
 exports.projectInProgress = function (req,res){
-    var DBName = connectionModule.SUBSCRIBERDB;
+    var DBName = req.payload.DB;
     req.getConnection(function (err, conn) {
         if (err)
             return res.send("Cannot Connect");
@@ -30,7 +29,7 @@ exports.projectInProgress = function (req,res){
 };
 
 exports.projectStartThisYear = function (req,res){
-    var DBName = connectionModule.SUBSCRIBERDB;
+    var DBName = req.payload.DB;
     var currentDate = new Date();
     var currentYear = currentDate.getFullYear();
     req.getConnection(function (err, conn) {
@@ -56,7 +55,7 @@ exports.projectStartThisYear = function (req,res){
 };
 
 exports.projectEndThisYear = function (req,res){
-    var DBName = connectionModule.SUBSCRIBERDB;
+    var DBName = req.payload.DB;
     var currentDate = new Date();
     var currentYear = currentDate.getFullYear();
     req.getConnection(function (err, conn) {

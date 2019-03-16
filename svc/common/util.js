@@ -1,17 +1,8 @@
 module.exports = {
-  errorResponse: (res, message = "Something went wrong") => {
-    console.log('error Response');
-    res.send({
-      error: true,
-      status: "failed",
-      message: message
-    });
+  errorResponse: (res, message = "Something went wrong", status = 500) => {
+    res.status(status).json({message});
   }, 
   successResponse: (res, data) => {
-    res.send({
-      error: false,
-      status: 'Success',
-      data
-    });
+    res.status(200).json(data);
   }
 }

@@ -1,3 +1,6 @@
+const authenticate = require('./modules/auth/authenticate');
+const isAuthenticated = authenticate.isAuthenticated;
+
 module.exports = function (app) {
     var Projects = require('./routes/projects');
     var ProjectsPeople = require('./routes/projectPeople');
@@ -14,7 +17,6 @@ module.exports = function (app) {
     var multer = require('multer');
     var fs = require('fs');
     var jwt = require('jsonwebtoken');
-    var newConnection = require('./connection');
     var crypto = require('crypto');
     const tokenList = {};
     // var upload = multer({dest: './public/assets/images/Profilepic/'});
@@ -34,143 +36,6 @@ module.exports = function (app) {
         storage: storage
     })
 
-    app.set('superSecret', newConnection.ENCRYPTION_KEY);
-    app.set('superSecretRefresh', newConnection.ENCRYPTION_KEY);
-    
-    app.post('/api/authenticate', function(req, res) {
-        console.log("In authenticate");
-        var mastersConnection = newConnection.masterConnection;
-        // Debug logs to figure the case when the nodejs just hang in authentication call
-        console.log("master connection: " + mastersConnection);
-        var subsctiberDomainID = req.body.username;
-        console.log("Subsctiber Email: " + subsctiberDomainID);
-        subsctiberDomainID = subsctiberDomainID.substring(subsctiberDomainID.indexOf('@')+1);
-        console.log("Subsctiber Domain ID: " + subsctiberDomainID);
-        req.getConnection(function (err, connectionMaster) {
-            console.log("In getconnection");
-            var query = mastersConnection.query("SELECT * FROM SUBSCRIBER INNER JOIN COMPANY ON COMPANY.COMPANY_ID = SUBSCRIBER.COMPANY_ID WHERE DOMAIN_ID = '" + subsctiberDomainID + "'", function (err, user) {
-                if (err) {
-                    console.log(`Subscriber error`,err);
-                    return res.send({
-                        "error": true,
-                        "status": "failed",
-                        "message": "Somthing went wrong"
-                    });
-                }
-                
-                if (!user.length) {
-                    console.log(`Subscriber.lengt = 0`);
-                    return res.send({
-                        "error": true,
-                        "status": "failed",
-                        "message": "Authentication failed. User not found."
-                    });
-                } else {
-                    console.log("In first query else");
-                    const cipher = crypto.createCipher('aes192', newConnection.ENCRYPTION_KEY);  
-                    var encPassword = cipher.update(req.body.password, 'utf8', 'hex');  
-                    encPassword += cipher.final('hex');
-                    var UsersDB = "demo_"+user[0].COMPANY_NAME.toLowerCase(); //TODO: Please please fix this. Temporary edit this for Demo only
-                    req.getConnection(function (err, connection) {
-                        connection.query("SELECT "+ UsersDB +".USERS.* ,"+ UsersDB +".ROLE.ROLE_NAME,"+ UsersDB +".ROLE.COMBINATION_ID FROM "+ UsersDB +".USERS INNER JOIN "+ UsersDB +".ROLE ON "+ UsersDB +".USERS.ROLE_ID = "+ UsersDB +".ROLE.ID WHERE EMAIL = '" + req.body.username + "' AND PASSWORD = '" + encPassword + "'", function(err, usersData){
-                            console.log("In second query");
-                            if (err){
-                                console.log(`User error`,err);
-                                return res.send({
-                                    "error": true,
-                                    "status": "failed",
-                                    "message": "Somthing went wrong"
-                                });
-                            }
-                            if (!usersData.length) {
-                                console.log(`User.length = 0`);
-                                return res.send({
-                                    "error": true,
-                                    "status": "failed",
-                                    "message": "Authentication failed. Username or password wrong."
-                                });
-                            } else {
-                                console.log("In second query else");
-                                var payload = {
-                                    ID: usersData[0].ID,
-                                    DB: UsersDB	
-                                }
-                                var token = jwt.sign(payload, app.get('superSecret'), {
-                                    expiresIn: newConnection.SUPERSECRETTIME
-                                });
-
-                                const refreshToken = jwt.sign(payload, app.get('superSecretRefresh'),
-                                {
-                                    expiresIn: newConnection.SUPERSECRETREFRESHTIME
-                                })
-                                const response = {
-                                    "status": "Logged in",
-                                    "token": token,
-                                    "refreshToken": refreshToken,
-                                }
-                                
-                                tokenList[token] = response;
-                                let userObj = {};
-                                userObj.user = usersData[0];
-                                userObj.token = token;
-                                res.cookie('auth',token);
-                                var query = connection.query('SELECT '+ UsersDB +'.USER_ACCESS.OFFICE_ID,'+ UsersDB +'.OFFICE.OFFICE_NAME FROM '+ UsersDB +'.USER_ACCESS INNER JOIN '+ UsersDB +'.OFFICE ON '+ UsersDB +'.OFFICE.OFFICE_ID = '+ UsersDB +'.USER_ACCESS.OFFICE_ID WHERE '+ UsersDB +'.USER_ACCESS.USER_ID = ' + userObj.user.ID, function (err, userOfficeList) {
-                                    if(err){
-                                        return res.send({
-                                            "error" : true,
-                                            "status" : "office list failed",
-                                            "message" : "Something went wrong in office list",
-                                            "data" : userObj
-                                        });
-                                    } else {
-                                        var officeList = [];
-                                        userOfficeList.forEach(element => {
-                                            officeList.push(element);
-                                        });
-                                        userObj.user.OFFICE_LIST = officeList;
-                                        return res.send({
-                                            "error": false,
-                                            "status": "success",
-                                            "data": userObj
-                                        });        
-                                    }
-                                })
-                            }
-                        })
-                    })
-                }
-            })
-        });
-    });
-
-
-    function isAuthenticated(req, res, next) {
-        var token = req.headers.sessionid;
-        // update the token in the list
-        if(!tokenList[token]){
-            return res.json({ status : 401, success: false, message: 'Failed to authenticate token.' });
-        } else {
-            let refreshToken = tokenList[token].refreshToken;
-            jwt.verify(refreshToken, app.get('superSecretRefresh'), function(err, decoded) {
-                if (err) {
-                    return res.json({ status : 401, success: false, message: 'Failed to authenticate token.' });
-                } else {
-                    req.decoded = decoded;
-                    // console.log(decoded);
-                    var payload = {
-                        ID: decoded.ID,
-                        DB:decoded.DB
-                    }
-                    const newRefreshToken = jwt.sign(payload, app.get('superSecretRefresh'), { expiresIn: newConnection.SUPERSECRETREFRESHTIME})
-                    tokenList[token].refreshToken = newRefreshToken;
-                    next();
-                }
-            });
-        }
-    }
-    // Project Routes
-    app.get('/',isAuthenticated, Projects.onServerStart);
-    app.get('/api/getDashboardDetails/:officeCity', Projects.getDashboardDetails);
     app.post('/api/addProject',isAuthenticated, Projects.addProject);
     app.post('/api/updateProject/:id',isAuthenticated, Projects.updateProject);
     app.post('/api/deleteProject/:id',isAuthenticated, Projects.deleteProject);
