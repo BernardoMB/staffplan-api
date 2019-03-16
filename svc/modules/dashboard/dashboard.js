@@ -28,6 +28,8 @@ const getDashboardDetails = async (req, res) => {
   const AdminStaff = await db.execute(connection, SQL.AdminStaff());
   const OPSStaff = await db.execute(connection, SQL.OPSStaff());
   const OnBench = await db.execute(connection, SQL.OnBench());
+  const StaffingGap = await db.execute(connection, SQL.StaffingGap());
+  const OverUnderAllocation = await db.execute(connection, SQL.OverUnderAllocation());
   const AssignmentEnding = await db.execute(connection, SQL.AssignmentEnding());
 
   util.successResponse(res, {
@@ -41,6 +43,8 @@ const getDashboardDetails = async (req, res) => {
     AdminStaff: getValue(AdminStaff),
     OPSStaff: getValue(OPSStaff),
     OnBench: getValue(OnBench),
+    StaffingGap: getValue(StaffingGap),
+    OverUnderAllocation: getValue(OverUnderAllocation),
     AssignmentEnding: getValue(AssignmentEnding)
   });
 }

@@ -12,10 +12,8 @@ export class AppService {
   constructor(private httpClient: HttpClient) {}
 
   getCustomList() {
-    // TODO: Need to configure custom label route
-    return null;
-    // return this.httpClient
-    //   .get(this.baseUrl + "getCustomLabel")
-    //   .map(response => response);
+    return this.httpClient
+      .get(this.baseUrl + "getCustomLabel")
+      .map(response => response);
   }
 }
