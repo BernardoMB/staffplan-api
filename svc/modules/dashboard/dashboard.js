@@ -11,12 +11,12 @@ const getValue = (rows => {
 
 const getDashboardDetails = async (req, res) => {
   const connection = await db.masterDB(req);
-  var officeCity = req.params.officeCity;
-  var condition = '';
-  if (officeCity === 'all'){
+  const officeId = req.params.officeId;
+  let condition = '';
+  if (officeId === 'all'){
     condition = '1 = 1';
   } else {
-    condition = `PROJECT.OFFICE_ID = '${officeCity}'`
+    condition = `PROJECT.OFFICE_ID = '${officeId}'`
   }
   const InProgressProjectCount = await db.execute(connection, SQL.InProgress(condition));
   const ProposalProjectCount = await db.execute(connection, SQL.Proposal(condition));

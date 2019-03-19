@@ -1,7 +1,7 @@
 
 // TODO:  Logging needs to be cleaned up
 
-var path = require('path');
+const path = require('path');
 
 module.exports = function (app, express) {  
   // app.use(express.static(path.join(__dirname, 'public')));
@@ -16,21 +16,21 @@ module.exports = function (app, express) {
     next();
   });
 
-  var fs = require('fs');
-  var morgan = require('morgan');
-  var path = require('path');
-  var rfs = require('rotating-file-stream');
+  const fs = require('fs');
+  const morgan = require('morgan');
+  const path = require('path');
+  const rfs = require('rotating-file-stream');
 
-  var dateObj = new Date();
-  var month = dateObj.getUTCMonth() + 1; //months from 1-12
-  var day = dateObj.getUTCDate();
-  var year = dateObj.getUTCFullYear();
+  const dateObj = new Date();
+  const month = dateObj.getUTCMonth() + 1; //months from 1-12
+  const day = dateObj.getUTCDate();
+  const year = dateObj.getUTCFullYear();
 
   newdate = year + '' + month + '' + day;
-  var logDirectory = path.join(__dirname, '../../log')
+  const logDirectory = path.join(__dirname, '../../log')
   fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
 
-  var accessLogStream = rfs('access-' + newdate + '.log', {
+  const accessLogStream = rfs('access-' + newdate + '.log', {
     interval: '1d',
     path: logDirectory
   })

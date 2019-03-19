@@ -20,7 +20,7 @@ const fetchOffices = async (userId, connection, res) => {
 const encryptPassword = (password) => {
   const crypto = require('crypto');
   const cipher = crypto.createCipher('aes192', config.AUTH.KEY);  
-  var encPassword = cipher.update(password, 'utf8', 'hex');  
+  let encPassword = cipher.update(password, 'utf8', 'hex');  
   encPassword += cipher.final('hex');
   return encPassword;
 }
@@ -45,7 +45,7 @@ const isAuthenticated = async (req, res, next) => {
   // const connection = await db.masterDB(req);
   // const userDB = await db.userDB(connection, req.payload.DB);
   // next();
-  var token = req.headers.sessionid;
+  const token = req.headers.sessionid;
   const tokenizer = require('./tokenization');
   if (tokenizer.validateToken(token)) {
     await tokenizer.refreshToken(token, req);

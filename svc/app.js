@@ -1,11 +1,11 @@
 // Create express web hosting instance
-var express = require('express');
-var http = require('http');
-var cors = require('cors');
-var cookieParser = require('cookie-parser');
+const express = require('express');
+const http = require('http');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 // Configure express settings
-var app = express();
+const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded());
@@ -26,6 +26,7 @@ require('./modules/route')(app);
 // TODO: It's Old Route need to be removed after refactoring
 require('./routes')(app);
 
+// TODO: Hosting needs to needs to consider the cluster mode 
 // Host http server
 app.set('port', process.env.PORT || 4300);
 http.createServer(app).listen(app.get('port'), function () {

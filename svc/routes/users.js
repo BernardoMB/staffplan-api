@@ -28,7 +28,6 @@ exports.userLogin = function (req, res) {
 }
 
 exports.masterLogin = function (req,res) {
-    // var mastersConnection = connectionModule.masterConneection;
     var subsctiberDomainID = req.body.username;
     subsctiberDomainID = subsctiberDomainID.substring(subsctiberDomainID.indexOf('@')+1);
     req.getConnection(function (err, connectionMaster) {

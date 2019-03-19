@@ -4,5 +4,5 @@ const CONST = require('../../common/const');
 const util = require('../../common/util');
 
 module.exports = (app) => {
-  app.get(`/${CONST.API}/getDashboardDetails/:officeCity`, authenticate.isAuthenticated, dashboard.getDashboardDetails);
+  app.get(`/${CONST.API}/getDashboardDetails/:officeId`, authenticate.isAuthenticated, dashboard.getDashboardDetails);
 }

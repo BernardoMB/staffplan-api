@@ -3,12 +3,12 @@ const config = require('../../common/config');
 const authToken = {};
 
 const generateToken = (userId, dbName) => {
-  var jwt = require('jsonwebtoken');
+  const jwt = require('jsonwebtoken');
   const payload = {
     ID: userId,
     DB: dbName	
   }
-  var token = jwt.sign(payload, config.AUTH.KEY, {
+  const token = jwt.sign(payload, config.AUTH.KEY, {
     expiresIn: config.AUTH.SUPERSECRETTIME
   });
   const refreshToken = jwt.sign(payload, config.AUTH.KEY, {
@@ -26,7 +26,7 @@ const refreshToken = async (token, req) => {
     if (err) {
       throw `Failed to authenticate token.`;
     } else {
-      var payload = {
+      let payload = {
         ID: decoded.ID,
         DB: decoded.DB
       }
