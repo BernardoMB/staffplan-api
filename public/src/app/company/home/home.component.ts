@@ -52,9 +52,7 @@ export class HomeComponent implements OnInit {
 
     getDashboardDetails(value) {
         this.apiService.getDashboardDetails(value).subscribe((response: any) => {
-            if (response && response.data) {
-                this.dashboardData = response.data;
-            }
+            this.dashboardData = response;
         }, error => {
             this.toastr.error(ERROR_MESSAGE.ERROR_MESSAGE_TEXT, ERROR_MESSAGE.ERROR_MESSAGE_HEADING);
         });

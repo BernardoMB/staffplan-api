@@ -3,7 +3,6 @@ var async = require('async');
 var _ = require('lodash');
 var serialize = require('serialize-javascript');
 var fs = require('fs');
-var connectionModule = require('../connection');
 var moment = require('moment');
 var common = require('../common');
 
@@ -478,7 +477,7 @@ exports.getEmployeeList = function (req, res) {
 				}
 
 				if(req.body.ONBENCH){
-					var DBName = connectionModule.SUBSCRIBERDB;
+					var DBName = req.payload.DB;
 					connection.query('SELECT *, CONCAT_WS(" ",  (CASE WHEN PREFERRED_NAME = "" THEN FIRST_NAME WHEN PREFERRED_NAME IS NULL THEN FIRST_NAME ELSE PREFERRED_NAME END), LAST_NAME) AS STAFF_NAME from '+ DBName +'.STAFF INNER JOIN STAFF_ROLE ON STAFF.STAFF_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN STAFF_GROUP ON STAFF.STAFF_GROUP_ID = STAFF_GROUP.GROUP_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID INNER JOIN OFFICE ON STAFF.OFFICE_ID = OFFICE.OFFICE_ID Where STAFF_ID NOT in ( SELECT DISTINCT STAFF_ID FROM '+ DBName +'.PROJECT_PEOPLE WHERE START_DATE <= NOW() AND END_DATE >= NOW())', function (err, StaffIDList) {
 						if (StaffIDList.length < 1) {
 							res.send({
@@ -1163,7 +1162,7 @@ async function getExperiancenameFunction(connection, experianceIds) {
 
 
 exports.getAvailableStaff = function(req,res){
-	var DBName = connectionModule.SUBSCRIBERDB;
+	var DBName = req.payload.DB;
 	var staffIdArray = [];
 	var currentDate  = new Date();
 	req.getConnection(function (err, connection) {
@@ -1393,7 +1392,7 @@ exports.getAvailableStaff = function(req,res){
 	})
 }
 exports.getAvailableStaff2 = function(req,res){
-	var DBName = connectionModule.SUBSCRIBERDB;
+	var DBName = req.payload.DB;
 	var staffIdArray = [];
 	var currentDate  = moment().format('YYYY-MM-DD');
 	req.getConnection(function (err, connection) {

@@ -1,7 +1,6 @@
 var MagicIncrement = require('magic-increment');
 var async = require('async');
 var _ = require('lodash');
-var connectionModule = require('../connection');
 
 function sparkLinesChartYearCount() {
     var currentTime = new Date();
@@ -1725,7 +1724,7 @@ exports.getStaffingGap = function (req, res) {
     req.getConnection(function (err, connection) {
         async.waterfall([
             function (callback) {
-                const DBName = connectionModule.SUBSCRIBERDB;
+                const DBName = req.payload.DB;
                 const staffAllocated = 'SELECT PROJECT_PEOPLE.*, CONCAT_WS(" ",  (CASE WHEN STAFF.PREFERRED_NAME = "" THEN STAFF.FIRST_NAME WHEN STAFF.PREFERRED_NAME IS NULL THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END), STAFF.LAST_NAME) AS STAFF_NAME,PROJECT.PROJECT_NAME,PROJECT.PROJECT_STATUS_ID,PROJECT_STATUS.STATUS_NAME, STAFF_ROLE.ROLE_NAME, STAFF_STATUS.STATUS_NAME AS STAFF_STATUS_NAME,OFFICE.OFFICE_NAME FROM PROJECT_PEOPLE  INNER JOIN STAFF ON PROJECT_PEOPLE.STAFF_ID = STAFF.STAFF_ID INNER JOIN PROJECT ON PROJECT_PEOPLE.PROJECT_ID = PROJECT.PROJECT_ID INNER JOIN STAFF_ROLE ON PROJECT_PEOPLE.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN PROJECT_STATUS ON PROJECT.PROJECT_STATUS_ID = PROJECT_STATUS.STATUS_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID INNER JOIN OFFICE ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID  WHERE PROJECT_PEOPLE.STAFF_ID in ( SELECT STAFF_ID FROM PROJECT_PEOPLE WHERE START_DATE >= NOW() GROUP BY STAFF_ID) AND PROJECT_PEOPLE.START_DATE >= NOW() ORDER BY PROJECT_PEOPLE.STAFF_ID ASC, PROJECT_PEOPLE.START_DATE ASC';
                 connection.query(`${staffAllocated}`, function (err, StaffingGap) {
                     if (err) {
@@ -1851,7 +1850,7 @@ exports.getNewStaffList = function (req, res) {
     req.getConnection(function (err, connection) {
         async.waterfall([
             function (callback) {
-                var DBName = connectionModule.SUBSCRIBERDB;
+                var DBName = req.payload.DB;
                 connection.query('SELECT *,CONCAT_WS(" ",  (CASE WHEN STAFF.PREFERRED_NAME = "" THEN STAFF.FIRST_NAME WHEN STAFF.PREFERRED_NAME IS NULL THEN STAFF.FIRST_NAME ELSE STAFF.PREFERRED_NAME END), STAFF.LAST_NAME) AS STAFF_NAME from ' + DBName + '.STAFF INNER JOIN STAFF_ROLE ON STAFF.STAFF_ROLE_ID = STAFF_ROLE.ROLE_ID INNER JOIN STAFF_GROUP ON STAFF.STAFF_GROUP_ID = STAFF_GROUP.GROUP_ID INNER JOIN STAFF_STATUS ON STAFF.STAFF_STATUS_ID = STAFF_STATUS.STATUS_ID INNER JOIN OFFICE ON STAFF.OFFICE_ID = OFFICE.OFFICE_ID Where STAFF_ID NOT in ( SELECT DISTINCT STAFF_ID FROM ' + DBName + '.PROJECT_PEOPLE WHERE START_DATE <= NOW() AND END_DATE >= NOW())', function (err, NewStaffList) {
                     if (err) {
                         callback(null, 'count not found');
@@ -1945,7 +1944,7 @@ exports.getProjectPeopleAndPlannedProject = function (req, res) {
         async.waterfall([
             function (callback) {
                 if (req.body.STAFFGAP) {
-                    var DBName = connectionModule.SUBSCRIBERDB;
+                    var DBName = req.payload.DB;
 
                     if (req.body.STAFFGAP === 'ASSIGNMENTENDING') {
                         var currentDate = new Date();
