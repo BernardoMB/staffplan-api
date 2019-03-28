@@ -1,0 +1,44 @@
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        root /home/ubuntu/staffplan/public/dist/staff-planner;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying The 
+                index index.html
+                try_files $uri $uri/ /index.html;
+        }
+
+        location /api/ {
+                proxy_pass http://localhost:4300;
+                proxy_http_version 1.1;
+        }
+}
+
+server {
+        listen 81;
+
+        root /home/ubuntu/trial/public/dist/staff-planner;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name trial;
+
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying The 
+                index index.html
+                try_files $uri $uri/ /index.html;
+        }
+
+        location /api/ {
+                proxy_pass http://localhost:4200;
+                proxy_http_version 1.1;
+        }
+}
