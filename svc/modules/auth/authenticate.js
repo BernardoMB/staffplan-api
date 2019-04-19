@@ -4,7 +4,7 @@ const config = require('../../common/config');
 const SQL = require('./query');
 
 const validateSubscription = async (domainID, req) => {
-  const connection = await db.masterDB(req);
+  const connection = await db.connection(req);
   const company = await db.execute(connection, SQL.auth(domainID));
   if (company && !company.length) {
     throw `Authentication failed. Subscription not found`;
@@ -42,15 +42,15 @@ const getUserDetails = (user, connection, res, dbName) => {
 const isAuthenticated = async (req, res, next) => {
   /* uncomment below two lines if you want to debug service without new token */
   // req.payload = { ID: 50, DB: 'dev_company1' };
-  // const connection = await db.masterDB(req);
-  // const userDB = await db.userDB(connection, req.payload.DB);
+  // const connection = await db.connection(req);
+  // await db.userDB(connection, req.payload.DB);
   // next();
   const token = req.headers.sessionid;
   const tokenizer = require('./tokenization');
   if (tokenizer.validateToken(token)) {
     await tokenizer.refreshToken(token, req);
-    const connection = await db.masterDB(req);
-    const userDB = await db.userDB(connection, req.payload.DB);
+    const connection = await db.connection(req);
+    await db.userDB(connection, req.payload.DB);
     next();
   } else {
     util.errorResponse(res, `Failed to authenticate token`, 401);

@@ -1,7 +1,7 @@
 
 const hasError = err => (err ? true : false);
 
-const getMasterConnection = (req) => {
+const getConnection = (req) => {
   return new Promise((resolve, reject) => (
     req.getConnection((err, connection) => {
       if (hasError(err)) {
@@ -38,7 +38,7 @@ const execute = (connection, sql) => {
 };
 
 module.exports = {
-  masterDB: getMasterConnection,
+  connection: getConnection,
   userDB: getUserConnection,
   execute
 }
