@@ -5,7 +5,6 @@ module.exports = function (app) {
     var Projects = require('./routes/projects');
     var ProjectsPeople = require('./routes/projectPeople');
     var Employee = require('./routes/employee');
-    var Common = require('./routes/common');
     var Users = require('./routes/users');
     var accessCombination = require('./routes/accessCombination');
     var role = require('./routes/role');
@@ -100,13 +99,6 @@ module.exports = function (app) {
     app.post('/api/addStaffExperience',isAuthenticated, Employee.addStaffExperience);
     app.post('/api/deleteStaffCertification',isAuthenticated, Employee.deleteStaffCertification);
     app.post('/api/getProjectRoleWise',isAuthenticated, Employee.getProjectRoleWise);
-    
-    
-    // CommonAPi  
-    
-    app.get('/api/commonListing/:modelName',isAuthenticated, Common.commonListing);
-    app.get('/api/getOfficeNameListing',isAuthenticated, Common.getOfficeNameListing);
-    app.get('/api/getCustomLabel',isAuthenticated, Common.getCustomLabel);
     
     // Users api
     app.get('/api/getUser/:userID',isAuthenticated, Users.getUser);
