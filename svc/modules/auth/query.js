@@ -1,4 +1,7 @@
 module.exports = {
+  fetchCompany: (domainId) => (
+    `SELECT * FROM COMPANY WHERE NAME = '${domainId}'`
+  ),
   auth: (domainId) => (
     `SELECT * FROM SUBSCRIBER
       INNER JOIN COMPANY ON COMPANY.COMPANY_ID = SUBSCRIBER.COMPANY_ID 

@@ -16,6 +16,7 @@ export class LoginComponent {
   constructor(private auth: AuthService, private router: Router, private apiService: ApiService, private toastr: ToastrService) {
   }
   login() {
+    this.loginDetail.hostname = window.location.hostname;
     this.apiService.checkLoginDetail(this.loginDetail).subscribe((response: any) => {
       if (response) {
         this.auth.sendToken(response.token);

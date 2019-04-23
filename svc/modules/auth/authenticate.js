@@ -3,13 +3,14 @@ const util = require("../../common/util");
 const config = require('../../common/config');
 const SQL = require('./query');
 
-const validateSubscription = async (domainID, req) => {
+const validateSubscription = async (subscription, req) => {
   const connection = await db.connection(req);
-  const company = await db.execute(connection, SQL.auth(domainID));
+  const company = await db.execute(connection, SQL.fetchCompany(subscription.domain));
   if (company && !company.length) {
     throw `Authentication failed. Subscription not found`;
   }
-  return ({ connection, dbName: company[0].COMPANY_DB });
+  const dbName = company[0].COMPANY_DB;
+  return ({ connection, dbName });
 }
 
 const fetchOffices = async (userId, connection, res) => {
@@ -57,10 +58,26 @@ const isAuthenticated = async (req, res, next) => {
   }
 }
 
+const getEnvAndDomain = (hostname) => {
+  let environment = '';
+  let domain = '';
+  const host = hostname.split('.');
+  if (host.length == 2) {
+    domain = host[0];
+  } else if (host.length > 2) {
+    environment = host[0];
+    domain = host[1];
+  }
+  return {
+    environment,
+    domain
+  };
+}
+
 const validateUser = (req, res, next) => {
   const userName = req.body.username;
-  const domainID = userName.substring(userName.indexOf('@') + 1);
-  validateSubscription(domainID, req).then(({ connection, dbName }) => {
+  const subscription = getEnvAndDomain(req.body.hostname);
+  validateSubscription(subscription, req).then(({ connection, dbName }) => {
     db.userDB(connection, dbName).then(() => {
       const encPassword = encryptPassword(req.body.password);
       db.execute(connection, SQL.validate(userName, encPassword)).then(user => {
