@@ -1,4 +1,3 @@
-
 const hasError = err => (err ? true : false);
 
 const getConnection = (req) => {
@@ -13,7 +12,7 @@ const getConnection = (req) => {
   ));
 };
 
-const getUserConnection = (connection, dbName) => {
+const useDB = (connection, dbName) => {
   return new Promise((resolve, reject) => {
     connection.query(`use ${dbName}`, (err, result) => {
       if (hasError(err)) {
@@ -39,6 +38,6 @@ const execute = (connection, sql) => {
 
 module.exports = {
   connection: getConnection,
-  userDB: getUserConnection,
+  useDB,
   execute
 }
