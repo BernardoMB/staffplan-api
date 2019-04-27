@@ -25,8 +25,8 @@ const getEnvAndDomain = (hostname) => {
     domain = host[1];
   }
   return {
-    environment,
-    domain
+    environment: environment.toLowerCase(),
+    domain: domain.toLowerCase()
   };
 }
 

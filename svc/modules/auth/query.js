@@ -8,9 +8,9 @@ module.exports = {
     INNER JOIN ENVIRONMENT_TYPE
       ON ENVIRONMENT_TYPE.ID = COMPANY_ENVIRONMENT.ENVIRONMENT_TYPE_ID
     WHERE
-      ENVIRONMENT_TYPE.NAME = '${environment}'
+      ENVIRONMENT_TYPE.SUBDOMAIN = '${environment}'
     AND 
-      COMPANY.NAME = '${domain}'`
+      COMPANY.DOMAIN = '${domain}'`
   ),
   validate: (username, password) => (
     `SELECT  USERS.*, ROLE.ROLE_NAME, ROLE.COMBINATION_ID 
