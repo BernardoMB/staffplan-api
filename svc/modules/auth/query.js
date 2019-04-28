@@ -1,8 +1,16 @@
 module.exports = {
-  auth: (domainId) => (
-    `SELECT * FROM SUBSCRIBER
-      INNER JOIN COMPANY ON COMPANY.COMPANY_ID = SUBSCRIBER.COMPANY_ID 
-      WHERE DOMAIN_ID = '${domainId}'`
+  fetchCompany: (environment, domain) => (
+    `SELECT
+        COMPANY.* 
+    FROM COMPANY
+    INNER JOIN COMPANY_ENVIRONMENT
+      ON COMPANY.ID = COMPANY_ENVIRONMENT.COMPANY_ID
+    INNER JOIN ENVIRONMENT_TYPE
+      ON ENVIRONMENT_TYPE.ID = COMPANY_ENVIRONMENT.ENVIRONMENT_TYPE_ID
+    WHERE
+      ENVIRONMENT_TYPE.SUBDOMAIN = '${environment}'
+    AND 
+      COMPANY.DOMAIN = '${domain}'`
   ),
   validate: (username, password) => (
     `SELECT  USERS.*, ROLE.ROLE_NAME, ROLE.COMBINATION_ID 

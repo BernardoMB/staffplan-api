@@ -2,15 +2,7 @@ const db = require('../../common/connection');
 const util = require("../../common/util");
 const config = require('../../common/config');
 const SQL = require('./query');
-
-const validateSubscription = async (domainID, req) => {
-  const connection = await db.connection(req);
-  const company = await db.execute(connection, SQL.auth(domainID));
-  if (company && !company.length) {
-    throw `Authentication failed. Subscription not found`;
-  }
-  return ({ connection, dbName: company[0].COMPANY_DB });
-}
+const subscription = require('./subscription');
 
 const fetchOffices = async (userId, connection, res) => {
   const offices = await db.execute(connection, SQL.office(userId));
@@ -43,14 +35,14 @@ const isAuthenticated = async (req, res, next) => {
   /* uncomment below two lines if you want to debug service without new token */
   // req.payload = { ID: 50, DB: 'dev_company1' };
   // const connection = await db.connection(req);
-  // await db.userDB(connection, req.payload.DB);
+  // await db.useDB(connection, req.payload.DB);
   // next();
   const token = req.headers.sessionid;
   const tokenizer = require('./tokenization');
   if (tokenizer.validateToken(token)) {
     await tokenizer.refreshToken(token, req);
     const connection = await db.connection(req);
-    await db.userDB(connection, req.payload.DB);
+    await db.useDB(connection, req.payload.DB);
     next();
   } else {
     util.errorResponse(res, `Failed to authenticate token`, 401);
@@ -59,9 +51,9 @@ const isAuthenticated = async (req, res, next) => {
 
 const validateUser = (req, res, next) => {
   const userName = req.body.username;
-  const domainID = userName.substring(userName.indexOf('@') + 1);
-  validateSubscription(domainID, req).then(({ connection, dbName }) => {
-    db.userDB(connection, dbName).then(() => {
+  const hostname = req.body.hostname;
+  subscription.getCompanyDB(hostname, req).then(({ connection, dbName }) => {
+    db.useDB(connection, dbName).then(() => {
       const encPassword = encryptPassword(req.body.password);
       db.execute(connection, SQL.validate(userName, encPassword)).then(user => {
         if (user && user.length) {

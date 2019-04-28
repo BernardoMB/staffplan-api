@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse} from '@angular/common/http';
+import {HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse, HttpErrorResponse} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {AuthService} from './auth.service';
 import 'rxjs-compat/add/operator/do';
@@ -11,14 +11,13 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        return next.handle(req).map(event => {
-            if (event instanceof HttpResponse) {
-                if (event.body.status == 401) {
+        return next.handle(req).do(event => {}, (err: any) => {
+            if (err instanceof HttpErrorResponse) {
+                if (err.status === 401) {
                     this.authService.logout();
                     return;
                 }
             }
-            return event;
         });
     }
 }
