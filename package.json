@@ -38,6 +38,7 @@
     "serialize-javascript": "^1.5.0"
   },
   "devDependencies": {
+    "eslint": "^5.16.0",
     "jasmine": "^3.1.0"
   }
 }
