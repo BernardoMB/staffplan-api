@@ -1,8 +1,6 @@
 
 // TODO:  Logging needs to be cleaned up
 
-const path = require('path');
-
 module.exports = function (app, express) {  
   // app.use(express.static(path.join(__dirname, 'public')));
   app.use(express.logger('dev'));
@@ -26,7 +24,7 @@ module.exports = function (app, express) {
   const day = dateObj.getUTCDate();
   const year = dateObj.getUTCFullYear();
 
-  newdate = year + '' + month + '' + day;
+  let newdate = year + '' + month + '' + day;
   const logDirectory = path.join(__dirname, '../../log')
   fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
 
