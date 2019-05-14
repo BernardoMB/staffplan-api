@@ -1,8 +1,7 @@
-const moment = require('moment');
 const _ = require('lodash');
 
 function getPoints(arr) {
-  tempArr = [];
+  const tempArr = [];
   arr.forEach(p => {
     tempArr.push(p.START_DATE);
     tempArr.push(p.END_DATE);
@@ -21,7 +20,7 @@ function convertToUTC(date) {
 }
 
 function getOverlappingSum(arr3, abPair) {
-  sum = 0;
+  let sum = 0;
   const f = d => convertToUTC(d);
   arr3.forEach(p => {
     if (f(abPair.START_DATE) < f(p.END_DATE) && f(abPair.END_DATE) > f(p.START_DATE)) {
@@ -32,8 +31,8 @@ function getOverlappingSum(arr3, abPair) {
 }
 
 function getFinalOutput(pointsArr, mainArr) {
-  i = 0;
-  result = [];
+  let i = 0;
+  let result = [];
   while (i < pointsArr.length - 1) {
     const obj = getOverlappingSum(mainArr, {
       START_DATE: pointsArr[i],

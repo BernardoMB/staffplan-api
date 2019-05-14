@@ -15,9 +15,6 @@ module.exports = function (app) {
     var Typehead = require('./routes/typehead');
     var multer = require('multer');
     var fs = require('fs');
-    var jwt = require('jsonwebtoken');
-    var crypto = require('crypto');
-    const tokenList = {};
     // var upload = multer({dest: './public/assets/images/Profilepic/'});
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {

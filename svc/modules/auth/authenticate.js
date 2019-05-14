@@ -4,7 +4,7 @@ const config = require('../../common/config');
 const SQL = require('./query');
 const subscription = require('./subscription');
 
-const fetchOffices = async (userId, connection, res) => {
+const fetchOffices = async (userId, connection) => {
   const offices = await db.execute(connection, SQL.office(userId));
   return offices;
 }
@@ -49,7 +49,7 @@ const isAuthenticated = async (req, res, next) => {
   }
 }
 
-const validateUser = (req, res, next) => {
+const validateUser = (req, res) => {
   const userName = req.body.username;
   const hostname = req.body.hostname;
   subscription.getCompanyDB(hostname, req).then(({ connection, dbName }) => {

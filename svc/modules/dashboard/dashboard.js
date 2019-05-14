@@ -5,7 +5,7 @@ const util = require("../../common/util");
 const getValue = (rows => {
   if (rows && rows.length) {
     return rows[0].TOTAL;
-  };
+  }
   return 0;
 })
 
