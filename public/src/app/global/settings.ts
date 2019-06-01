@@ -1,8 +1,9 @@
 import * as $ from 'jquery';
 import * as moment from 'moment';
 import { timeInRange } from '@progress/kendo-angular-dateinputs/dist/es2015/util';
+import { environment } from '../../environments/environment';
 
-export const BASE_URL = 'http://' + window.location.hostname + ':4300/api/';
+export const BASE_URL = environment.base_url;
 export const HIDDEN_PROJECT_COLUMNS = [
     'PROJECT_ID',
     'PROJECT_NO',
