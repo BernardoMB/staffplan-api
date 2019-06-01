@@ -16,7 +16,7 @@ LOCK TABLES `COMPANY` WRITE;
 
 INSERT INTO `COMPANY` (`ID`, `NAME`, `ADDRESS`, `PRIMARY_CONTACT`, `PRIMARY_CONTACT_EMAIL`, `PRIMARY_CONTACT_PHONE`, `PRIMARY_CONTACT_TITLE`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`, `COMPANY_DB`, `DOMAIN`)
 VALUES
-	(1,'StaffPlan','USA','Admin','admin@staffplan.io','888-555-9021','System Admin','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','dev_company1','StaffPlan');
+	(1,'StaffPlan','USA','Admin','admin@staffplan.io','888-555-9021','System Admin','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','staffplan','StaffPlan');
 
 /*!40000 ALTER TABLE `COMPANY` ENABLE KEYS */;
 UNLOCK TABLES;
