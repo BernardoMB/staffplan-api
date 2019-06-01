@@ -1,4 +1,4 @@
-const masterDB = require('../../env.json');
+const masterDB = require('../env.json');
 
 const encryption = {
   KEY: 'StaffPlanner',
