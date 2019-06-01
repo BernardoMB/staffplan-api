@@ -1,12 +1,56 @@
-# This is a sample build configuration for Other.
-# Check our guides at https://confluence.atlassian.com/x/5Q4SMw for more examples.
+# This is a sample build configuration for JavaScript.
+# Check our guides at https://confluence.atlassian.com/x/14UWN for more examples.
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
 image: atlassian/default-image:2
 
 pipelines:
-  default:
-    - step:
+  custom:
+    deploy-to-trial:
+       - step:
+          name: Build angular
+          caches:
+            - node
+          script:
+            - cd public
+            - npm install
+            - npm install -g @angular/cli
+            - ng build --configuration=trial
+          artifacts: 
+            - dist/staff-planner/**
+      - step:
+        name: Deploy angular to s3
         script:
-          - echo "Everything is awesome!"
+          - pipe: atlassian/aws-s3-deploy:0.2.1
+            variables:
+              AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+              AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+              AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+              S3_BUCKET: $S3_ANGULAR_BUCKET
+              LOCAL_PATH: "dist/staff-planner"
+              ACL: "public-read"
+      - step:
+          name: Build service
+          caches:
+            - node
+          script:
+            - cd svc
+            - npm install
+            # temporary disable test run
+            #- npm test
+            - zip -r api.zip .
+          artifacts: 
+            - api.zip
+      - step:
+          name: "Deploy to aws"
+          script:
+            - pipe: atlassian/aws-elasticbeanstalk-deploy:0.2.9
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                APPLICATION_NAME: $APPLICATION_NAME
+                ENVIRONMENT_NAME: $ENVIRONMENT_NAME
+                ZIP_FILE: $ZIP_FILE
+                S3_BUCKET: $S3_NODE_BUCKET
