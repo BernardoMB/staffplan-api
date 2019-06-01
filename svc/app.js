@@ -19,7 +19,11 @@ const config = require('./common/config');
 app.use(connection(mysql, config.DB, 'request'));
 
 // Configure logging
-require('./common/logger')(app, express);
+try {
+  require('./common/logger')(app, express);
+} catch(err) {
+  console.log(err);
+}
 
 // Create app routes
 require('./modules/route')(app);
@@ -28,7 +32,7 @@ require('./routes')(app);
 
 // TODO: Hosting needs to needs to consider the cluster mode 
 // Host http server
-app.set('port', process.env.PORT || 4300);
+app.set('port', process.env.PORT || 80);
 http.createServer(app).listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));  
 });
