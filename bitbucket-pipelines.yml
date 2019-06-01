@@ -15,7 +15,7 @@ pipelines:
           script:
             - cd public
             - npm install
-            - npm install -g @angular/cli
+            - npm install @angular/cli
             - ng build --configuration=trial
           artifacts: 
             - dist/staff-planner/**
@@ -43,7 +43,7 @@ pipelines:
           artifacts: 
             - api.zip
       - step:
-          name: "Deploy to aws"
+          name: Deploy to aws
           script:
             - pipe: atlassian/aws-elasticbeanstalk-deploy:0.2.9
               variables:
