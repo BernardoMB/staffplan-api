@@ -1,4 +1,6 @@
+cd svc
 npm install
+cd ..
 cd public
 npm install
 cd ..
