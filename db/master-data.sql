@@ -1,3 +1,4 @@
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -13,28 +14,43 @@
 LOCK TABLES `COMPANY` WRITE;
 /*!40000 ALTER TABLE `COMPANY` DISABLE KEYS */;
 
-INSERT INTO `COMPANY` (`COMPANY_ID`, `COMPANY_NAME`, `COMPANY_ADDRESS`, `PRIMARY_CONTACT`, `PRIMARY_CONTACT_EMAIL`, `PRIMARY_CONTACT_TEL_NUMBER`, `PRIMARY_CONTACT_TITLE`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`, `COMPANY_DB`)
+INSERT INTO `COMPANY` (`ID`, `NAME`, `ADDRESS`, `PRIMARY_CONTACT`, `PRIMARY_CONTACT_EMAIL`, `PRIMARY_CONTACT_PHONE`, `PRIMARY_CONTACT_TITLE`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`, `COMPANY_DB`, `DOMAIN`)
 VALUES
-	(1,'StaffPlan','USA','Admin','admin@staffplan.io','888-555-9021','System Admin','2018-01-01 00:00:00','2018-01-01 00:00:00',1,1,'dev_company1'),
-	(2,'Acme','USA','Admin','admin@acme.io','888-555-1234','System Admin','2028-11-18 00:00:00','2028-11-18 00:00:00',1,1,'dev_company2');
+	(1,'StaffPlan','USA','Admin','admin@staffplan.io','888-555-9021','System Admin','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','staffplan','StaffPlan');
 
 /*!40000 ALTER TABLE `COMPANY` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Dump of table SUBSCRIBER
+# Dump of table COMPANY_ENVIRONMENT
 # ------------------------------------------------------------
 
-LOCK TABLES `SUBSCRIBER` WRITE;
-/*!40000 ALTER TABLE `SUBSCRIBER` DISABLE KEYS */;
+LOCK TABLES `COMPANY_ENVIRONMENT` WRITE;
+/*!40000 ALTER TABLE `COMPANY_ENVIRONMENT` DISABLE KEYS */;
 
-INSERT INTO `SUBSCRIBER` (`SUBSCRIBER_ID`, `COMPANY_ID`, `CREATED_DATE`, `CREATED_BY_USER`, `DOMAIN_ID`)
+INSERT INTO `COMPANY_ENVIRONMENT` (`ID`, `COMPANY_ID`, `ENVIRONMENT_TYPE_ID`, `STATUS`, `START_DATE_TIME`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`)
 VALUES
-	(1,1,'2028-11-18 00:00:00',1,'staffplan.io'),
-	(2,2,'2018-11-18 00:00:00',1,'acme.io'),
-	(3,1,'2019-01-15 00:00:00',1,'staffplan.io');
+	(1,1,1,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com'),
+	(2,1,2,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com'),
+	(3,1,3,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com');
 
-/*!40000 ALTER TABLE `SUBSCRIBER` ENABLE KEYS */;
+/*!40000 ALTER TABLE `COMPANY_ENVIRONMENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table ENVIRONMENT_TYPE
+# ------------------------------------------------------------
+
+LOCK TABLES `ENVIRONMENT_TYPE` WRITE;
+/*!40000 ALTER TABLE `ENVIRONMENT_TYPE` DISABLE KEYS */;
+
+INSERT INTO `ENVIRONMENT_TYPE` (`ID`, `NAME`, `DETAILS`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`, `SUBDOMAIN`)
+VALUES
+	(1,'Staging','Environment for testing before push to production','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','Staging'),
+	(2,'Demo','Environment staffplan will provide to customer for demoing ','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','Demo'),
+	(3,'Prod','Production environment','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','Prod');
+
+/*!40000 ALTER TABLE `ENVIRONMENT_TYPE` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
@@ -44,11 +60,12 @@ UNLOCK TABLES;
 LOCK TABLES `SUBSCRIPTION_SERVICE` WRITE;
 /*!40000 ALTER TABLE `SUBSCRIPTION_SERVICE` DISABLE KEYS */;
 
-INSERT INTO `SUBSCRIPTION_SERVICE` (`SUBSCRIPTION_SERVICE_ID`, `SUBSCRIBER_ID`, `SUBSCRIPTION_TYPE_ID`, `COUNT`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`)
+INSERT INTO `SUBSCRIPTION_SERVICE` (`ID`, `COMPANY_ID`, `SUBSCRIPTION_TYPE_ID`, `USER_COUNT`, `REMAINING_USER_COUNT`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`, `ACTUAL_MONTHLY_FEE`, `ACTUAL_ANNUAL_FEE`, `ACTUAL_SUPPORT_FEE`)
 VALUES
-	(1,1,1,10,'2019-01-15 00:00:00','2019-01-15 00:00:00',1,1),
-	(2,2,1,10,'2019-01-15 00:00:00','2019-01-15 00:00:00',1,1),
-	(3,3,3,50,'2019-01-15 00:00:00','2019-01-15 00:00:00',1,1);
+	(1,1,1,10,9,'2019-01-15 00:00:00','2019-01-15 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com',0.00,0.00,0.00),
+	(2,1,2,10,10,'2019-01-15 00:00:00','2019-01-15 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com',0.00,0.00,0.00),
+	(3,1,3,50,50,'2019-01-15 00:00:00','2019-01-15 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com',0.00,0.00,0.00),
+	(4,1,4,10,10,'2019-01-15 00:00:00','2019-01-15 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com',0.00,0.00,0.00);
 
 /*!40000 ALTER TABLE `SUBSCRIPTION_SERVICE` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -60,49 +77,17 @@ UNLOCK TABLES;
 LOCK TABLES `SUBSCRIPTION_TYPE` WRITE;
 /*!40000 ALTER TABLE `SUBSCRIPTION_TYPE` DISABLE KEYS */;
 
-INSERT INTO `SUBSCRIPTION_TYPE` (`SUBSCRIPTION_TYPE_ID`, `SUBSCRIPTION_NAME`, `SUBSCRIPTION_DETAILS`, `SUBSCRIPTION_PRICING_PER_MONTH`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`)
+INSERT INTO `SUBSCRIPTION_TYPE` (`ID`, `NAME`, `DETAILS`, `LIST_PRICE_PER_MONTH`, `LIST_PRICE_ANNUAL`, `SUPPORT_FEES_ANNUAL`, `STAGING_SERVICE_FEE`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`)
 VALUES
-	(1,'StaffPlan All Access','Access to all','110','2019-01-15 00:00:00','2019-01-15 00:00:00',1,1),
-	(2,'Project Access','Access Project','60','2019-01-15 00:00:00','2019-01-15 00:00:00',1,1),
-	(3,'View Access','View data only','30','2019-01-15 00:00:00','2019-01-15 00:00:00',1,1),
-	(4,'Staff Data','Manage Staff data','30','2019-01-15 00:00:00','2019-01-15 00:00:00',1,1);
+	(1,'StaffPlan Admin','Manage to all users, projects and staff data of company',30.00,100.00,5.00,6.00,'2019-01-15 00:00:00','2019-01-15 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com'),
+	(2,'Staffing Access','Manage to all projects and staff data of company',20.00,90.00,5.00,6.00,'2019-01-15 00:00:00','2019-01-15 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com'),
+	(3,'Project Access','Assign and Manage roles in projects',20.00,80.00,5.00,6.00,'2019-01-15 00:00:00','2019-01-15 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com'),
+	(4,'Staff Data 500-1000','Manage Staff data only',10.00,50.00,5.00,6.00,'2019-01-15 00:00:00','2019-01-15 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com'),
+	(5,'wifa access','',100.00,200.00,5.00,6.00,'0000-00-00 00:00:00','0000-00-00 00:00:00','',''),
+	(6,'Staff Data 0-500','',5.00,10.00,5.00,6.00,'0000-00-00 00:00:00','0000-00-00 00:00:00','',''),
+	(7,'100 staff 10 user 1 admin','100 staff 10 user 1 admin',30.00,0.00,0.00,0.00,'0000-00-00 00:00:00','0000-00-00 00:00:00','','');
 
 /*!40000 ALTER TABLE `SUBSCRIPTION_TYPE` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump of table TENANT_DETAILS
-# ------------------------------------------------------------
-
-LOCK TABLES `TENANT_DETAILS` WRITE;
-/*!40000 ALTER TABLE `TENANT_DETAILS` DISABLE KEYS */;
-
-INSERT INTO `TENANT_DETAILS` (`TENANT_ID`, `SUBSCRIBER_ID`, `TENANT_TYPE_ID`, `START_DATE`, `DOMAIN_ID`, `TENANT_STATUS`)
-VALUES
-	(1,1,1,'2019-01-15','staffplan.staffplan.io/demo','active'),
-	(2,1,2,'2019-01-15','staffplan.staffplan.io/staging','active'),
-	(3,1,3,'2019-01-15','staffplan.staffplan.io/prod','active'),
-	(4,2,1,'2019-01-15','acme.staffplan.io/demo','active'),
-	(5,3,1,'2019-01-15','staffplan.staffplan.io/demo','active'),
-	(6,3,2,'2019-01-15','staffplan.staffplan.io/staging','active');
-
-/*!40000 ALTER TABLE `TENANT_DETAILS` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump of table TENANT_TYPE
-# ------------------------------------------------------------
-
-LOCK TABLES `TENANT_TYPE` WRITE;
-/*!40000 ALTER TABLE `TENANT_TYPE` DISABLE KEYS */;
-
-INSERT INTO `TENANT_TYPE` (`TENANT_TYPE_ID`, `TENANT_DESCRIPTION`, `UPDATED_BY`)
-VALUES
-	(1,'demo',1),
-	(2,'staging',1),
-	(3,'prod',1);
-
-/*!40000 ALTER TABLE `TENANT_TYPE` ENABLE KEYS */;
 UNLOCK TABLES;
 
 

@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "PORT=1234 forever -w ./app.js",
+    "lint": "eslint . --ignore-path .eslintignore"
   },
   "dependencies": {
     "async": "^2.6.1",
@@ -44,7 +45,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "eslint svc --ignore-path svc/.eslintignore"
+      "pre-commit": "eslint . --ignore-path .eslintignore"
     }
   }
 }

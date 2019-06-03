@@ -19,7 +19,7 @@ $ git clone https://staffplandev@bitbucket.org/staffplanteam/staffplan.git
 Install dependencies library :
 
 ```sh
-$ cd staffplan/
+$ cd staffplan/svc
 $ npm install
 ```
 
