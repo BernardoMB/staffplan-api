@@ -1,0 +1,7 @@
+{
+  "host": "MASTER_DB_HOST",
+  "user": "MASTER_DB_USER",
+  "password": "MASTER_DB_PASSWORD",
+  "port": 3306,
+  "database": "MASTER_DB"
+}
