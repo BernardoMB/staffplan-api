@@ -1,56 +1,86 @@
-# This is a sample build configuration for JavaScript.
-# Check our guides at https://confluence.atlassian.com/x/14UWN for more examples.
-# Only use spaces to indent your .yml configuration.
-# -----
-# You can specify a custom docker image from Docker Hub as your build environment.
 image: atlassian/default-image:2
 
 pipelines:
   custom:
-    deploy-to-trial:
+    deploy-to-trial-acme:
       - step:
-          name: Build angular
+          name: Deploy angular
           caches:
             - node
           script:
             - cd public
+            - cd src/environments
+            # Since our URL contains slashes, use alternate regex delimiter instead of slashes
+            - sed "s~ACME_API_BASE_URL_TRIAL~$ACME_API_BASE_URL_TRIAL~g" environment.trial.ts_template > environment.trial.ts
+            - cd ../..
+            - pwd
             - npm install
             - npm install @angular/cli
-            - ng build --configuration=trial
-          artifacts: 
-            - dist/staff-planner/**
+            - npm run build-trial
+            - apt-get update && apt-get install -y python3-pip
+            - pip3 install -U awscli
+            - aws --version
+            - aws s3 sync dist/staff-planner s3://$ACME_S3_ANGULAR_BUCKET_TRIAL
       - step:
-          name: Deploy angular to s3
-          script:
-            - pipe: atlassian/aws-s3-deploy:0.2.1
-              variables:
-                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-                S3_BUCKET: $S3_ANGULAR_BUCKET
-                LOCAL_PATH: "dist/staff-planner"
-                ACL: "public-read"
-      - step:
-          name: Build service
+          name: Deploy service
           caches:
             - node
           script:
             - cd svc
+            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST_TRIAL:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER_TRIAL:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD_TRIAL:g" | sed "s:MASTER_DB:$MASTER_DB_TRIAL:g" > env.json
+            - cat env.json
             - npm install
             # temporary disable test run
             #- npm test
             - zip -r api.zip .
-          artifacts: 
-            - api.zip
-      - step:
-          name: Deploy to aws
-          script:
+            - ls
             - pipe: atlassian/aws-elasticbeanstalk-deploy:0.2.9
               variables:
                 AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
                 AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
                 AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-                APPLICATION_NAME: $APPLICATION_NAME
-                ENVIRONMENT_NAME: $ENVIRONMENT_NAME
+                APPLICATION_NAME: $ACME_APPLICATION_NAME
+                ENVIRONMENT_NAME: $ACME_ENVIRONMENT_NAME_TRIAL
+                ZIP_FILE: $ZIP_FILE
+                S3_BUCKET: $S3_NODE_BUCKET
+    deploy-to-prod-acme:
+      - step:
+          name: Deploy angular
+          caches:
+            - node
+          script:
+            - cd public
+            - cd src/environments
+            - ls
+            - sed "s~ACME_API_BASE_URL_PROD~$ACME_API_BASE_URL_PROD~g" environment.prod.ts_template > environment.prod.ts
+            - cd ../..
+            - pwd
+            - npm install
+            - npm install @angular/cli
+            - npm run build-prod
+            - apt-get update && apt-get install -y python3-pip
+            - pip3 install -U awscli
+            - aws --version
+            - aws s3 sync dist/staff-planner s3://$ACME_S3_ANGULAR_BUCKET_PROD
+      - step:
+          name: Deploy service
+          caches:
+            - node
+          script:
+            - cd svc
+            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST_PROD:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER_PROD:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD_PROD:g" | sed "s:MASTER_DB:$MASTER_DB_PROD:g" > env.json
+            - cat env.json
+            - npm install
+            # temporary disable test run
+            #- npm test
+            - zip -r api.zip .
+            - ls
+            - pipe: atlassian/aws-elasticbeanstalk-deploy:0.2.9
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                APPLICATION_NAME: $ACME_APPLICATION_NAME
+                ENVIRONMENT_NAME: $ACME_ENVIRONMENT_NAME_PROD
                 ZIP_FILE: $ZIP_FILE
                 S3_BUCKET: $S3_NODE_BUCKET

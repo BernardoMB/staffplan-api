@@ -22,13 +22,16 @@ Update bucket policy
     ]
 }
 ```
-3. Build angular with the correct environment
+
+// Steps 3 to 5 are in pipeline already, we are adding here just for future references about manually publishing the app
+3. Update environments file under public/src/environments
+4. Build angular with the correct environment
 ```
 ng build --configuration=trial
 or
 ng build --configuration=production
 ```
-4. Push angular dist codes to the S3 bucket
+5. Push angular dist codes to the S3 bucket
 ```
 aws s3 sync ../public/dist/staff-planner s3://trial.acme/
 ```
@@ -36,9 +39,13 @@ aws s3 sync ../public/dist/staff-planner s3://trial.acme/
 ***Setup Node service:***
 1. Create new application for the company
 2. Create new ElasticBeanstalk environment for each environment (trial, prod, demo, staging)
+
+// Steps 3 to 6 are in pipeline already, we are adding here just for future references about manually publishing the app
 3. Update env.json to point to the right master database
 4. Run npm install 
 5. Run make_zip.sh 
 6. Upload the zip file to Elastic Beanstalk
 
-Step 3 - 6 should be taken care of by pipeline in future
+***Update bitbucket-pipelines***
+1. Upadte the pipelines to include deployment for new company
+2. Update environment variable in our bitbucket
