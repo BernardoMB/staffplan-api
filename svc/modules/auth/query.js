@@ -12,10 +12,45 @@ module.exports = {
     AND 
       COMPANY.DOMAIN = '${domain}'`
   ),
+  fetchCompanyByDomain: (domain) => (
+    `SELECT
+        COMPANY.* 
+    FROM COMPANY
+    WHERE 
+      COMPANY.DOMAIN = '${domain}'`
+  ),
   validate: (username, password) => (
-    `SELECT  USERS.*, ROLE.ROLE_NAME, ROLE.COMBINATION_ID 
-      FROM USERS INNER JOIN ROLE ON USERS.ROLE_ID = ROLE.ID 
-      WHERE EMAIL = '${username}' AND PASSWORD = '${password}'`
+    `SELECT  USERS.*, ACCESS_ROLE.ROLE_NAME, ACCESS_ROLE.COMBINATION_ID 
+      FROM USERS INNER JOIN ACCESS_ROLE ON USERS.ROLE_ID = ACCESS_ROLE.ACCESS_ROLE_ID 
+      WHERE USERS.EMAIL = '${username}' AND USERS.PASSWORD = '${password}'`
+  ),
+  passwordReset: (userId, resetId) => (
+    `INSERT INTO
+      PASSWORD_RESET (USER_ID, REQUEST_DATE, RESET_ID) 
+      VALUES (${userId}, SYSDATE(), '${resetId}')`
+  ),
+  clearPasswordReset: userId => (
+    `UPDATE PASSWORD_RESET
+      SET ACTIVE = 0 
+      WHERE USER_ID = ${userId}`
+  ),
+  validateResetId: (userId, resetId, interval) => (
+    `SELECT * FROM 
+      PASSWORD_RESET 
+    WHERE
+      USER_ID = ${userId} AND ACTIVE = 1 AND 
+      RESET_ID = '${resetId}' AND
+      TIMESTAMPDIFF(HOUR, REQUEST_DATE, SYSDATE()) < ${interval}`
+  ),
+  updatePassword: (userId, password) => (
+    `UPDATE USERS
+      SET PASSWORD = '${password}'
+      WHERE USER_ID = ${userId}`
+  ),
+  getuser: (username) => (
+    `SELECT USERS.*  
+      FROM USERS
+      WHERE USERS.EMAIL = '${username}'`
   ),
   office: (userId) => (
     `SELECT USER_ACCESS.OFFICE_ID, OFFICE.OFFICE_NAME FROM USER_ACCESS
