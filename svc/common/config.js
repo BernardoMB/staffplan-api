@@ -8,5 +8,9 @@ const encryption = {
 
 module.exports = {
   DB: { ...masterDB },
-  AUTH: { ...encryption }
+  AUTH: { ...encryption },
+  DOMAINCHECK: false,
+  SENDGRID_API_KEY: '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',
+  FROM_EMAIL: 'donotreply@staffplan.io',
+  RESET_EXPIRY_IN_HOUR: 24
 }
