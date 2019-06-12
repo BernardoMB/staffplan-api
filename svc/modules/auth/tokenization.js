@@ -2,6 +2,32 @@ const config = require('../../common/config');
 
 const authToken = {};
 
+const generateResetToken = (userName, resetId) => {
+  const jwt = require('jsonwebtoken');
+  const payload = {
+    userName,
+    resetId	
+  }
+  const token = jwt.sign(payload, config.AUTH.KEY, {
+    expiresIn: config.RESET_EXPIRY_IN_HOUR * 60 * 60
+  });
+  return token
+}
+
+const parseResetToken = (token, callback) => {
+  const jwt = require('jsonwebtoken');
+  jwt.verify(token, config.AUTH.KEY, (err, decoded) => {
+    let token = null;
+    if (!err) {
+      token = {
+        userName: decoded.userName,
+        resetId: decoded.resetId
+      };
+    }
+    callback(token);
+  });
+}
+
 const generateToken = (userId, dbName) => {
   const jwt = require('jsonwebtoken');
   const payload = {
@@ -43,5 +69,7 @@ const validateToken = token => authToken[token] ? true : false;
 module.exports = {
   generateToken,
   validateToken,
-  refreshToken
+  refreshToken,
+  generateResetToken,
+  parseResetToken
 }
