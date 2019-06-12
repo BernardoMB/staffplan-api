@@ -2,6 +2,7 @@ const db = require('../../common/connection');
 const util = require("../../common/util");
 const config = require('../../common/config');
 const error = require('../../common/error');
+const log = require('../../common/logger');
 const SQL = require('./query');
 const subscription = require('./subscription');
 
@@ -50,9 +51,10 @@ const isAuthenticated = async (req, res, next) => {
     await db.useDB(connection, req.payload.DB);
     next();
   } else {
+    log.info('Authentication failed');
     util.errorResponse(res, `Failed to authenticate token`, 401);
   }
-}
+};
 
 // Validates user and password details
 const validateUser = (req, res) => {
@@ -65,14 +67,16 @@ const validateUser = (req, res) => {
         if (user && user.length) {
           getUserDetails(user[0], connection, res, dbName);
         } else {
+          log.info('Authentication Failed');
           util.errorResponse(res, `Authentication failed`);
         }
-      })
-    })
+      });
+    });
   }).catch(exception => {
+    log.error('Subscription service failed');
     util.errorResponse(res, exception);
-  })
-}
+  });
+};
 
 // used to reset the passoword
 // Reset information will be send as email using notificaiton
@@ -86,16 +90,19 @@ const forgot = (req, res) => {
           const uuidv4 = require('uuid/v4');
           const resetId = uuidv4();
           const userId = user[0].USER_ID;
+          log.info(`${userName} requested password reset`);
           db.execute(connection, SQL.clearPasswordReset(userId)).then( () => {
             db.execute(connection, SQL.passwordReset(userId, resetId)).then(result => {
               if (result) {
                 const tokenizer = require('./tokenization');
                 const resetToken = tokenizer.generateResetToken(userName, resetId);
+                log.debug(`Reset Token - ${resetToken}`);
                 const notification = require('../notification');
                 notification.passwordReset(userName, resetToken, hostname);
                 util.successResponse(res)
               } else {
-                util.errorResponse(res, `Reset failed`);
+                log.error('Password reset failed');
+                util.failureResponse(res);
               }
             })
           })
@@ -105,6 +112,7 @@ const forgot = (req, res) => {
       })
     })
   }).catch(exception => {
+    log.error(exception);
     util.errorResponse(res, exception);
   })
 }
@@ -142,40 +150,52 @@ const validateResetToken = (resetId, hostname, req, callback) => {
 
 // API to check reset token is valid
 const reset = (req, res) => {
-  const resetId = req.body.resetId;
-  const hostname = req.body.hostname;
-  validateResetToken(resetId, hostname, req, result => {
-    if (result.valid) {
-      util.successResponse(res);
-    } else {
-      util.failureResponse(res, result.error);
-    }
-  })
+  try {
+    const resetId = req.body.resetId;
+    const hostname = req.body.hostname;
+    validateResetToken(resetId, hostname, req, result => {
+      if (result.valid) {
+        util.successResponse(res);
+      } else {
+        log.info('Reset token validation failed');
+        util.failureResponse(res, result.error);
+      }
+    })
+  } catch (exception) {
+    log.error(exception);
+    util.errorResponse(res, exception);
+  }
 }
 
 // API to change user password information 
 const changePassword = (req, res) => {
-  const resetId = req.body.resetId;
-  const hostname = req.body.hostname;
-  validateResetToken(resetId, hostname, req, result => {
-    if (result.valid) {
-      const password = req.body.password;
-      const connection = result.connection;
-      const userId = result.user.USER_ID;
-      //TODO: Validate the password strength
-      db.execute(connection, SQL.updatePassword(userId, encryptPassword(password))).then(result => {
-        if (result) {
-          db.execute(connection, SQL.clearPasswordReset(userId)).then( () => {
-            util.successResponse(res);
-          })
-        } else {
-          util.failureResponse(res)
-        }
-      });
-    } else {
-      util.failureResponse(res, result.error);
-    }
-  })
+  try {
+    const resetId = req.body.resetId;
+    const hostname = req.body.hostname;
+    validateResetToken(resetId, hostname, req, result => {
+      if (result.valid) {
+        const password = req.body.password;
+        const connection = result.connection;
+        const userId = result.user.USER_ID;
+        //TODO: Validate the password strength
+        db.execute(connection, SQL.updatePassword(userId, encryptPassword(password))).then(result => {
+          if (result) {
+            db.execute(connection, SQL.clearPasswordReset(userId)).then( () => {
+              util.successResponse(res);
+            })
+          } else {
+            util.failureResponse(res)
+          }
+        });
+      } else {
+        log.info('Reset token validation failed');
+        util.failureResponse(res, result.error);
+      }
+    })
+  } catch (exception) {
+    log.error(exception);
+    util.errorResponse(res, exception);
+  }
 }
 
 module.exports = {
