@@ -18,21 +18,20 @@ const connection  = require('express-myconnection');
 const config = require('./common/config');
 app.use(connection(mysql, config.DB, 'request'));
 
-// Configure logging
-try {
-  require('./common/logger')(app, express);
-} catch(err) {
-  console.log(err);
-}
-
+// Create app level log trace
+require('./apptrace')(app);
 // Create app routes
 require('./modules/route')(app);
 // TODO: It's Old Route need to be removed after refactoring
 require('./routes')(app);
 
 // TODO: Hosting needs to needs to consider the cluster mode 
+
+// log request and response time
+const log = require('./common/logger');
+
 // Host http server
 app.set('port', process.env.PORT || 80);
 http.createServer(app).listen(app.get('port'), function () {
-  console.log('Express server listening on port ' + app.get('port'));  
+  log.info(`Express server listening on port ${app.get('port')}`);  
 });
