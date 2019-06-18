@@ -68,7 +68,7 @@ const validateUser = (req, res) => {
           getUserDetails(user[0], connection, res, dbName);
         } else {
           log.info('Authentication Failed');
-          util.errorResponse(res, `Authentication failed`);
+          util.errorResponse(res, `Authentication failed`, 401);
         }
       });
     });
