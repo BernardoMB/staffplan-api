@@ -1,4 +1,4 @@
-***O Board new Company***
+***On Board new Company***
 
 ***Setup new S3 bucket for angular:***
 1. Each environment type will need one S3 bucket since we will need to point to separate API endpoints
@@ -47,5 +47,5 @@ aws s3 sync ../public/dist/staff-planner s3://trial.acme/
 6. Upload the zip file to Elastic Beanstalk
 
 ***Update bitbucket-pipelines***
-1. Upadte the pipelines to include deployment for new company
+1. Update the pipelines to include deployment for new company
 2. Update environment variable in our bitbucket
