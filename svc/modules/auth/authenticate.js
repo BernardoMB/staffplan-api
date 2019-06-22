@@ -98,7 +98,7 @@ const forgot = (req, res) => {
                 const resetToken = tokenizer.generateResetToken(userName, resetId);
                 log.debug(`Reset Token - ${resetToken}`);
                 const notification = require('../notification');
-                notification.passwordReset(userName, resetToken, hostname);
+                notification.passwordReset(userName, user[0].FIRST_NAME, resetToken, hostname);
                 util.successResponse(res)
               } else {
                 log.error('Password reset failed');
