@@ -27,7 +27,20 @@ const getUserDetails = (user, connection, res, dbName) => {
   const tokenizer = require('./tokenization');
   const response = tokenizer.generateToken(userId, dbName);
   let userObj = {};
-  userObj.user = user;
+  userObj.user = {
+    USER_ID: user.USER_ID,
+    ROLE_ID: user.ROLE_ID,
+    FIRST_NAME: user.FIRST_NAME,
+    MIDDLE_NAME: user.MIDDLE_NAME,
+    LAST_NAME: user.LAST_NAME,
+    EMAIL: user.EMAIL,
+    ADDRESS: user.ADDRESS,
+    CITY: user.CITY,
+    COUNTRY: user.COUNTRY,
+    ZIP: user.ZIP,
+    ROLE_NAME: user.ROLE_NAME,
+    COMBINATION_ID: user.COMBINATION_ID,
+  };
   userObj.token = response.token;
   res.cookie('auth', response.token);
   fetchOffices(userId, connection, res).then(offices => {
@@ -39,7 +52,7 @@ const getUserDetails = (user, connection, res, dbName) => {
 // Validate the request is authenticated
 const isAuthenticated = async (req, res, next) => {
   /* uncomment below two lines if you want to debug service without new token */
-  // req.payload = { ID: 50, DB: 'dev_company1' };
+  // req.payload = { ID: 50, DB: 'staffplan' };
   // const connection = await db.connection(req);
   // await db.useDB(connection, req.payload.DB);
   // next();
