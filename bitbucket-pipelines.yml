@@ -4,24 +4,6 @@ pipelines:
   custom:
     deploy-to-trial-acme:
       - step:
-          name: Deploy angular
-          caches:
-            - node
-          script:
-            - cd public
-            - cd src/environments
-            # Since our URL contains slashes, use alternate regex delimiter instead of slashes
-            - sed "s~ACME_API_BASE_URL_TRIAL~$ACME_API_BASE_URL_TRIAL~g" environment.trial.ts_template > environment.trial.ts
-            - cd ../..
-            - pwd
-            - npm install
-            - npm install @angular/cli
-            - npm run build-trial
-            - apt-get update && apt-get install -y python3-pip
-            - pip3 install -U awscli
-            - aws --version
-            - aws s3 sync dist/staff-planner s3://$ACME_S3_ANGULAR_BUCKET_TRIAL
-      - step:
           name: Deploy service
           caches:
             - node
@@ -44,24 +26,6 @@ pipelines:
                 ZIP_FILE: $ZIP_FILE
                 S3_BUCKET: $S3_NODE_BUCKET
     deploy-to-prod-acme:
-      - step:
-          name: Deploy angular
-          caches:
-            - node
-          script:
-            - cd public
-            - cd src/environments
-            - ls
-            - sed "s~ACME_API_BASE_URL_PROD~$ACME_API_BASE_URL_PROD~g" environment.prod.ts_template > environment.prod.ts
-            - cd ../..
-            - pwd
-            - npm install
-            - npm install @angular/cli
-            - npm run build-prod
-            - apt-get update && apt-get install -y python3-pip
-            - pip3 install -U awscli
-            - aws --version
-            - aws s3 sync dist/staff-planner s3://$ACME_S3_ANGULAR_BUCKET_PROD
       - step:
           name: Deploy service
           caches:
