@@ -22,7 +22,6 @@ const calculateGap = (StaffAssignments => {
           if (nextInfo.STAFF_ID === currentInfo.STAFF_ID) {
             // check the current project end date with next project start date
             if (nextInfo.START_DATE > currentInfo.END_DATE) {
-              // console.log(nextInfo.STAFF_ID);
               gap++;
             }
           }
@@ -43,15 +42,15 @@ const getDashboardDetails = async (req, res) => {
     if (officeId === 'all'){
       condition = '1 = 1';
     } else {
-      condition = `PROJECT.OFFICE_ID = '${officeId}'`;
+      condition = `OFFICE_ID = '${officeId}'`;
     }
     const InProgressProjectCount = await db.execute(connection, SQL.InProgress(condition));
     const ProposalProjectCount = await db.execute(connection, SQL.Proposal(condition));
     const UnassignedRoleCount = await db.execute(connection, SQL.UnassignedRole(condition));
-    const OnBench = await db.execute(connection, SQL.OnBench());
-    const StaffAssignments = await db.execute(connection, SQL.StaffingGap());
+    const OnBench = await db.execute(connection, SQL.OnBench(condition));
+    const StaffAssignments = await db.execute(connection, SQL.StaffingGap(condition));
     const StaffingGap = calculateGap(StaffAssignments);
-    const OverUnderAllocation = await db.execute(connection, SQL.OverUnderAllocation());
+    const OverUnderAllocation = await db.execute(connection, SQL.OverUnderAllocation(condition));
 
     util.successResponse(res, {
       InProgressProjectCount: getValue(InProgressProjectCount),

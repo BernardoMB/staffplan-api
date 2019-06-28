@@ -1,6 +1,7 @@
 const db = require('../../common/connection');
 const SQL = require('./query');
 const util = require("../../common/util");
+const log = require("../../common/logger");
 const cache = require("../../common/cache");
 
 const getMasterList = async (req, res) => {
@@ -14,6 +15,7 @@ const getMasterList = async (req, res) => {
     }
     util.successResponse(res, { data });
   } catch(exception) {
+    log.error(exception);
     util.errorResponse(res, exception);
   }
 }
@@ -24,6 +26,7 @@ const getOfficeList = async (req, res) => {
     const data = await db.execute(connection, SQL.Office());
     util.successResponse(res, { data });
   } catch (exception) {
+    log.error(exception);
     util.errorResponse(res, exception);
   }
 }
@@ -34,16 +37,40 @@ const getCustomLabel = async (req, res) => {
     const label = await db.execute(connection, SQL.Label());
     const data = {};
     if (label) {
-      label.forEach(item => data[item.FIELD_NAME] = item.CUSTOM_FIELD)
+      label.forEach(item => {
+        if (!data[item.MODULE_NAME]) {
+          data[item.MODULE_NAME] = {};
+        }
+        data[item.MODULE_NAME][item.FIELD_NAME] = item.FIELD_VALUE;
+      });
     }
-    util.successResponse(res, { data });
+    util.successResponse(res, data);
   } catch (exception) {
+    log.error(exception);
     util.errorResponse(res, exception);
   }
 }
 
+const updatePreference = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const preference = req.body.preference;
+    const userId = req.payload.ID;
+    // Delete previous preference value
+    await db.execute(connection, SQL.RemovePreference(userId));
+    // Update new preference value
+    if (preference) {
+      await db.execute(connection, SQL.AddPreference(userId, JSON.stringify(preference)));
+    }
+    util.successResponse(res);
+  } catch(exception) {
+    log.error(exception);
+    util.errorResponse(res, exception);
+  }
+}
 module.exports = {
   getMasterList,
   getOfficeList,
-  getCustomLabel
+  getCustomLabel,
+  updatePreference
 }
