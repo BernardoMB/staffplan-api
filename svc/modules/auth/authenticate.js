@@ -12,6 +12,20 @@ const fetchOffices = async (userId, connection) => {
   return offices;
 }
 
+// Get user preferences
+const userPreferences = async (userId, connection) => {
+  let preference = {};
+  const result = await db.execute(connection, SQL.preference(userId));
+  if (result && result.length > 0) {
+    try {
+      preference = JSON.parse(result[0].CONTENT);
+    } catch (exception) {
+      log.error(exception);
+    }
+  }
+  return preference;
+}
+
 // Encrypt the given password string
 const encryptPassword = (password) => {
   const crypto = require('crypto');
@@ -45,7 +59,10 @@ const getUserDetails = (user, connection, res, dbName) => {
   res.cookie('auth', response.token);
   fetchOffices(userId, connection, res).then(offices => {
     userObj.user.OFFICE_LIST = offices;
-    util.successResponse(res, userObj);
+    userPreferences(userId, connection, res).then(preference => {
+      userObj.user.preference = preference;
+      util.successResponse(res, userObj);
+    });
   })
 }
 
@@ -56,15 +73,21 @@ const isAuthenticated = async (req, res, next) => {
   // const connection = await db.connection(req);
   // await db.useDB(connection, req.payload.DB);
   // next();
-  const token = req.headers.sessionid;
-  const tokenizer = require('./tokenization');
-  if (tokenizer.validateToken(token)) {
-    await tokenizer.refreshToken(token, req);
-    const connection = await db.connection(req);
-    await db.useDB(connection, req.payload.DB);
-    next();
-  } else {
-    log.info('Authentication failed');
+  try
+  {
+    const token = req.headers.sessionid;
+    const tokenizer = require('./tokenization');
+    if (tokenizer.validateToken(token)) {
+      await tokenizer.refreshToken(token, req);
+      const connection = await db.connection(req);
+      await db.useDB(connection, req.payload.DB);
+      next();
+    } else {
+      log.info('Authentication failed');
+      util.errorResponse(res, `Failed to authenticate token`, 401);
+    }
+  } catch (exception) {
+    log.error(exception);
     util.errorResponse(res, `Failed to authenticate token`, 401);
   }
 };
