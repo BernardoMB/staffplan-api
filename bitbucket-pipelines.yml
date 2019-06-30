@@ -1,9 +1,10 @@
 image: atlassian/default-image:2
 
 pipelines:
-  custom:
-    deploy-to-trial-acme:
+  branches:
+    master:
       - step:
+          deployment: test
           name: Deploy service
           caches:
             - node
@@ -25,6 +26,7 @@ pipelines:
                 ENVIRONMENT_NAME: $ACME_ENVIRONMENT_NAME_TRIAL
                 ZIP_FILE: $ZIP_FILE
                 S3_BUCKET: $S3_NODE_BUCKET
+  custom:
     deploy-to-prod-acme:
       - step:
           name: Deploy service
