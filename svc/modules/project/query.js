@@ -1,7 +1,7 @@
 // const CONST = require('../../common/const');
 
 module.exports = {
-  ProjectList: () => (
+  ProjectList: (Condition) => (
     `SELECT 
       PROJECT.PROJECT_NAME, 
       PROJECT.PROJECT_ID,
@@ -25,7 +25,8 @@ module.exports = {
     INNER JOIN 
       OFFICE
         ON OFFICE.OFFICE_ID = PROJECT.OFFICE_ID
-    `
+    ${Condition}
+    `   
   ),
   getTeam: (id) => (
     `
@@ -48,7 +49,7 @@ module.exports = {
       PROJECT_STAFF.PROJECT_ID = ${id}
     `
   ),
-  getOpenRoles: () => (
+  getOpenRoles: (condition) => (
     `
     SELECT 
       PROJECT.PROJECT_NAME,
@@ -57,8 +58,8 @@ module.exports = {
       PROJECT.PROJECT_STATE,
       STAFF_ROLE.ROLE_NAME,
       PROJECT_STATUS.STATUS_NAME,
-      PLANNED_PROJECT_STAFF.START_DATE,
-      PLANNED_PROJECT_STAFF.END_DATE,
+      PROJECT.START_DATE,
+      PROJECT.END_DATE,
       PLANNED_PROJECT_STAFF.ALLOCATION,
       PLANNED_PROJECT_STAFF.RESUME_SUBMITTED,
       OFFICE.OFFICE_NAME
@@ -72,9 +73,10 @@ module.exports = {
       ON PROJECT_STATUS.STATUS_ID=PROJECT.PROJECT_STATUS_ID
     INNER JOIN OFFICE
       ON OFFICE.OFFICE_ID=PROJECT.OFFICE_ID
+   ${condition}
     ` 
   ),
-  getProjectTeams: () => (
+  getProjectTeams: (condition) => (
     `
     SELECT
       STAFF.FIRST_NAME,
@@ -90,8 +92,7 @@ module.exports = {
       PROJECT.START_DATE,
       PROJECT.END_DATE,
       PROJECT_TEAM.ALLOCATION,
-      PROJECT_TEAM.RESUME_SUBMITTED,
-      PROJECT.PROJECT_NAME	
+      PROJECT_TEAM.RESUME_SUBMITTED
     FROM
 	    PROJECT 
 	  INNER JOIN
@@ -120,8 +121,9 @@ module.exports = {
  		  ON PROJECT_TEAM.STAFF_ID=STAFF.STAFF_ID
 	  INNER JOIN STAFF_ROLE
 		  ON PROJECT_TEAM.PROJECT_ROLE_ID=STAFF_ROLE.ROLE_ID
-	  INNER JOIN PROJECT_STATUS
-		  ON PROJECT.PROJECT_STATUS_ID=PROJECT_STATUS.STATUS_ID
+    INNER JOIN PROJECT_STATUS
+      ON PROJECT.PROJECT_STATUS_ID=PROJECT_STATUS.STATUS_ID
+    ${condition}
     ` 
   )
 }
