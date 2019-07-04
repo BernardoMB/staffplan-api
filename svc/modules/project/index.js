@@ -7,4 +7,6 @@ module.exports = (app) => {
   app.get(`/${CONST.API}/${MODULE}/:id/team`, authenticate.isAuthenticated, project.getTeam);
   app.post(`/${CONST.API}/${MODULE}/openroles`, authenticate.isAuthenticated, project.getOpenRoles);
   app.post(`/${CONST.API}/${MODULE}/teams`, authenticate.isAuthenticated, project.getProjectTeams);
+  app.get(`/${CONST.API}/${MODULE}/:id/details`, authenticate.isAuthenticated, project.getProjectDetail);
+  app.get(`/${CONST.API}/${MODULE}/:id/notes`, authenticate.isAuthenticated, project.getProjectNotes);
 }
