@@ -26,6 +26,18 @@ const getProjectTeams = async (req, res) => {
   util.successResponse(res, projectTeams);
 }
 
+const getProjectDetail = async (req, res) => {
+  const connection = await db.connection(req);
+  const projectDetail = await db.execute(connection, SQL.getProjectDetail(req.params.id));
+  util.successResponse(res, projectDetail);
+}
+
+const getProjectNotes = async (req, res) => {
+  const connection = await db.connection(req);
+  const projectNotes = await db.execute(connection, SQL.getProjectNotes(req.params.id));
+  util.successResponse(res, projectNotes);
+}
+
 const filters = req => {
   const filter = req.body.filter;
   let filterCondition = " where 1 = 1 ";
@@ -49,6 +61,10 @@ const filters = req => {
     if (filter.office) {
       filterCondition = `${filterCondition} AND PROJECT.OFFICE_ID = ${filter.office}`;
     }
+
+    if (filter.projectId) {
+      filterCondition = `${filterCondition} AND PROJECT.PROJECT_ID = ${filter.projectId}`;
+    }
   }
   return (filterCondition); 
 }
@@ -57,5 +73,7 @@ const filters = req => {
   getProjectList,
   getTeam,
   getOpenRoles,
-  getProjectTeams
+  getProjectTeams,
+  getProjectDetail,
+  getProjectNotes
 }
