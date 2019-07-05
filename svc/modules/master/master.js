@@ -13,7 +13,7 @@ const getMasterList = async (req, res) => {
       data = await db.execute(connection, SQL.Master(tableName));
       cache.set(tableName, data);
     }
-    util.successResponse(res, { data });
+    util.successResponse(res, data);
   } catch(exception) {
     log.error(exception);
     util.errorResponse(res, exception);
