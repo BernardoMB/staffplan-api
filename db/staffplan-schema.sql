@@ -80,13 +80,12 @@ CREATE TABLE `CERTIFICATION_SKILLS` (
 DROP TABLE IF EXISTS `CUSTOM_LABEL`;
 
 CREATE TABLE `CUSTOM_LABEL` (
-  `CUSTOM_LABEL_ID` int(11) NOT NULL,
-  `TABLE_NAME` varchar(50) NOT NULL,
+  `CUSTOM_LABEL_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `MODULE_NAME` varchar(50) NOT NULL,
   `FIELD_NAME` varchar(50) NOT NULL,
-  `CUSTOM_FIELD` varchar(50) NOT NULL,
+  `FIELD_VALUE` varchar(500) NOT NULL,
   PRIMARY KEY (`CUSTOM_LABEL_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 
 # Dump of table CUSTOMER
@@ -184,6 +183,32 @@ CREATE TABLE `PLANNED_PROJECT_STAFF` (
 
 
 
+# Dump of table TIMELINE_TYPE
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `TIMELINE_TYPE`;
+
+CREATE TABLE `TIMELINE_TYPE` (
+  `TIMELINE_TYPE_ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `TYPE` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`TIMELINE_TYPE_ID`),
+  KEY `TIMELINE_TYPE_ID` (`TIMELINE_TYPE_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+
+# Dump of table PROJECT_GROUP
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `PROJECT_GROUP`;
+
+CREATE TABLE `PROJECT_GROUP` (
+  `GROUP_ID` int(11) NOT NULL,
+  `GROUP_NAME` varchar(255) NOT NULL,
+  PRIMARY KEY (`GROUP_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
 # Dump of table PROJECT
 # ------------------------------------------------------------
 
@@ -207,26 +232,12 @@ CREATE TABLE `PROJECT` (
   `OFFICE_ID` int(11) NOT NULL,
   `CATEGORY_ID` int(11) NOT NULL,
   `PROJECT_DESCRIPTION` text,
-  `TIMELINE_TYPE` enum('1','2') DEFAULT NULL COMMENT '1: Estimated , 2:Confirmed',
   `GROUP_ID` int(11) NOT NULL,
+  `TIMELINE_TYPE_ID` int(11) NOT NULL,
   PRIMARY KEY (`PROJECT_ID`),
   KEY `fkIdx_341` (`GROUP_ID`),
   CONSTRAINT `FK_341` FOREIGN KEY (`GROUP_ID`) REFERENCES `PROJECT_GROUP` (`GROUP_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table PROJECT_GROUP
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `PROJECT_GROUP`;
-
-CREATE TABLE `PROJECT_GROUP` (
-  `GROUP_ID` int(11) NOT NULL,
-  `GROUP_NAME` varchar(255) NOT NULL,
-  PRIMARY KEY (`GROUP_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 
 # Dump of table PROJECT_STAFF
