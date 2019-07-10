@@ -6,6 +6,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+/* Start of *** Master Records *** */
 
 # Dump of table ACCESS_ROLE
 # ------------------------------------------------------------
@@ -149,6 +150,194 @@ UNLOCK TABLES;
 
 
 
+# Dump of table EXPERIENCE
+# ------------------------------------------------------------
+
+LOCK TABLES `EXPERIENCE` WRITE;
+/*!40000 ALTER TABLE `EXPERIENCE` DISABLE KEYS */;
+
+INSERT INTO `EXPERIENCE` (`EXPERIENCE_ID`, `EXPERIENCE_LABEL`)
+VALUES
+	(1,'Target Value Design'),
+	(2,'Cost Control'),
+	(3,'Cost Estimating'),
+	(4,'Constructability Review'),
+	(5,'Short Interval Planning'),
+	(6,'Sunbcontractor Selection'),
+	(7,'BIM Consulting'),
+	(8,'VDC Execution Planning'),
+	(9,'Model BAsed Estimating'),
+	(10,'MEP Coordination'),
+	(11,'4D Sequencing'),
+	(12,'Constructability Analysis'),
+	(13,'Site Logistics Planning'),
+	(14,'Total Station Integration'),
+	(15,'Drywall and taping'),
+	(16,'Doors'),
+	(17,'Rough carpentry'),
+	(18,'Acoustical ceiling work'),
+	(19,'Light demolition and clean up');
+
+/*!40000 ALTER TABLE `EXPERIENCE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table PROJECT_GROUP
+# ------------------------------------------------------------
+
+LOCK TABLES `PROJECT_GROUP` WRITE;
+/*!40000 ALTER TABLE `PROJECT_GROUP` DISABLE KEYS */;
+
+INSERT INTO `PROJECT_GROUP` (`GROUP_ID`, `GROUP_NAME`)
+VALUES
+	(1,'TBD'),
+	(2,'Operations'),
+	(3,'SPW');
+
+/*!40000 ALTER TABLE `PROJECT_GROUP` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table PROJECT_STATUS
+# ------------------------------------------------------------
+
+LOCK TABLES `PROJECT_STATUS` WRITE;
+/*!40000 ALTER TABLE `PROJECT_STATUS` DISABLE KEYS */;
+
+INSERT INTO `PROJECT_STATUS` (`STATUS_ID`, `STATUS_NAME`, `DESCRIPTION`)
+VALUES
+	(1,'Proposal',NULL),
+	(2,'Potential',NULL),
+	(3,'In Progress',NULL),
+	(4,'Completed',NULL),
+	(5,'Closed',NULL),
+	(6,'Lost',NULL),
+	(7,'Hold',NULL),
+	(8,'Archive',NULL),
+	(9,'TBD',NULL),
+	(10,'Pre-Con',NULL);
+
+/*!40000 ALTER TABLE `PROJECT_STATUS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table PROJECT_TYPE
+# ------------------------------------------------------------
+
+LOCK TABLES `PROJECT_TYPE` WRITE;
+/*!40000 ALTER TABLE `PROJECT_TYPE` DISABLE KEYS */;
+
+INSERT INTO `PROJECT_TYPE` (`TYPE_ID`, `TYPE_NAME`)
+VALUES
+	(1,'TBD'),
+	(2,'Multi-Story Office Building'),
+	(3,'Retail Space'),
+	(4,'Warehouse'),
+	(5,'Lab'),
+	(6,'Data Center'),
+	(7,'Tenant Improvement'),
+	(8,'Corporate Office'),
+	(9,'Student Center'),
+	(10,'Hospital');
+
+/*!40000 ALTER TABLE `PROJECT_TYPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table REGION
+# ------------------------------------------------------------
+
+LOCK TABLES `REGION` WRITE;
+/*!40000 ALTER TABLE `REGION` DISABLE KEYS */;
+
+INSERT INTO `REGION` (`REGION_ID`, `REGION_NAME`)
+VALUES
+	(1,'TBD'),
+	(2,'Northeast'),
+	(3,'SouthEast'),
+	(4,'Midwest'),
+	(5,'South'),
+	(6,'West'),
+	(7,'Southwest');
+
+/*!40000 ALTER TABLE `REGION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table STAFF_GROUP
+# ------------------------------------------------------------
+
+LOCK TABLES `STAFF_GROUP` WRITE;
+/*!40000 ALTER TABLE `STAFF_GROUP` DISABLE KEYS */;
+
+INSERT INTO `STAFF_GROUP` (`GROUP_ID`, `GROUP_NAME`)
+VALUES
+	(1,'TBD'),
+	(2,'Operation'),
+	(3,'SPW'),
+	(4,'Estimator'),
+	(5,'Admin'),
+	(6,'Intern');
+
+/*!40000 ALTER TABLE `STAFF_GROUP` ENABLE KEYS */;
+UNLOCK TABLES;
+
+# Dump of table STAFF_ROLE
+# ------------------------------------------------------------
+
+LOCK TABLES `STAFF_ROLE` WRITE;
+/*!40000 ALTER TABLE `STAFF_ROLE` DISABLE KEYS */;
+
+INSERT INTO `STAFF_ROLE` (`ROLE_ID`, `ROLE_NAME`)
+VALUES
+	(1,'Assistant Superintendent'),
+	(2,'BIM Project Engineer'),
+	(3,'Field Office Coordinator'),
+	(4,'MEP Coordinator'),
+	(5,'Project Accountant'),
+	(6,'Project Engineer'),
+	(7,'Project Executive'),
+	(8,'Project Manager'),
+	(9,'Project Superintendent'),
+	(10,'Intern'),
+	(11,'TBD');
+
+/*!40000 ALTER TABLE `STAFF_ROLE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table STAFF_STATUS
+# ------------------------------------------------------------
+
+LOCK TABLES `STAFF_STATUS` WRITE;
+/*!40000 ALTER TABLE `STAFF_STATUS` DISABLE KEYS */;
+
+INSERT INTO `STAFF_STATUS` (`STATUS_ID`, `STATUS_NAME`)
+VALUES
+	(1,'Active'),
+	(2,'Inactive'),
+	(3,'Leave of Absence'),
+	(4,'Retired'),
+	(5,'Sabbatical');
+
+/*!40000 ALTER TABLE `STAFF_STATUS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+LOCK TABLES `TIMELINE_TYPE` WRITE;
+/*!40000 ALTER TABLE `TIMELINE_TYPE` DISABLE KEYS */;
+
+INSERT INTO `TIMELINE_TYPE` (`TIMELINE_TYPE_ID`, `TYPE`)
+VALUES
+	(1,'Estimate'),
+	(2,'Confirmed');
+
+UNLOCK TABLES;
+
+/* End of *** Master Records *** */
+
+/* Start of *** Transaction Records ** */
+
 # Dump of table CUSTOMER
 # ------------------------------------------------------------
 
@@ -189,43 +378,6 @@ VALUES
 	(30,'Allentown University','NULL','NULL','NULL','NULL','Dale Henry','NULL');
 
 /*!40000 ALTER TABLE `CUSTOMER` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump of table CUSTOMER_PROJECTS
-# ------------------------------------------------------------
-
-
-
-# Dump of table EXPERIENCE
-# ------------------------------------------------------------
-
-LOCK TABLES `EXPERIENCE` WRITE;
-/*!40000 ALTER TABLE `EXPERIENCE` DISABLE KEYS */;
-
-INSERT INTO `EXPERIENCE` (`EXPERIENCE_ID`, `EXPERIENCE_LABEL`)
-VALUES
-	(1,'Target Value Design'),
-	(2,'Cost Control'),
-	(3,'Cost Estimating'),
-	(4,'Constructability Review'),
-	(5,'Short Interval Planning'),
-	(6,'Sunbcontractor Selection'),
-	(7,'BIM Consulting'),
-	(8,'VDC Execution Planning'),
-	(9,'Model BAsed Estimating'),
-	(10,'MEP Coordination'),
-	(11,'4D Sequencing'),
-	(12,'Constructability Analysis'),
-	(13,'Site Logistics Planning'),
-	(14,'Total Station Integration'),
-	(15,'Drywall and taping'),
-	(16,'Doors'),
-	(17,'Rough carpentry'),
-	(18,'Acoustical ceiling work'),
-	(19,'Light demolition and clean up');
-
-/*!40000 ALTER TABLE `EXPERIENCE` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
@@ -348,22 +500,6 @@ VALUES
 UNLOCK TABLES;
 
 
-# Dump of table PROJECT_GROUP
-# ------------------------------------------------------------
-
-LOCK TABLES `PROJECT_GROUP` WRITE;
-/*!40000 ALTER TABLE `PROJECT_GROUP` DISABLE KEYS */;
-
-INSERT INTO `PROJECT_GROUP` (`GROUP_ID`, `GROUP_NAME`)
-VALUES
-	(1,'TBD'),
-	(2,'Operations'),
-	(3,'SPW');
-
-/*!40000 ALTER TABLE `PROJECT_GROUP` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
 # Dump of table PROJECT_STAFF
 # ------------------------------------------------------------
 
@@ -427,73 +563,6 @@ VALUES
 
 /*!40000 ALTER TABLE `PROJECT_STAFF` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
-# Dump of table PROJECT_STATUS
-# ------------------------------------------------------------
-
-LOCK TABLES `PROJECT_STATUS` WRITE;
-/*!40000 ALTER TABLE `PROJECT_STATUS` DISABLE KEYS */;
-
-INSERT INTO `PROJECT_STATUS` (`STATUS_ID`, `STATUS_NAME`, `DESCRIPTION`)
-VALUES
-	(1,'Proposal',NULL),
-	(2,'Potential',NULL),
-	(3,'In Progress',NULL),
-	(4,'Completed',NULL),
-	(5,'Closed',NULL),
-	(6,'Lost',NULL),
-	(7,'Hold',NULL),
-	(8,'Archive',NULL),
-	(9,'TBD',NULL),
-	(10,'Pre-Con',NULL);
-
-/*!40000 ALTER TABLE `PROJECT_STATUS` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump of table PROJECT_TYPE
-# ------------------------------------------------------------
-
-LOCK TABLES `PROJECT_TYPE` WRITE;
-/*!40000 ALTER TABLE `PROJECT_TYPE` DISABLE KEYS */;
-
-INSERT INTO `PROJECT_TYPE` (`TYPE_ID`, `TYPE_NAME`)
-VALUES
-	(1,'TBD'),
-	(2,'Multi-Story Office Building'),
-	(3,'Retail Space'),
-	(4,'Warehouse'),
-	(5,'Lab'),
-	(6,'Data Center'),
-	(7,'Tenant Improvement'),
-	(8,'Corporate Office'),
-	(9,'Student Center'),
-	(10,'Hospital');
-
-/*!40000 ALTER TABLE `PROJECT_TYPE` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump of table REGION
-# ------------------------------------------------------------
-
-LOCK TABLES `REGION` WRITE;
-/*!40000 ALTER TABLE `REGION` DISABLE KEYS */;
-
-INSERT INTO `REGION` (`REGION_ID`, `REGION_NAME`)
-VALUES
-	(1,'TBD'),
-	(2,'Northeast'),
-	(3,'SouthEast'),
-	(4,'Midwest'),
-	(5,'South'),
-	(6,'West'),
-	(7,'Southwest');
-
-/*!40000 ALTER TABLE `REGION` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 # Dump of table STAFF
 # ------------------------------------------------------------
@@ -591,7 +660,6 @@ VALUES
 /*!40000 ALTER TABLE `STAFF` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
 # Dump of table STAFF_CERTIFICATION
 # ------------------------------------------------------------
 
@@ -605,73 +673,6 @@ VALUES
 
 /*!40000 ALTER TABLE `STAFF_CERTIFICATION` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
-# Dump of table STAFF_GROUP
-# ------------------------------------------------------------
-
-LOCK TABLES `STAFF_GROUP` WRITE;
-/*!40000 ALTER TABLE `STAFF_GROUP` DISABLE KEYS */;
-
-INSERT INTO `STAFF_GROUP` (`GROUP_ID`, `GROUP_NAME`)
-VALUES
-	(1,'TBD'),
-	(2,'Operation'),
-	(3,'SPW'),
-	(4,'Estimator'),
-	(5,'Admin'),
-	(6,'Intern');
-
-/*!40000 ALTER TABLE `STAFF_GROUP` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump of table STAFF_PROJECT_EXPERIENCE
-# ------------------------------------------------------------
-
-
-
-# Dump of table STAFF_ROLE
-# ------------------------------------------------------------
-
-LOCK TABLES `STAFF_ROLE` WRITE;
-/*!40000 ALTER TABLE `STAFF_ROLE` DISABLE KEYS */;
-
-INSERT INTO `STAFF_ROLE` (`ROLE_ID`, `ROLE_NAME`)
-VALUES
-	(1,'Assistant Superintendent'),
-	(2,'BIM Project Engineer'),
-	(3,'Field Office Coordinator'),
-	(4,'MEP Coordinator'),
-	(5,'Project Accountant'),
-	(6,'Project Engineer'),
-	(7,'Project Executive'),
-	(8,'Project Manager'),
-	(9,'Project Superintendent'),
-	(10,'Intern'),
-	(11,'TBD');
-
-/*!40000 ALTER TABLE `STAFF_ROLE` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump of table STAFF_STATUS
-# ------------------------------------------------------------
-
-LOCK TABLES `STAFF_STATUS` WRITE;
-/*!40000 ALTER TABLE `STAFF_STATUS` DISABLE KEYS */;
-
-INSERT INTO `STAFF_STATUS` (`STATUS_ID`, `STATUS_NAME`)
-VALUES
-	(1,'Active'),
-	(2,'Inactive'),
-	(3,'Leave of Absence'),
-	(4,'Retired'),
-	(5,'Sabbatical');
-
-/*!40000 ALTER TABLE `STAFF_STATUS` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 # Dump of table USER_ACCESS
 # ------------------------------------------------------------
@@ -697,22 +698,9 @@ INSERT INTO `USERS` (`USER_ID`, `ROLE_ID`, `FIRST_NAME`, `MIDDLE_NAME`, `LAST_NA
 VALUES
 	(50,1,'StaffPlan','','Admin','admin@staffplan.io','39911a1da4d8b466068cb0af85cf0c52','true','USA','California','USA','94022');
 
-LOCK TABLES `TIMELINE_TYPE` WRITE;
-/*!40000 ALTER TABLE `TIMELINE_TYPE` DISABLE KEYS */;
-
-INSERT INTO `TIMELINE_TYPE` (`TIMELINE_TYPE_ID`, `TYPE`)
-VALUES
-	(1,'Estimate'),
-	(2,'Confirmed');
-
-/*!40000 ALTER TABLE `TIMELINE_TYPE` ENABLE KEYS */;
-
 UNLOCK TABLES;
 
-/*!40000 ALTER TABLE `USERS` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
+/* End of *** Transaction Records ** */
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
