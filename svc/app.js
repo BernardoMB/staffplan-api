@@ -22,8 +22,6 @@ app.use(connection(mysql, config.DB, 'request'));
 require('./apptrace')(app);
 // Create app routes
 require('./modules/route')(app);
-// TODO: It's Old Route need to be removed after refactoring
-require('./routes')(app);
 
 // TODO: Hosting needs to needs to consider the cluster mode 
 
