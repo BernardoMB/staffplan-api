@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "cross-env PORT=4300 forever -w ./app.js",
-    "lint": "eslint . --ignore-path .eslintignore"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
@@ -47,7 +47,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "eslint . --ignore-path .eslintignore"
+      "pre-commit": "eslint ."
     }
   }
 }
