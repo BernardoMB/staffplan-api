@@ -288,12 +288,12 @@ module.exports = {
       NODE_PARENT_ID,
       IS_PARENT
     ) VALUES (
-      '${notes.USER_ID}',
+      ${notes.USER_ID},
       '${notes.CONTENT}',
       NOW(),
       NOW(),
-      '${notes.PROJECT_ID}',
-      '${notes.NODE_PARENT_ID}',
+      ${notes.PROJECT_ID},
+      ${notes.NODE_PARENT_ID},
       ${notes.IS_PARENT}      
     )
     `
@@ -321,8 +321,8 @@ module.exports = {
       '${role.START_DATE}',
       '${role.END_DATE}',
       ${role.ALLOCATION},
-      '${role.PROJECT_ROLE_ID}',
-      '${role.PROJECT_ID}'
+      ${role.PROJECT_ROLE_ID},
+      ${role.PROJECT_ID}
     )
     `    
     ),

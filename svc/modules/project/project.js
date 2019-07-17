@@ -112,12 +112,12 @@ const getProjectNotes = async (req, res) => {
 
 const insertProjectNotes = async (req, res) => {
   try {
-      const IS_PARENT = !(req.body.project.parentId && req.body.project.parentId !== null);
+      const IS_PARENT = !(req.body.project.parentId);
       const notesToCreate = {
       USER_ID: req.payload.ID,
       CONTENT: req.body.project.content,      
       PROJECT_ID: req.params.id,
-      NODE_PARENT_ID: req.body.project.parentId,
+      NODE_PARENT_ID: req.body.project.parentId || null,
       IS_PARENT
     };
     const connection = await db.connection(req);
