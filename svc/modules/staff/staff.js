@@ -5,7 +5,6 @@ const util = require("../../common/util");
 const staffAssignments = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    console.log(SQL.staffAssignments(filters(req)));
     const staffAssignments = await db.execute(connection, SQL.staffAssignments(filters(req)));
     util.successResponse(res, staffAssignments);
   }
@@ -17,7 +16,6 @@ const staffAssignments = async (req, res) => {
 const staffList = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    console.log(SQL.staffList(filters(req)));
     const staffList = await db.execute(connection, SQL.staffList(filters(req)));
     util.successResponse(res, staffList);
   }
