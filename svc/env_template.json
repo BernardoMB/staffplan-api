@@ -4,6 +4,6 @@
   "password": "MASTER_DB_PASSWORD",
   "port": 3306,
   "database": "MASTER_DB",
-  "environmentName": "ENVIRONMENT_NAME",
+  "name": "ENVIRONMENT_NAME",
   "companyName": "COMPANY_NAME"
 }
