@@ -10,7 +10,7 @@ pipelines:
             - node
           script:
             - cd svc
-            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" > env.json
+            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" > env.json
             - cat env.json
             - npm install
             # temporary disable test run
@@ -35,7 +35,7 @@ pipelines:
             - node
           script:
             - cd svc
-            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" > env.json
+            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" > env.json
             - cat env.json
             - npm install
             # temporary disable test run
@@ -60,7 +60,7 @@ pipelines:
             - node
           script:
             - cd svc
-            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" > env.json
+            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" > env.json
             - cat env.json
             - npm install
             # temporary disable test run
@@ -85,7 +85,7 @@ pipelines:
             - node
           script:
             - cd svc
-            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" > env.json
+            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" > env.json
             - cat env.json
             - npm install
             # temporary disable test run
