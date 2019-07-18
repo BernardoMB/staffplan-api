@@ -102,8 +102,14 @@ const updateProjectDetail = async (req, res) => {
 
 const getProjectNotes = async (req, res) => {
   try {
+    let condition = '';
+    if (req.params.noteid) {
+      condition = `PROJECT.PROJECT_ID = ${req.params.id} AND NOTES.NODE_PARENT_ID = ${req.params.noteid}`
+    } else {
+      condition = `PROJECT.PROJECT_ID = ${req.params.id} AND NOTES.IS_PARENT = 1`
+    }
     const connection = await db.connection(req);
-    const projectNotes = await db.execute(connection, SQL.getProjectNotes(req.params.id));
+    const projectNotes = await db.execute(connection, SQL.getProjectNotes(condition));
     util.successResponse(res, projectNotes);
   } catch (exception) {
       util.errorResponse(res,exception)
@@ -138,6 +144,19 @@ const updateProjectNotes = async (req, res) => {
       util.errorResponse(res, exception);
   }
 }
+
+const deleteProjectNote = async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const noteId = req.params.noteid;
+    const connection = await db.connection(req);
+    const rowsAffected = await db.execute(connection, SQL.deleteProjectNote(projectId, noteId));
+    util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+}
+
 const filters = req => {
   const filter = req.body.filter;
   let filterCondition = " where 1 = 1 ";
@@ -216,6 +235,7 @@ module.exports = {
   getProjectNotes,
   insertProjectNotes,
   updateProjectNotes,
+  deleteProjectNote,
   insertProjectRole,
   bulkRoleUpdate
 }

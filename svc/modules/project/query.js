@@ -255,7 +255,7 @@ module.exports = {
     `
   ),
 
-  getProjectNotes: (id) => (
+  getProjectNotes: (condition) => (
     `
     SELECT 
       PROJECT.PROJECT_NAME,
@@ -264,9 +264,11 @@ module.exports = {
       NOTES.CONTENT,
       NOTES.NODE_PARENT_ID,
       NOTES.IS_PARENT,
+      NOTES.UPDATED,
       USERS.FIRST_NAME,
       USERS.MIDDLE_NAME,
-      USERS.LAST_NAME
+      USERS.LAST_NAME,
+      (SELECT COUNT(CHILDNOTES.NOTE_ID) FROM NOTES CHILDNOTES WHERE CHILDNOTES.NODE_PARENT_ID = NOTES.NOTE_ID) REPLYCOUNT
     FROM
 	    PROJECT
 	  INNER JOIN NOTES
@@ -274,7 +276,9 @@ module.exports = {
 	  INNER JOIN USERS
 		  ON USERS.USER_ID = NOTES.USER_ID
     WHERE
-      PROJECT.PROJECT_ID = ${id}
+      ${condition}
+    ORDER BY
+      NOTES.NOTE_ID DESC
     `
   ),
   insertProjectNotes: (notes) => (
@@ -306,6 +310,15 @@ module.exports = {
       UPDATED = NOW()
     WHERE
       NOTE_ID = ${noteid}
+    `
+  ),
+
+  deleteProjectNote: (projectId, noteId) => (
+    `
+    DELETE FROM NOTES 
+    WHERE
+      NOTE_ID = ${noteId}
+      AND PROJECT_ID = ${projectId}
     `
   ),
 

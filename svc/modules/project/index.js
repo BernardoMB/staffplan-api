@@ -14,6 +14,8 @@ module.exports = (app) => {
   app.get(`/${CONST.API}/${MODULE}/:id/notes`, authenticate.isAuthenticated, project.getProjectNotes);
   app.put(`/${CONST.API}/${MODULE}/:id/notes`, authenticate.isAuthenticated, project.insertProjectNotes);
   app.post(`/${CONST.API}/${MODULE}/:id/notes`, authenticate.isAuthenticated, project.updateProjectNotes);
+  app.delete(`/${CONST.API}/${MODULE}/:id/notes/:noteid`, authenticate.isAuthenticated, project.deleteProjectNote);
+  app.get(`/${CONST.API}/${MODULE}/:id/notes/:noteid`, authenticate.isAuthenticated, project.getProjectNotes);
   app.put(`/${CONST.API}/${MODULE}/:id/role`, authenticate.isAuthenticated, project.insertProjectRole);
   app.post(`/${CONST.API}/${MODULE}/:id/bulkroleupdate`, authenticate.isAuthenticated, project.bulkRoleUpdate);
 
