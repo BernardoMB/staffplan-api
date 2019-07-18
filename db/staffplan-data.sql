@@ -143,7 +143,20 @@ VALUES
 	(24,'Project','RESUME_SUBMITTED','Resume Submited'),
 	(25,'Project','ASSIGNMENTSTATUS','Assignment Status'),
 	(26,'Project','STAFF','Staff'),
-	(27,'Project','ROLE_NAME','Project Role');
+	(27,'Project','ROLE_NAME','Project Role'),
+	(28,'Staff','STAFF','Staff'),
+	(29,'Staff','PROJECT_NAME','Project Name'),
+	(30,'Staff','PROJECTROLE','Project Role'),
+	(31,'Staff','PROJECTSTATUS','Project Status'),
+	(32,'Staff','START_DATE','Start Date'),
+	(33,'Staff','END_DATE','End Date'),
+	(34,'Staff','ALLOCATION','Allocation'),
+	(35,'Staff','RESUME_SUBMITTED','Resume Submitted'),
+	(36,'Staff','ASSIGNMENTSTATUS','Assignment Status'),
+	(37,'Staff','STAFFROLE','Staff Role'),
+	(38,'Staff','STATUS','Staff Status'),
+	(39,'Staff','OFFICE','office'),
+	(40,'Staff','GROUP','Group');
 
 /*!40000 ALTER TABLE `CUSTOM_LABEL` ENABLE KEYS */;
 UNLOCK TABLES;
