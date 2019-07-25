@@ -83,6 +83,19 @@ CREATE TABLE `CUSTOM_LABEL` (
   PRIMARY KEY (`CUSTOM_LABEL_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+# Dump of table CONTACT
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `CONTACT`;
+
+CREATE TABLE `CONTACT` (
+  `CONTACT_ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(255) NOT NULL,
+  `EMAIL` varchar(255) DEFAULT NULL,
+  `PHONE` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`CONTACT_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=LATIN1;
+
 
 # Dump of table CUSTOMER
 # ------------------------------------------------------------
@@ -270,7 +283,7 @@ CREATE TABLE `STAFF` (
   `STAFF_PHOTO` varchar(255) DEFAULT NULL,
   `STAFF_ROLE_ID` int(11) unsigned DEFAULT NULL,
   `STAFF_GROUP_ID` int(11) unsigned DEFAULT NULL,
-  `STAFF_STATUS_ID` int(11) unsigned unsigned DEFAULT NULL,
+  `STAFF_STATUS_ID` int(11) unsigned DEFAULT NULL,
   `OFFICE_ID` int(11) unsigned DEFAULT NULL,
   `EMPLOYMENT_START_DATE` date DEFAULT NULL,
   PRIMARY KEY (`STAFF_ID`),
