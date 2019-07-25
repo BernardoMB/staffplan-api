@@ -5,4 +5,5 @@ module.exports = (app) => {
   require('./master/')(app);
   require('./project/')(app);
   require('./staff/')(app);
+  require('./customer/')(app);  
 }

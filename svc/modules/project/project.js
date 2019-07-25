@@ -43,10 +43,10 @@ const getProjectTeams = async (req, res) => {
   }
 }
 
-const getProjectDetail = async (req, res) => {
+const getProjectDetailById = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const projectDetail = await db.execute(connection, SQL.getProjectDetail(req.params.id));
+    const projectDetail = await db.execute(connection, SQL.getProjectDetailById(req.params.id));
     util.successResponse(res, projectDetail);
   } catch (exception) {
       util.errorResponse(res,exception)
@@ -229,7 +229,7 @@ module.exports = {
   getTeam,
   getOpenRoles,
   getProjectTeams,
-  getProjectDetail,
+  getProjectDetailById,
   insertProjectDetail,
   updateProjectDetail,
   getProjectNotes,

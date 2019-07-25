@@ -13,9 +13,4 @@ module.exports = (app) => {
   app.delete(`/${CONST.API}/${MODULE}/:id/deletestaffcertification`, authenticate.isAuthenticated, staff.deleteStaffCertification);
   app.put(`/${CONST.API}/${MODULE}/:id/staffexperience`, authenticate.isAuthenticated, staff.insertStaffExperience);
   app.delete(`/${CONST.API}/${MODULE}/:id/deletestaffexperience`, authenticate.isAuthenticated, staff.deleteStaffExperience);
-  app.post(`/${CONST.API}/${MODULE}/customerlist`, authenticate.isAuthenticated, staff.customerList);
-  app.put(`/${CONST.API}/${MODULE}/customer`, authenticate.isAuthenticated, staff.insertCustomer);
-  app.post(`/${CONST.API}/${MODULE}/:id/customer`, authenticate.isAuthenticated, staff.updateCustomer);
-  app.put(`/${CONST.API}/${MODULE}/:id/customerproject`, authenticate.isAuthenticated, staff.addCustomerProject);
-  app.delete(`/${CONST.API}/${MODULE}/:id/removecustomerproject`, authenticate.isAuthenticated, staff.removeCustomerProject);
 }
