@@ -4,13 +4,10 @@ module.exports = {
   ),
   Office: () => (
     `SELECT
-      OFFICE.*,
-      REGION.REGION_NAME
+      OFFICE_ID,
+      OFFICE_NAME
     FROM 
-      OFFICE 
-    INNER JOIN 
-      REGION 
-    ON OFFICE.REGION_ID = REGION.REGION_ID`
+      OFFICE`
   ),
   Label: () => (
     `SELECT MODULE_NAME, FIELD_NAME, FIELD_VALUE FROM CUSTOM_LABEL ORDER BY MODULE_NAME, FIELD_NAME`

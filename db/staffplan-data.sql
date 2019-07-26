@@ -171,7 +171,7 @@ VALUES
 	(10,'Dashboard','AllocationAlertDesc','No of staff that have allocation alerts (over or under allocated)'),
 	(11,'Dashboard','Bench','Staff on Bench'),
 	(12,'Dashboard','BenchDesc','No of staff on bench'),
-	(13,'Project','PROJECT_NAME','Project Name'),
+	(13,'Project','PROJECT_NAME','Project'),
 	(14,'Project','OPENROLE','Open Roles'),
 	(15,'Project','NOTECOUNT','Notes'),
 	(16,'Project','STATUS_NAME','Status'),

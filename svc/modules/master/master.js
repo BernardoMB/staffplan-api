@@ -24,7 +24,7 @@ const getOfficeList = async (req, res) => {
   try {
     const connection = await db.connection(req);
     const data = await db.execute(connection, SQL.Office());
-    util.successResponse(res, { data });
+    util.successResponse(res, data);
   } catch (exception) {
     log.error(exception);
     util.errorResponse(res, exception);
