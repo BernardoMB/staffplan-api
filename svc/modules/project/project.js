@@ -13,16 +13,6 @@ const getProjectList = async (req, res) => {
   }  
 }
 
-const getTeam = async (req, res) => {
-  try {
-    const connection = await db.connection(req);
-    const teamList = await db.execute(connection, SQL.getTeam(req.params.id));
-    util.successResponse(res, teamList);
-  } catch (exception) {
-      util.errorResponse(res, exception)
-  }
-}
-
 const getOpenRoles = async (req, res) => {
   try { 
     const connection = await db.connection(req);
@@ -117,7 +107,7 @@ const updateProjectDetail = async (req, res) => {
   try {
     const projectDetails = req.body.project;    
     const connection = await db.connection(req);
-    const result = await db.execute(connection, SQL.getProjectDetailUpdate(req.params.id));
+    const result = await db.execute(connection, SQL.projectDetailsById(req.params.id));
     let detailsToUpdate = {};
     if (result && result.length > 0) {
       detailsToUpdate = result[0];
@@ -125,63 +115,6 @@ const updateProjectDetail = async (req, res) => {
     const CustomerContact = await processCustomerContact(projectDetails, connection);
     const projectToUpdate = Object.assign(detailsToUpdate, projectDetails, CustomerContact);
     const rowsAffected = await db.execute(connection, SQL.updateProjectDetail(projectToUpdate, req.params.id));
-    util.successResponse(res, rowsAffected);
-  } catch (exception) {
-      util.errorResponse(res, exception);
-  }
-}
-
-const getProjectNotes = async (req, res) => {
-  try {
-    let condition = '';
-    if (req.params.noteid) {
-      condition = `PROJECT.PROJECT_ID = ${req.params.id} AND NOTES.NODE_PARENT_ID = ${req.params.noteid}`
-    } else {
-      condition = `PROJECT.PROJECT_ID = ${req.params.id} AND NOTES.IS_PARENT = 1`
-    }
-    const connection = await db.connection(req);
-    const projectNotes = await db.execute(connection, SQL.getProjectNotes(condition));
-    util.successResponse(res, projectNotes);
-  } catch (exception) {
-      util.errorResponse(res,exception)
-  }
-}
-
-const insertProjectNotes = async (req, res) => {
-  try {
-      const IS_PARENT = !(req.body.project.parentId);
-      const notesToCreate = {
-      USER_ID: req.payload.ID,
-      CONTENT: req.body.project.content,      
-      PROJECT_ID: req.params.id,
-      NODE_PARENT_ID: req.body.project.parentId || null,
-      IS_PARENT
-    };
-    const connection = await db.connection(req);
-    const rowsAffected = await db.execute(connection, SQL.insertProjectNotes(notesToCreate));
-    util.successResponse(res, rowsAffected);
-  } catch (exception) {
-      util.errorResponse(res, exception);
-  }
-}
-
-const updateProjectNotes = async (req, res) => {
-  try {
-    const notes = req.body.project;    
-    const connection = await db.connection(req);
-    const rowsAffected = await db.execute(connection, SQL.updateProjectNotes(notes.content, notes.noteId));
-    util.successResponse(res, rowsAffected);
-  } catch (exception) {
-      util.errorResponse(res, exception);
-  }
-}
-
-const deleteProjectNote = async (req, res) => {
-  try {
-    const projectId = req.params.id;
-    const noteId = req.params.noteid;
-    const connection = await db.connection(req);
-    const rowsAffected = await db.execute(connection, SQL.deleteProjectNote(projectId, noteId));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
       util.errorResponse(res, exception);
@@ -222,51 +155,11 @@ const filters = req => {
   return (filterCondition); 
 }
 
-const insertProjectRole = async (req, res) => {
-  try {      
-      const roleToCreate = {      
-      ALLOCATION: req.body.project.allocation,      
-      PROJECT_ID: req.params.id,
-      PROJECT_ROLE_ID: req.body.project.roleId,
-      START_DATE: req.body.project.startDate,
-      END_DATE: req.body.project.endDate
-    };
-    const connection = await db.connection(req);
-    const rowsAffected = await db.execute(connection, SQL.insertProjectRole(roleToCreate));
-    util.successResponse(res, rowsAffected);
-  } catch (exception) {
-      util.errorResponse(res, exception);
-  }
-}
-
-const bulkRoleUpdate = async (req, res) => {
-  try {      
-      const rolesToUpdate = {            
-      PROJECT_ID: req.params.id,
-      START_DATE: req.body.project.startDate,
-      END_DATE: req.body.project.endDate,
-      PLANNED_PROJECT_STAFFIDS: req.body.project.plannedStaffIds
-    };
-    const connection = await db.connection(req);
-    const rowsAffected = await db.execute(connection, SQL.bulkRoleUpdate(rolesToUpdate));
-    util.successResponse(res, rowsAffected);
-  } catch (exception) {
-      util.errorResponse(res, exception);
-  }
-}
-
 module.exports = {
   getProjectList,
-  getTeam,
   getOpenRoles,
   getProjectTeams,
   getProjectDetailById,
   insertProjectDetail,
-  updateProjectDetail,
-  getProjectNotes,
-  insertProjectNotes,
-  updateProjectNotes,
-  deleteProjectNote,
-  insertProjectRole,
-  bulkRoleUpdate
+  updateProjectDetail
 }
