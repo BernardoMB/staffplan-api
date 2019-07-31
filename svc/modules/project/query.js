@@ -151,7 +151,7 @@ module.exports = {
       CUSTOMER.CUSTOMER_ID,      
       CUSTOMER.CUSTOMER_NAME,
       CONTACT.CONTACT_ID,
-      CONTACT.NAME,
+      CONTACT.NAME CONTACT_NAME,
       CATEGORY.CATEGORY_ID,
       CATEGORY.CATEGORY_NAME,
       PROJECT.PROJECT_TYPE_ID,
@@ -250,7 +250,9 @@ module.exports = {
       CATEGORY_ID = ${project.CATEGORY_ID},
       PROJECT_DESCRIPTION = '${project.PROJECT_DESCRIPTION}',
       GROUP_ID = ${project.GROUP_ID},
-      TIMELINE_TYPE_ID = ${project.TIMELINE_TYPE_ID}
+      TIMELINE_TYPE_ID = ${project.TIMELINE_TYPE_ID},
+      CUSTOMER_ID = ${project.CUSTOMER_ID},
+      CONTACT_ID = ${project.CONTACT_ID}
     WHERE
       PROJECT.PROJECT_ID = ${id}
     `
@@ -347,5 +349,32 @@ module.exports = {
         START_DATE = '${role.END_DATE}'
       WHERE PLANNED_PROJECT_STAFF.ID IN (${role.PLANNED_PROJECT_STAFFIDS.join(',')})
       `    
+    ),
+    insertCustomer: (CUSTOMER_NAME) => (
+      `
+      INSERT INTO CUSTOMER (
+        CUSTOMER_NAME
+      ) VALUES (
+        '${CUSTOMER_NAME}'
       )
+      `
+    ),
+    insertContact: (CONTACT_NAME) => (
+      `
+      INSERT INTO CONTACT (
+        NAME
+      ) VALUES (
+        '${CONTACT_NAME}'
+      )
+      `
+    ),
+    insertCustomerContact: (CUSTOMER_ID, CONTACT_ID) => (
+      `
+      INSERT INTO CUSTOMER_CONTACTS (CUSTOMER_ID, CONTACT_ID)
+      VALUES (
+        ${CUSTOMER_ID},
+        ${CONTACT_ID}
+      )
+      `
+    )
 }

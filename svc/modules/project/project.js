@@ -63,6 +63,7 @@ const insertProjectDetail = async (req, res) => {
       PROJECT_CITY: '',
       PROJECT_STATE: '',
       PROJECT_ZIP: '',
+      CUSTOMER_ID: null,
       START_DATE: new Date().toISOString(),
       END_DATE: new Date().toISOString(),
       PROJECT_STATUS_ID: null,
@@ -74,14 +75,43 @@ const insertProjectDetail = async (req, res) => {
       TIMELINE_TYPE_ID: null
     };
     const projectDetails = req.body.project;
-    const projectToCreate = Object.assign(projectDefault, projectDetails);
     const connection = await db.connection(req);
+    const CustomerContact = await processCustomerContact(projectDetails, connection);
+    const projectToCreate = Object.assign(projectDefault, projectDetails, CustomerContact);
     const rowsAffected = await db.execute(connection, SQL.insertProjectDetail(projectToCreate));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
       util.errorResponse(res, exception);
   }
 }
+
+const createCusomerContact = async (projectDetails, CUSTOMER_ID, connection) => {
+  let CONTACT_ID = null;
+  if (projectDetails.CONTACT_NAME !== '') {
+    const rowsAffected = await db.execute(connection, SQL.insertContact(projectDetails.CONTACT_NAME));
+    CONTACT_ID = rowsAffected.insertId;
+    await db.execute(connection, SQL.insertCustomerContact(CUSTOMER_ID, CONTACT_ID));
+  }
+  return CONTACT_ID;
+}
+
+const processCustomerContact = async (projectDetails, connection) => {
+  let CUSTOMER_ID = null;
+  let CONTACT_ID = null;
+  if (projectDetails.CUSTOMER_ID !== null) {
+    CUSTOMER_ID = projectDetails.CUSTOMER_ID;
+    if (projectDetails.CONTACT_ID !== null) {
+      CONTACT_ID = projectDetails.CONTACT_ID;
+    } else {
+      CONTACT_ID = await createCusomerContact(projectDetails, CUSTOMER_ID, connection);
+    }
+  } else if (projectDetails.CUSTOMER_NAME !== '') {
+    const rowsAffected = await db.execute(connection, SQL.insertCustomer(projectDetails.CUSTOMER_NAME));
+    CUSTOMER_ID = rowsAffected.insertId;
+    CONTACT_ID = await createCusomerContact(projectDetails, CUSTOMER_ID, connection);
+  }
+  return { CUSTOMER_ID, CONTACT_ID }
+};
 
 const updateProjectDetail = async (req, res) => {
   try {
@@ -92,7 +122,8 @@ const updateProjectDetail = async (req, res) => {
     if (result && result.length > 0) {
       detailsToUpdate = result[0];
     }
-    const projectToUpdate = Object.assign(detailsToUpdate, projectDetails);
+    const CustomerContact = await processCustomerContact(projectDetails, connection);
+    const projectToUpdate = Object.assign(detailsToUpdate, projectDetails, CustomerContact);
     const rowsAffected = await db.execute(connection, SQL.updateProjectDetail(projectToUpdate, req.params.id));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
