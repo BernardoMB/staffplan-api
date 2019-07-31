@@ -27,27 +27,6 @@ module.exports = {
       ${Condition}
     `   
   ),
-  getTeam: (id) => (
-    `
-    SELECT
-      PROJECT_STAFF.PROJECT_ID,
-      STAFF.STAFF_ID,
-      STAFF.FIRST_NAME,
-      STAFF.MIDDLE_INITIAL,
-      STAFF.LAST_NAME,
-      STAFF.PREFERRED_NAME,
-      STAFF_ROLE.ROLE_NAME
-    FROM 
-      PROJECT_STAFF  
-    INNER JOIN STAFF  
-      ON PROJECT_STAFF.STAFF_ID = STAFF.STAFF_ID
-    INNER JOIN STAFF_ROLE
-      ON STAFF_ROLE.ROLE_ID = PROJECT_STAFF.PROJECT_ROLE_ID
-
-    WHERE
-      PROJECT_STAFF.PROJECT_ID = ${id}
-    `
-  ),
   getOpenRoles: (condition) => (
     `
     SELECT 
@@ -128,7 +107,6 @@ module.exports = {
     ${condition}
     ` 
   ),
-
   getProjectDetailById: (id) => (
     `
     SELECT
@@ -163,25 +141,24 @@ module.exports = {
     INNER JOIN PROJECT_GROUP
       ON PROJECT_GROUP.GROUP_ID=PROJECT.GROUP_ID
     INNER JOIN OFFICE
-      ON OFFICE.OFFICE_ID=PROJECT.OFFICE_ID    
+      ON OFFICE.OFFICE_ID=PROJECT.OFFICE_ID
+    INNER JOIN CATEGORY
+      ON CATEGORY.CATEGORY_ID=PROJECT.CATEGORY_ID
+    INNER JOIN TIMELINE_TYPE
+      ON PROJECT.TIMELINE_TYPE_ID=TIMELINE_TYPE.TIMELINE_TYPE_ID 
     LEFT JOIN CUSTOMER
       ON CUSTOMER.CUSTOMER_ID=PROJECT.CUSTOMER_ID
     LEFT JOIN CONTACT
       ON CONTACT.CONTACT_ID=PROJECT.CONTACT_ID
-    INNER JOIN CATEGORY
-      ON CATEGORY.CATEGORY_ID=PROJECT.CATEGORY_ID
-    INNER JOIN PROJECT_TYPE
+    LEFT JOIN PROJECT_TYPE
       ON PROJECT_TYPE.TYPE_ID=PROJECT.PROJECT_TYPE_ID
-    INNER JOIN PROJECT_STATUS
+    LEFT JOIN PROJECT_STATUS
       ON PROJECT.PROJECT_STATUS_ID=PROJECT_STATUS.STATUS_ID
-    INNER JOIN TIMELINE_TYPE
-      ON PROJECT.TIMELINE_TYPE_ID=TIMELINE_TYPE.TIMELINE_TYPE_ID
     WHERE
       PROJECT.PROJECT_ID = ${id}
     `
   ),
-
-  getProjectDetailUpdate: (id) => (
+  projectDetailsById: (id) => (
     `
     SELECT
       *
@@ -191,7 +168,6 @@ module.exports = {
       PROJECT.PROJECT_ID = ${id}
     `
   ),
-
   insertProjectDetail: (project) => (
     `
     INSERT INTO PROJECT (
@@ -231,7 +207,6 @@ module.exports = {
     )
     `
   ),
-
   updateProjectDetail: (project,id) => (
     `
     UPDATE PROJECT SET 
@@ -257,124 +232,31 @@ module.exports = {
       PROJECT.PROJECT_ID = ${id}
     `
   ),
-
-  getProjectNotes: (condition) => (
+  insertCustomer: (CUSTOMER_NAME) => (
     `
-    SELECT 
-      PROJECT.PROJECT_NAME,
-      PROJECT.PROJECT_ID,
-      NOTES.NOTE_ID,
-      NOTES.CONTENT,
-      NOTES.NODE_PARENT_ID,
-      NOTES.IS_PARENT,
-      NOTES.UPDATED,
-      USERS.FIRST_NAME,
-      USERS.MIDDLE_NAME,
-      USERS.LAST_NAME,
-      (SELECT COUNT(CHILDNOTES.NOTE_ID) FROM NOTES CHILDNOTES WHERE CHILDNOTES.NODE_PARENT_ID = NOTES.NOTE_ID) REPLYCOUNT
-    FROM
-	    PROJECT
-	  INNER JOIN NOTES
-		  ON PROJECT.PROJECT_ID = NOTES.PROJECT_ID
-	  INNER JOIN USERS
-		  ON USERS.USER_ID = NOTES.USER_ID
-    WHERE
-      ${condition}
-    ORDER BY
-      NOTES.NOTE_ID DESC
-    `
-  ),
-  insertProjectNotes: (notes) => (
-    `
-    INSERT INTO NOTES (
-      USER_ID,
-      CONTENT,
-      CREATED,
-      UPDATED,
-      PROJECT_ID,
-      NODE_PARENT_ID,
-      IS_PARENT
+    INSERT INTO CUSTOMER (
+      CUSTOMER_NAME
     ) VALUES (
-      ${notes.USER_ID},
-      '${notes.CONTENT}',
-      NOW(),
-      NOW(),
-      ${notes.PROJECT_ID},
-      ${notes.NODE_PARENT_ID},
-      ${notes.IS_PARENT}      
+      '${CUSTOMER_NAME}'
     )
     `
   ),
-
-  updateProjectNotes: (content, noteid) => (
+  insertContact: (CONTACT_NAME) => (
     `
-    UPDATE NOTES SET 
-      CONTENT = '${content}',
-      UPDATED = NOW()
-    WHERE
-      NOTE_ID = ${noteid}
-    `
-  ),
-
-  deleteProjectNote: (projectId, noteId) => (
-    `
-    DELETE FROM NOTES 
-    WHERE
-      NOTE_ID = ${noteId}
-      AND PROJECT_ID = ${projectId}
-    `
-  ),
-
-  insertProjectRole: (role) => (
-    `
-    INSERT INTO PLANNED_PROJECT_STAFF (
-      START_DATE,
-      END_DATE,
-      ALLOCATION,
-      PROJECT_ROLE_ID,
-      PROJECT_ID      
+    INSERT INTO CONTACT (
+      NAME
     ) VALUES (
-      '${role.START_DATE}',
-      '${role.END_DATE}',
-      ${role.ALLOCATION},
-      ${role.PROJECT_ROLE_ID},
-      ${role.PROJECT_ID}
+      '${CONTACT_NAME}'
     )
-    `    
-    ),
-    bulkRoleUpdate: (role) => (
-      `
-      UPDATE PLANNED_PROJECT_STAFF SET
-        START_DATE = '${role.START_DATE}',
-        START_DATE = '${role.END_DATE}'
-      WHERE PLANNED_PROJECT_STAFF.ID IN (${role.PLANNED_PROJECT_STAFFIDS.join(',')})
-      `    
-    ),
-    insertCustomer: (CUSTOMER_NAME) => (
-      `
-      INSERT INTO CUSTOMER (
-        CUSTOMER_NAME
-      ) VALUES (
-        '${CUSTOMER_NAME}'
-      )
-      `
-    ),
-    insertContact: (CONTACT_NAME) => (
-      `
-      INSERT INTO CONTACT (
-        NAME
-      ) VALUES (
-        '${CONTACT_NAME}'
-      )
-      `
-    ),
-    insertCustomerContact: (CUSTOMER_ID, CONTACT_ID) => (
-      `
-      INSERT INTO CUSTOMER_CONTACTS (CUSTOMER_ID, CONTACT_ID)
-      VALUES (
-        ${CUSTOMER_ID},
-        ${CONTACT_ID}
-      )
-      `
+    `
+  ),
+  insertCustomerContact: (CUSTOMER_ID, CONTACT_ID) => (
+    `
+    INSERT INTO CUSTOMER_CONTACTS (CUSTOMER_ID, CONTACT_ID)
+    VALUES (
+      ${CUSTOMER_ID},
+      ${CONTACT_ID}
     )
+    `
+  )
 }
