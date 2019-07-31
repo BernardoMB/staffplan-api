@@ -1,17 +1,12 @@
 module.exports = {
-  customerList: (Condition) => (
+  customerList: () => (
     ` 
     SELECT
       CUSTOMER_ID,
-      CUSTOMER_NAME,
-      CUSTOMER_ADDRESS,
-      CUSTOMER_CITY,
-      CUSTOMER_STATE,
-      CUSTOMER_ZIP      
+      CUSTOMER_NAME     
     FROM 
-      CUSTOMER          
-    ${Condition} 
-    `   
+      CUSTOMER
+    `
   ),
 
   insertCustomer: (customer) => (
@@ -71,9 +66,7 @@ module.exports = {
   getCustomerContactsById: (id) => (
     `
     SELECT
-      CUSTOMER_CONTACTS.CUSTOMER_ID,
       CUSTOMER_CONTACTS.CONTACT_ID,
-      CUSTOMER.CUSTOMER_NAME,
       CONTACT.NAME CONTACT_NAME
     FROM 
       CUSTOMER_CONTACTS
