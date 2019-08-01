@@ -19,17 +19,17 @@ const getOpenRoles = async (req, res) => {
     const openRoles = await db.execute(connection, SQL.getOpenRoles(filters(req)));
     util.successResponse(res, openRoles);
   } catch (exception) {
-      util.errorResponse(res, exception)
+      util.errorResponse(res, exception);
   }
 }
 
 const getProjectTeams = async (req, res) => {
   try {
-      const connection = await db.connection(req);
-      const projectTeams = await db.execute(connection, SQL.getProjectTeams(filters(req)));
-      util.successResponse(res, projectTeams);
+    const connection = await db.connection(req);
+    const projectTeams = await db.execute(connection, SQL.getProjectTeams(filters(req)));
+    util.successResponse(res, projectTeams);
   } catch (exception) {
-      util.errorResponse(res,exception)
+    util.errorResponse(res,exception);
   }
 }
 
@@ -39,7 +39,7 @@ const getProjectDetailById = async (req, res) => {
     const projectDetail = await db.execute(connection, SQL.getProjectDetailById(req.params.id));
     util.successResponse(res, projectDetail);
   } catch (exception) {
-      util.errorResponse(res,exception)
+    util.errorResponse(res,exception);
   }
 }
 
@@ -71,7 +71,7 @@ const insertProjectDetail = async (req, res) => {
     const rowsAffected = await db.execute(connection, SQL.insertProjectDetail(projectToCreate));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
-      util.errorResponse(res, exception);
+    util.errorResponse(res, exception);
   }
 }
 

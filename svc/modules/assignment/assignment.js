@@ -2,9 +2,20 @@ const db = require('../../common/connection');
 const SQL = require('./query');
 const util = require("../../common/util");
 
+const getProjectRole = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const projectTeams = await db.execute(connection, SQL.getProjectTeams(req.params.id));
+    util.successResponse(res, projectTeams);
+  }
+  catch(exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
 const insertProjectRole = async (req, res) => {
   try {      
-      const roleToCreate = {      
+    const roleToCreate = {      
       ALLOCATION: req.body.project.allocation,      
       PROJECT_ID: req.params.id,
       PROJECT_ROLE_ID: req.body.project.roleId,
@@ -15,7 +26,7 @@ const insertProjectRole = async (req, res) => {
     const rowsAffected = await db.execute(connection, SQL.insertProjectRole(roleToCreate));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
-      util.errorResponse(res, exception);
+    util.errorResponse(res, exception);
   }
 }
 
@@ -36,6 +47,7 @@ const bulkRoleUpdate = async (req, res) => {
 }
 
 module.exports = {
+  getProjectRole,
   insertProjectRole,
   bulkRoleUpdate
 }
