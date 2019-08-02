@@ -1,7 +1,9 @@
 module.exports = {
-  getProjectTeams: (PROJECT_ID) => (
+  getProjectTeams: (condition) => (
     `
     SELECT
+      PROJECT_TEAM.ID,
+      STAFF.STAFF_ID,
       STAFF.FIRST_NAME,
       STAFF.MIDDLE_INITIAL,
       STAFF.LAST_NAME,
@@ -12,7 +14,8 @@ module.exports = {
       PROJECT_TEAM.ALLOCATION      
     FROM
     (
-      SELECT 
+      SELECT
+        ID,
         PROJECT_ID,
         STAFF_ID,
         PROJECT_ROLE_ID,
@@ -21,10 +24,9 @@ module.exports = {
         ALLOCATION
       FROM 
         PROJECT_STAFF
-      WHERE
-        PROJECT_ID = ${PROJECT_ID}
       UNION ALL
-      SELECT 
+      SELECT
+        ID,
         PROJECT_ID,
         NULL,
         PROJECT_ROLE_ID,
@@ -33,15 +35,16 @@ module.exports = {
         ALLOCATION
       FROM
         PLANNED_PROJECT_STAFF
-      WHERE
-        PROJECT_ID = ${PROJECT_ID}
     ) PROJECT_TEAM
     INNER JOIN STAFF_ROLE
 		  ON PROJECT_TEAM.PROJECT_ROLE_ID=STAFF_ROLE.ROLE_ID
 	  LEFT JOIN STAFF
- 		  ON PROJECT_TEAM.STAFF_ID=STAFF.STAFF_ID
+      ON PROJECT_TEAM.STAFF_ID=STAFF.STAFF_ID
+    WHERE
+      ${condition}
     `
   ),
+
   insertProjectRole: (role) => (
     `
     INSERT INTO PLANNED_PROJECT_STAFF (
@@ -59,12 +62,20 @@ module.exports = {
     )
     `
   ),
+
   bulkRoleUpdate: (role) => (
     `
     UPDATE PLANNED_PROJECT_STAFF SET
       START_DATE = '${role.START_DATE}',
-      START_DATE = '${role.END_DATE}'
+      END_DATE = '${role.END_DATE}'
     WHERE PLANNED_PROJECT_STAFF.ID IN (${role.PLANNED_PROJECT_STAFFIDS.join(',')})
     `    
+  ),
+
+  deleteRole: (id) => (
+    `
+    DELETE FROM PLANNED_PROJECT_STAFF 
+      WHERE ID = ${id}    
+    `
   )
 }
