@@ -96,6 +96,17 @@ const updateStaff = async (req, res) => {
     }
 }
 
+const getStaffCertification = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const staffCertification = await db.execute(connection, SQL.getStaffCertificationById(req.params.id));
+    util.successResponse(res, staffCertification);
+  }
+  catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
 const insertStaffCertification = async (req, res) => {
   try {      
       const CertificateToCreate = {
@@ -122,6 +133,17 @@ const deleteStaffCertification = async (req, res) => {
     } catch (exception) {
         util.errorResponse(res, exception);
     }
+}
+
+const getStaffExperience = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const staffExperience = await db.execute(connection, SQL.getstaffExperienceById(req.params.id));
+    util.successResponse(res, staffExperience);
+  }
+  catch (exception) {
+    util.errorResponse(res, exception);
+  }
 }
 
 const insertStaffExperience = async (req, res) => {
@@ -152,6 +174,21 @@ const deleteStaffExperience = async (req, res) => {
     } catch (exception) {
         util.errorResponse(res, exception);
     }
+}
+
+const getStaffDetailsById = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const result = await db.execute(connection, SQL.getStaffDetailsById(req.params.id));
+    let staffDetails = {};
+    if (result && result.length) {
+      staffDetails = result[0];
+    }
+    util.successResponse(res, staffDetails);
+  }
+  catch (exception) {
+    util.errorResponse(res, exception);
+  }  
 }
 
 const filters = req => {
@@ -192,8 +229,11 @@ module.exports = {
   staffList,
   insertStaff,
   updateStaff,
+  getStaffCertification,
   insertStaffCertification,
   deleteStaffCertification,
+  getStaffExperience,
   insertStaffExperience,
-  deleteStaffExperience
+  deleteStaffExperience,
+  getStaffDetailsById
 }
