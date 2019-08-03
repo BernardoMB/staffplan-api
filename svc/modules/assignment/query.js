@@ -44,7 +44,6 @@ module.exports = {
       ${condition}
     `
   ),
-
   insertProjectRole: (role) => (
     `
     INSERT INTO PLANNED_PROJECT_STAFF (
@@ -62,20 +61,22 @@ module.exports = {
     )
     `
   ),
-
-  bulkRoleUpdate: (role) => (
+  bulkRoleUpdate: (tableName, startDate, endDate, projectId, ids) => (
     `
-    UPDATE PLANNED_PROJECT_STAFF SET
-      START_DATE = '${role.START_DATE}',
-      END_DATE = '${role.END_DATE}'
-    WHERE PLANNED_PROJECT_STAFF.ID IN (${role.PLANNED_PROJECT_STAFFIDS.join(',')})
-    `    
+    UPDATE ${tableName} SET
+      START_DATE = '${startDate}',
+      END_DATE = '${endDate}'
+    WHERE
+      PROJECT_ID = ${projectId} AND
+      ID IN (${ids.join(',')})
+    `
   ),
-
-  deleteRole: (id) => (
+  deleteRole: (tableName, projectId, id) => (
     `
-    DELETE FROM PLANNED_PROJECT_STAFF 
-      WHERE ID = ${id}    
+    DELETE FROM ${tableName} 
+    WHERE
+      PROJECT_ID = ${projectId} AND
+      ID = ${id}    
     `
   )
 }
