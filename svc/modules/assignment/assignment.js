@@ -72,9 +72,23 @@ const deleteRole = async (req, res) => {
     }
 }
 
+const getAlert = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const staffId = req.body.staffId;
+    const startDate = req.body.startDate;
+    const endDate = req.body.endDate;
+    const connection = await db.connection(req);
+    const rowsAffected = await db.execute(connection, SQL.getAlert(id, staffId, startDate, endDate));
+    util.successResponse(res, rowsAffected);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
 module.exports = {
   getProjectRole,
   insertProjectRole,
   bulkRoleUpdate,
-  deleteRole
+  deleteRole,
+  getAlert
 }
