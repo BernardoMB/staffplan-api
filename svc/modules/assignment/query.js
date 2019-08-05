@@ -78,5 +78,24 @@ module.exports = {
       PROJECT_ID = ${projectId} AND
       ID = ${id}    
     `
+  ),
+  getAlert: (id, staffId, startDate, endDate) => (
+    `
+    SELECT 
+      PROJECT.PROJECT_NAME,
+      PROJECT_STAFF.START_DATE,
+      PROJECT_STAFF.END_DATE,
+      PROJECT_STAFF.ALLOCATION
+    FROM
+      PROJECT_STAFF
+    INNER JOIN
+      PROJECT ON PROJECT.PROJECT_ID = PROJECT_STAFF.PROJECT_ID
+    WHERE 
+      PROJECT_STAFF.END_DATE > CURDATE()
+      AND PROJECT_STAFF.ID <> ${id}
+      AND PROJECT_STAFF.STAFF_ID = ${staffId}
+      AND PROJECT_STAFF.START_DATE < '${endDate}'
+      AND PROJECT_STAFF.END_DATE > '${startDate}'
+    `
   )
 }
