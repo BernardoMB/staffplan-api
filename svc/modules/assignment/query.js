@@ -97,5 +97,28 @@ module.exports = {
       AND PROJECT_STAFF.START_DATE < '${endDate}'
       AND PROJECT_STAFF.END_DATE > '${startDate}'
     `
+  ),
+  getAssignmentDetails: (plannedId) => (
+    `SELECT * FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`
+  ),
+  insertProjectStaff: (staffId, plannedId) => (
+    `
+    INSERT INTO PROJECT_STAFF (STAFF_ID, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID)
+    Select ${staffId}, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID 
+    FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}
+    `
+  ),
+  insertStaffAllocation: (plannedStaffId) => (
+    `
+      INSERT INTO STAFF_ALLOCATION
+        (CALENDAR_ID, PROJECT_STAFF_ID, ALLOCATION)
+        SELECT CALENDAR.CALENDAR_ID, PROJECT_STAFF.ID, PROJECT_STAFF.ALLOCATION 
+        FROM CALENDAR LEFT JOIN 
+        PROJECT_STAFF ON PROJECT_STAFF.ID = ${plannedStaffId} 
+          WHERE CALENDAR.START_DATE >= PROJECT_STAFF.START_DATE AND CALENDAR.END_DATE <= PROJECT_STAFF.END_DATE
+    `
+  ),
+  removeProjectPlan: (plannedId) => (
+    `DELETE FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`
   )
 }
