@@ -7,5 +7,6 @@ module.exports = (app) => {
   require('./assignment/')(app);
   require('./notes/')(app);
   require('./staff/')(app);
-  require('./customer/')(app);  
+  require('./customer/')(app);
+  require('./admin/')(app);
 }
