@@ -40,7 +40,6 @@ module.exports = {
       ${Condition}
     `   
   ),
-
   staffList: (Condition) => (
     ` 
     SELECT
@@ -70,7 +69,6 @@ module.exports = {
       ${Condition} 
     `   
   ),
-   
   getStaffProjectList: (id) => (
     `
     SELECT
@@ -93,7 +91,6 @@ module.exports = {
         PROJECT_STAFF.STAFF_ID = ${id}
     `
   ),
-  
   getMonthwiseAllocation: () => (
     `
     SELECT Staff_ID, PROJECT_ID,START_DATE,END_DATE,SUM(allocation),
@@ -110,7 +107,6 @@ module.exports = {
     GROUP BY staff_id;
     `   
   ),
-
   insertStaff: (staff) => (
     `
     INSERT INTO STAFF (
@@ -156,8 +152,6 @@ module.exports = {
     )  
     `
   ),
-
-
   getStaffInfoByID: (id) => (
     `
     SELECT
@@ -168,7 +162,6 @@ module.exports = {
       STAFF.STAFF_ID = ${id}
     `
   ),
-
   updateStaff: (id, staff) => (
     `
     UPDATE STAFF SET 
@@ -195,7 +188,6 @@ module.exports = {
       STAFF.STAFF_ID = ${id}
     `
   ),
-
   getStaffCertificationById: (id) => (
     `
     SELECT
@@ -209,7 +201,6 @@ module.exports = {
     STAFF_CERTIFICATION.STAFF_ID = ${id}
     `
   ),
-
   insertStaffCertification: (certificate) => (
     `
     INSERT INTO STAFF_CERTIFICATION (
@@ -221,7 +212,6 @@ module.exports = {
     )
     `
   ),
-
   deleteStaffCertification: (certificate) => (
     `
     DELETE FROM STAFF_CERTIFICATION 
@@ -257,7 +247,6 @@ module.exports = {
     )
     `
   ),
-
   deleteStaffExperience: (experience) => (
     `
     DELETE FROM STAFF_PROJECT_EXPERIENCE 
@@ -291,5 +280,44 @@ module.exports = {
       ON STAFF_ROLE.ROLE_ID = STAFF.STAFF_ROLE_ID
     WHERE STAFF_ID = ${STAFF_ID}  
     `   
+  ),
+  staffSearch: (Condition) => (
+    ` 
+    SELECT
+      STAFF.STAFF_ID,
+      STAFF.FIRST_NAME,
+      STAFF.MIDDLE_INITIAL,
+      STAFF.LAST_NAME,
+      STAFF.PREFERRED_NAME     
+    FROM 
+      STAFF
+    ${Condition} 
+    `   
+  ),
+  staffWithClient: (PROJECT_ID) => (
+  `
+  SELECT
+    STAFF_ID
+  FROM PROJECT_STAFF 
+  WHERE PROJECT_ID IN 
+    (SELECT PROJECT_ID FROM PROJECT 
+      WHERE CUSTOMER_ID IN 
+      (SELECT CUSTOMER_ID FROM PROJECT WHERE PROJECT_ID = ${PROJECT_ID}))`
+  ),
+  staffGap: (startDate, endDate) => (
+    `
+    SELECT STAFF.STAFF_ID 
+    FROM STAFF LEFT JOIN PROJECT_STAFF ON PROJECT_STAFF.STAFF_ID = STAFF.STAFF_ID 
+    WHERE PROJECT_STAFF.ID IS NULL || 
+    PROJECT_STAFF.END_DATE <= '${endDate}' || PROJECT_STAFF.START_DATE >= '${startDate}'
+    `
+  ),
+  staffAvailable: (startDate, endDate) => (
+    `
+    SELECT STAFF.STAFF_ID 
+    FROM STAFF LEFT JOIN PROJECT_STAFF ON PROJECT_STAFF.STAFF_ID = STAFF.STAFF_ID 
+    WHERE PROJECT_STAFF.ID IS NULL || 
+    PROJECT_STAFF.END_DATE <= '${startDate}' || PROJECT_STAFF.START_DATE >= '${endDate}'
+    `
   )
 }

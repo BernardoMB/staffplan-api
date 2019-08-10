@@ -191,6 +191,63 @@ const getStaffDetailsById = async (req, res) => {
   }  
 }
 
+const staffSearch = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    let condition = '';
+    if (req.query && req.query.name) {
+      condition = ` WHERE FIRST_NAME LIKE '%${req.query.name}%'`;
+    }
+    const staffList = await db.execute(connection, SQL.staffSearch(condition));
+    util.successResponse(res, staffList);
+  }
+  catch (exception) {
+    util.errorResponse(res, exception);
+  }  
+}
+
+const staffAdvanceSearch = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const condition = searchFilter(req);
+    console.log(SQL.staffSearch(condition));
+    const staffList = await db.execute(connection, SQL.staffSearch(condition));
+    util.successResponse(res, staffList);
+  }
+  catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
+const searchFilter = req => {
+  const filter = req.body.filter;
+  let condition = ' where 1 = 1 ';
+  if (filter) {
+    // check office
+    if (filter.office) {
+      condition = `${condition} AND OFFICE_ID = ${filter.office}`
+    }
+    // check same role
+    if (!filter.showAllRole) {
+      condition = `${condition} AND STAFF_ROLE_ID IN (SELECT PROJECT_ROLE_ID FROM 
+        PLANNED_PROJECT_STAFF WHERE ID = ${filter.plannedProjectId})`;
+    }
+    // Check Same client
+    if (!filter.showAllClient) {
+      condition = `${condition} AND STAFF_ID IN ( ${SQL.staffWithClient(filter.projectId)} )`;
+    }
+    // Check Availability
+    if (filter.availability !== 'All') {
+      if (filter.availability === 'Available') {
+        condition = `${condition} AND STAFF_ID IN ( ${SQL.staffAvailable(filter.startDate, filter.endDate)} )`;
+      } else if (filter.availability === 'Gap') {
+        condition = `${condition} AND STAFF_ID IN ( ${SQL.staffGap(filter.startDate, filter.endDate)} )`;
+      }
+    }
+  }
+  return condition;
+}
+
 const filters = req => {
   const filter = req.body.filter;
   let filterCondition = " where 1 = 1 ";
@@ -235,5 +292,7 @@ module.exports = {
   getStaffExperience,
   insertStaffExperience,
   deleteStaffExperience,
-  getStaffDetailsById
+  getStaffDetailsById,
+  staffSearch,
+  staffAdvanceSearch
 }
