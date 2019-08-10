@@ -54,7 +54,7 @@ const bulkRoleUpdate = async (req, res) => {
     }
     util.successResponse(res, true);
   } catch (exception) {
-      util.errorResponse(res, exception);
+    util.errorResponse(res, exception);
   }
 }
 
@@ -68,7 +68,7 @@ const deleteRole = async (req, res) => {
       const rowsAffected = await db.execute(connection, SQL.deleteRole(tableName, projectId, id));
       util.successResponse(res, rowsAffected);
     } catch (exception) {
-        util.errorResponse(res, exception);
+      util.errorResponse(res, exception);
     }
 }
 
@@ -85,10 +85,52 @@ const getAlert = async (req, res) => {
     util.errorResponse(res, exception);
   }
 }
+
+const assignStaff = async (req, res) => {
+  try {
+    const plannedId = req.body.plannedId;
+    const staffId = req.body.staffId;
+    const connection = await db.connection(req);
+    connection.beginTransaction((err) => {
+      if (err) {
+        util.errorResponse(res, err);
+      } else {
+        // Insert into project staff
+        db.execute(connection, SQL.insertProjectStaff(staffId, plannedId)).then(
+          rowsAffected => {
+            const plannedStaffId = rowsAffected.insertId;
+            // Insert into Staff Allocation
+            db.execute(connection, SQL.insertStaffAllocation(plannedStaffId)).then(
+              inserted => {
+                // Remove the data from planned project staff
+                db.execute(connection, SQL.removeProjectPlan(plannedId)).then(
+                  () => {
+                    connection.commit((error) => {
+                      if (error) {
+                        util.errorResponse(res, error)
+                      } else {
+                        util.successResponse(res, inserted)
+                      }
+                    });
+                  }
+                )
+              }
+            );
+          }
+        )
+      }
+    });
+    
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
 module.exports = {
   getProjectRole,
   insertProjectRole,
   bulkRoleUpdate,
   deleteRole,
-  getAlert
+  getAlert,
+  assignStaff
 }
