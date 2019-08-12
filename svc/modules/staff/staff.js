@@ -61,13 +61,14 @@ const insertStaff = async (req, res) => {
       HOME_CITY: '',
       HOME_STATE: '',
       HOME_ZIP: '',
-      STAFF_CERTIFICATION: 'N',
-      STAFF_TRAINING: 'N',
       STAFF_ROLE_ID: null,
       STAFF_GROUP_ID: null,
       STAFF_STATUS_ID: null,
       OFFICE_ID: null,
-      EMPLOYMENT_START_DATE: null
+      EMPLOYMENT_START_DATE: null,
+      PREFERENCES: '',
+      CANRELOCATE: 0,
+      CANCOMMUTE: 0
     };
     const staffInfo = req.body.staff;
     const staffToCreate = Object.assign(staffDefault, staffInfo);
