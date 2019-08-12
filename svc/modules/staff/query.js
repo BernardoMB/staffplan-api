@@ -48,6 +48,17 @@ module.exports = {
       STAFF.MIDDLE_INITIAL,
       STAFF.LAST_NAME,
       STAFF.PREFERRED_NAME,
+      STAFF.EMAIL_ID,
+      STAFF.PHONE_1,
+      STAFF.PHONE_1_TYPE,
+      STAFF.PHONE_2,
+      STAFF.PHONE_2_TYPE,
+      STAFF.HOME_CITY,
+      STAFF.HOME_STATE,
+      STAFF.HOME_ZIP,
+      STAFF.PREFERENCES,
+      STAFF.CANRELOCATE,
+      STAFF.CANCOMMUTE,
       STAFF.STAFF_ROLE_ID,
       STAFF_ROLE.ROLE_NAME,
       STAFF.STAFF_STATUS_ID,
@@ -55,7 +66,7 @@ module.exports = {
       STAFF.OFFICE_ID,
       OFFICE.OFFICE_NAME,
       STAFF.STAFF_GROUP_ID,
-      STAFF_GROUP.GROUP_NAME      
+      STAFF_GROUP.GROUP_NAME     
     FROM 
         STAFF
     INNER JOIN STAFF_ROLE
@@ -122,13 +133,14 @@ module.exports = {
       HOME_CITY,
       HOME_STATE,
       HOME_ZIP,
-      STAFF_CERTIFICATION,
-      STAFF_TRAINING,
       STAFF_ROLE_ID,
       STAFF_GROUP_ID,
       STAFF_STATUS_ID,
       OFFICE_ID,
-      EMPLOYMENT_START_DATE
+      EMPLOYMENT_START_DATE,
+      PREFERENCES,
+      CANRELOCATE,
+      CANCOMMUTE
     ) VALUES (
       '${staff.FIRST_NAME}',
       '${staff.MIDDLE_INITIAL}',
@@ -142,13 +154,14 @@ module.exports = {
       '${staff.HOME_CITY}',
       '${staff.HOME_STATE}',
       '${staff.HOME_ZIP}',
-      '${staff.STAFF_CERTIFICATION}',
-      '${staff.STAFF_TRAINING}',
       ${staff.STAFF_ROLE_ID},
       ${staff.STAFF_GROUP_ID},
       ${staff.STAFF_STATUS_ID},
       ${staff.OFFICE_ID},
-      '${staff.EMPLOYMENT_START_DATE}'
+      '${staff.EMPLOYMENT_START_DATE}',
+      '${staff.PREFERENCES}',
+      ${staff.CANRELOCATE},
+      ${staff.CANCOMMUTE}
     )  
     `
   ),
@@ -177,13 +190,14 @@ module.exports = {
       HOME_CITY = '${staff.HOME_CITY}',
       HOME_STATE = '${staff.HOME_STATE}',
       HOME_ZIP = '${staff.HOME_ZIP}',
-      STAFF_CERTIFICATION = '${staff.STAFF_CERTIFICATION}',
-      STAFF_TRAINING = '${staff.STAFF_TRAINING}',
       STAFF_ROLE_ID = ${staff.STAFF_ROLE_ID},
       STAFF_GROUP_ID = ${staff.STAFF_GROUP_ID},
       STAFF_STATUS_ID = ${staff.STAFF_STATUS_ID},
       OFFICE_ID = ${staff.OFFICE_ID},
-      EMPLOYMENT_START_DATE = '${staff.EMPLOYMENT_START_DATE}'      
+      EMPLOYMENT_START_DATE = '${staff.EMPLOYMENT_START_DATE}',
+      PREFERENCES= '${staff.PREFERENCES}',
+      CANRELOCATE = ${staff.CANRELOCATE},     
+      CANCOMMUTE = ${staff.CANCOMMUTE}  
     WHERE
       STAFF.STAFF_ID = ${id}
     `
