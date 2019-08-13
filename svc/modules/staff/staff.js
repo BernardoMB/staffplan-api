@@ -1,6 +1,7 @@
 const db = require('../../common/connection');
 const SQL = require('./query');
 const util = require("../../common/util");
+var moment = require('moment');
 
 const staffAssignments = async (req, res) => {
   try {
@@ -281,7 +282,7 @@ const filters = req => {
     }
     if (filter.staffStatus) {
       if (filter.staffStatus === 'Gap') {
-        filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffGap(new Date(), new Date())})`;
+        filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffGap(moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'))})`;
       } else if (filter.staffStatus === 'Alert') {
         filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffAlert()})`;
       } else if (filter.staffStatus === 'Bench') {
