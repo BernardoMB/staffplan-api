@@ -245,7 +245,7 @@ const searchFilter = req => {
           condition = `${condition} AND STAFF_ID IN ( ${SQL.staffAvailable(filter.startDate, filter.endDate)} )`;
         } else if (filter.availability === 'Gap') {
           condition = `${condition} AND STAFF_ID IN ( ${SQL.staffGap(filter.startDate, filter.endDate)} )`;
-        }
+        }      
       }
     }
   }
@@ -278,6 +278,15 @@ const filters = req => {
     
     if (filter.staffId) {
       filterCondition = `${filterCondition} AND STAFF.STAFF_ID = ${filter.staffId}`;
+    }
+    if (filter.staffStatus) {
+      if (filter.staffStatus === 'Gap') {
+        filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffGap(new Date(), new Date())})`;
+      } else if (filter.staffStatus === 'Alert') {
+        filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffAlert()})`;
+      } else if (filter.staffStatus === 'Bench') {
+        filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffOnBench()})`;
+      }
     }
   }
   return (filterCondition); 
