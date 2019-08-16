@@ -120,7 +120,21 @@ const assignStaff = async (req, res) => {
         )
       }
     });
-    
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
+const assignList = async (req, res) => {
+  try {
+    const plannedId = req.body.plannedId;
+    let condition = '1 = 1';
+    if (req.body.staffId && req.body.staffId.length) {
+      condition = ` PROJECT_STAFF.STAFF_ID in (${req.body.staffId.join(',')})`;
+    }
+    const connection = await db.connection(req);
+    const result = await db.execute(connection, SQL.assignmentList(plannedId, condition));
+    util.successResponse(res, result);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
@@ -132,5 +146,6 @@ module.exports = {
   bulkRoleUpdate,
   deleteRole,
   getAlert,
-  assignStaff
+  assignStaff,
+  assignList
 }
