@@ -62,10 +62,15 @@ const deleteRole = async (req, res) => {
   try {
       const projectId = req.params.id;
       const id = req.body.roleId;
-      // Based on the assignment the table will be selected
-      const tableName = req.body.staffId ? 'PROJECT_STAFF' : 'PLANNED_PROJECT_STAFF';
       const connection = await db.connection(req);
-      const rowsAffected = await db.execute(connection, SQL.deleteRole(tableName, projectId, id));
+      let rowsAffected;
+      // Based on the assignment the table will be selected
+      if (req.body.staffId) {
+        rowsAffected = await db.execute(connection, SQL.deleteStaffAllocation(id));
+        rowsAffected = await db.execute(connection, SQL.deleteProjectStaff(projectId, id));
+      } else {
+        rowsAffected = await db.execute(connection, SQL.deleteProjectPlanned(projectId, id));
+      }
       util.successResponse(res, rowsAffected);
     } catch (exception) {
       util.errorResponse(res, exception);

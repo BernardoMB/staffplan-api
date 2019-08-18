@@ -72,9 +72,23 @@ module.exports = {
       ID IN (${ids.join(',')})
     `
   ),
-  deleteRole: (tableName, projectId, id) => (
+  deleteProjectPlanned: (projectId, id) => (
     `
-    DELETE FROM ${tableName} 
+    DELETE FROM PLANNED_PROJECT_STAFF 
+    WHERE
+      PROJECT_ID = ${projectId} AND
+      ID = ${id}    
+    `
+  ),
+  deleteStaffAllocation: (id) => (
+    `
+    DELETE FROM STAFF_ALLOCATION 
+    WHERE PROJECT_STAFF_ID = ${id}    
+    `
+  ),
+  deleteProjectStaff: (projectId, id) => (
+    `
+    DELETE FROM PROJECT_STAFF 
     WHERE
       PROJECT_ID = ${projectId} AND
       ID = ${id}    
