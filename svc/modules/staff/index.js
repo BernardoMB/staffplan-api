@@ -5,13 +5,13 @@ const MODULE = 'staff';
 module.exports = (app) => {
   app.get(`/${CONST.API}/${MODULE}/:id/details`, authenticate.isAuthenticated, staff.getStaffDetailsById);
   app.get(`/${CONST.API}/${MODULE}/:id/projectlist`, authenticate.isAuthenticated, staff.getStaffProjectList);
+  app.get(`/${CONST.API}/${MODULE}/:id/allocation`, authenticate.isAuthenticated, staff.getStaffAllocation);
   
   app.get(`/${CONST.API}/${MODULE}/search`, authenticate.isAuthenticated, staff.staffSearch);
   app.post(`/${CONST.API}/${MODULE}/availability`, authenticate.isAuthenticated, staff.staffAdvanceSearch); 
 
   app.post(`/${CONST.API}/${MODULE}/staffassignments`, authenticate.isAuthenticated, staff.staffAssignments);
   app.post(`/${CONST.API}/${MODULE}/stafflist`, authenticate.isAuthenticated, staff.staffList); 
-  app.get(`/${CONST.API}/${MODULE}/allocation`, authenticate.isAuthenticated, staff.getMonthwiseAllocation);
   app.put(`/${CONST.API}/${MODULE}/staffinfo`, authenticate.isAuthenticated, staff.insertStaff);
   app.post(`/${CONST.API}/${MODULE}/:id/staffinfo`, authenticate.isAuthenticated, staff.updateStaff);
   
