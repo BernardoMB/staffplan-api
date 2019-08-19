@@ -109,22 +109,6 @@ module.exports = {
         PROJECT_STAFF.STAFF_ID = ${id}
     `
   ),
-  getMonthwiseAllocation: () => (
-    `
-    SELECT Staff_ID, PROJECT_ID,START_DATE,END_DATE,SUM(allocation),
-      CASE 
-        WHEN end_date >= DATE_ADD(NOW(), INTERVAL 1 YEAR) AND SUM(allocation) >= 100 
-          THEN "RED"
-        WHEN end_date <= NOW()
-          THEN "GREEN"
-        WHEN end_date >= DATE_ADD(NOW(), INTERVAL 1 YEAR) AND SUM(allocation) < 100 OR end_date <= DATE_ADD(NOW(), INTERVAL 1 YEAR) 
-          THEN "AMBER"		
-        ELSE "PARTIAL GREEN"
-      END AS Availabilty
-    FROM project_staff
-    GROUP BY staff_id;
-    `   
-  ),
   insertStaff: (staff) => (
     `
     INSERT INTO STAFF (
@@ -365,6 +349,39 @@ module.exports = {
       PROJECT_STAFF.END_DATE > CURDATE()
       AND PROJECT_STAFF.START_DATE <= CURDATE()
       AND PROJECT_STAFF.END_DATE >  CURDATE()
+    `
+  ),
+  getStaffProject: (id) => (
+    `
+    SELECT
+        PROJECT_STAFF.ID,
+        PROJECT.PROJECT_ID,
+        PROJECT.PROJECT_NAME         
+      FROM 
+        PROJECT_STAFF 
+      INNER JOIN PROJECT
+        ON PROJECT.PROJECT_ID=PROJECT_STAFF.PROJECT_ID
+      WHERE
+        PROJECT_STAFF.STAFF_ID = ${id}
+    `
+  ),
+
+  staffAllocationList: (projectStaffId) => (
+    `
+    SELECT
+      CALENDAR.WEEK,
+      CALENDAR.YEAR,
+      PROJECT_STAFF.STAFF_ID,
+      STAFF_ALLOCATION.ALLOCATION
+    FROM
+      CALENDAR
+      INNER JOIN STAFF_ALLOCATION
+        ON CALENDAR.CALENDAR_ID = STAFF_ALLOCATION.CALENDAR_ID
+      INNER JOIN PROJECT_STAFF
+        ON PROJECT_STAFF.ID = STAFF_ALLOCATION.PROJECT_STAFF_ID
+    WHERE
+      CALENDAR.START_DATE >= CURDATE()
+      AND PROJECT_STAFF.ID = ${projectStaffId}
     `
   )
 }

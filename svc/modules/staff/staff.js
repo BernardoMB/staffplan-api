@@ -36,17 +36,6 @@ const getStaffProjectList = async (req, res) => {
   }  
 }
 
-const getMonthwiseAllocation = async (req, res) => {
-  try {
-    const connection = await db.connection(req);
-    const AllocationList = await db.execute(connection, SQL.getMonthwiseAllocation());
-    util.successResponse(res, AllocationList);
-  }
-  catch (exception) {
-    util.errorResponse(res, exception);
-  }  
-}
-
 const insertStaff = async (req, res) => {
   try {
     const staffDefault = {
@@ -253,6 +242,24 @@ const searchFilter = req => {
   return condition;
 }
 
+const getStaffAllocation = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const staffProject = await db.execute(connection, SQL.getStaffProject(req.params.id));
+    if (staffProject && staffProject.length) {
+      for (let i = 0; i < staffProject.length; i++) {
+        const project = staffProject[i];
+        const allocation = await db.execute(connection,SQL.staffAllocationList(project.ID)); 
+        staffProject[i].allocation = allocation;        
+      }
+    }
+    util.successResponse(res, staffProject);
+  }
+  catch (exception) {
+    util.errorResponse(res, exception);
+  }  
+}
+
 const filters = req => {
   const filter = req.body.filter;
   let filterCondition = " where 1 = 1 ";
@@ -296,7 +303,6 @@ const filters = req => {
 module.exports = {
   staffAssignments,
   getStaffProjectList,
-  getMonthwiseAllocation,
   staffList,
   insertStaff,
   updateStaff,
@@ -308,5 +314,6 @@ module.exports = {
   deleteStaffExperience,
   getStaffDetailsById,
   staffSearch,
-  staffAdvanceSearch
+  staffAdvanceSearch,
+  getStaffAllocation
 }
