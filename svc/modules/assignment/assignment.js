@@ -1,6 +1,7 @@
 const db = require('../../common/connection');
 const SQL = require('./query');
 const util = require("../../common/util");
+var moment = require('moment');
 
 const getProjectRole = async (req, res) => {
   try {
@@ -9,8 +10,22 @@ const getProjectRole = async (req, res) => {
     if (req.query && req.query.active) {
       condition = `${condition} AND  PROJECT_TEAM.END_DATE >= CURDATE()`
     }
-    const projectTeams = await db.execute(connection, SQL.getProjectTeams(condition));
-    util.successResponse(res, projectTeams);
+    const projectRoles = await db.execute(connection, SQL.getProjectTeams(condition));
+    if (projectRoles && projectRoles.length) {
+      for (let i = 0; i < projectRoles.length; i++) {
+        const role = projectRoles[i];
+        // Check role as assigned
+        if (role.STAFF_ID) {
+          // Check Staff have any other project allocation to show alert
+          const allocation = await db.execute(connection,
+            SQL.getAlert(role.ID, role.STAFF_ID, moment(role.START_DATE).format('YYYY-MM-DD'),
+            moment(role.END_DATE).format('YYYY-MM-DD'), role.ALLOCATION));
+          // SET ALERT as true if total allocation is > 100%
+          projectRoles[i].ALERT = (allocation[0].TOTAL > 100);
+        }
+      }
+    }
+    util.successResponse(res, projectRoles);
   }
   catch(exception) {
     util.errorResponse(res, exception);
@@ -77,20 +92,6 @@ const deleteRole = async (req, res) => {
     }
 }
 
-const getAlert = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const staffId = req.body.staffId;
-    const startDate = req.body.startDate;
-    const endDate = req.body.endDate;
-    const connection = await db.connection(req);
-    const rowsAffected = await db.execute(connection, SQL.getAlert(id, staffId, startDate, endDate));
-    util.successResponse(res, rowsAffected);
-  } catch (exception) {
-    util.errorResponse(res, exception);
-  }
-}
-
 const assignStaff = async (req, res) => {
   try {
     const plannedId = req.body.plannedId;
@@ -150,7 +151,6 @@ module.exports = {
   insertProjectRole,
   bulkRoleUpdate,
   deleteRole,
-  getAlert,
   assignStaff,
   assignList
 }
