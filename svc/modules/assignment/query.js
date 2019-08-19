@@ -94,13 +94,10 @@ module.exports = {
       ID = ${id}    
     `
   ),
-  getAlert: (id, staffId, startDate, endDate) => (
+  getAlert: (id, staffId, startDate, endDate, allocation) => (
     `
     SELECT 
-      PROJECT.PROJECT_NAME,
-      PROJECT_STAFF.START_DATE,
-      PROJECT_STAFF.END_DATE,
-      PROJECT_STAFF.ALLOCATION
+      COALESCE(SUM(PROJECT_STAFF.ALLOCATION), 0) + ${allocation} TOTAL
     FROM
       PROJECT_STAFF
     INNER JOIN

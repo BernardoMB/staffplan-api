@@ -8,7 +8,6 @@ module.exports = (app) => {
   app.put(`/${CONST.API}/${MODULE}/:id/role`, authenticate.isAuthenticated, assignment.insertProjectRole);
   app.post(`/${CONST.API}/${MODULE}/:id/bulkroleupdate`, authenticate.isAuthenticated, assignment.bulkRoleUpdate);
   app.post(`/${CONST.API}/${MODULE}/:id/deleterole`, authenticate.isAuthenticated, assignment.deleteRole);
-  app.post(`/${CONST.API}/${SUBMODULE}/:id/alert`, authenticate.isAuthenticated, assignment.getAlert);
   app.post(`/${CONST.API}/${SUBMODULE}/assign`, authenticate.isAuthenticated, assignment.assignStaff);
   app.post(`/${CONST.API}/${SUBMODULE}/list`, authenticate.isAuthenticated, assignment.assignList);
 }
