@@ -542,6 +542,31 @@ CREATE TABLE `STAFF_ALLOCATION` (
   CONSTRAINT `staff_allocation_ibfk_2` FOREIGN KEY (`PROJECT_STAFF_ID`) REFERENCES `PROJECT_STAFF` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+# Dump of table STATE
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `STATE`;
+
+CREATE TABLE `STATE` (
+  `STATE_ID` varchar(3) NOT NULL,
+  `STATE_NAME` varchar(255) NOT NULL,
+  PRIMARY KEY (`STATE_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+# Dump of table COUNTRY
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `COUNTRY`;
+
+CREATE TABLE `COUNTRY` (
+  `COUNTRY_ID` varchar(3) NOT NULL,
+  `COUNTRY_NAME` varchar(255) NOT NULL,
+  PRIMARY KEY (`COUNTRY_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
