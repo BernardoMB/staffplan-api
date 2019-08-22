@@ -60,7 +60,7 @@ const insertStaff = async (req, res) => {
       CANRELOCATE: 0,
       CANCOMMUTE: 0
     };
-    const staffInfo = req.body.staff;
+    const staffInfo = req.body;
     const staffToCreate = Object.assign(staffDefault, staffInfo);
     const connection = await db.connection(req);
     const rowsAffected = await db.execute(connection, SQL.insertStaff(staffToCreate));
@@ -72,7 +72,7 @@ const insertStaff = async (req, res) => {
 
 const updateStaff = async (req, res) => {
   try {
-    const staff = req.body.staff;    
+    const staff = req.body;    
     const connection = await db.connection(req);
     const result = await db.execute(connection, SQL.getStaffInfoByID(req.params.id));
     let detailsToUpdate = {};
