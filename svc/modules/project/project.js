@@ -47,6 +47,7 @@ const insertProjectDetail = async (req, res) => {
   try {
     const projectDefault = {
       PROJECT_NAME: '',
+      PROJECT_NO: null,
       PROJECT_ROM: 0,
       PROJECT_ADDRESS: '',
       PROJECT_COUNTRY: '',
@@ -105,15 +106,15 @@ const processCustomerContact = async (projectDetails, connection) => {
 
 const updateProjectDetail = async (req, res) => {
   try {
-    const projectDetails = req.body.project;    
+    const projectDetails = req.body;    
     const connection = await db.connection(req);
     const result = await db.execute(connection, SQL.projectDetailsById(req.params.id));
     let detailsToUpdate = {};
     if (result && result.length > 0) {
       detailsToUpdate = result[0];
     }
-    const CustomerContact = await processCustomerContact(projectDetails, connection);
-    const projectToUpdate = Object.assign(detailsToUpdate, projectDetails, CustomerContact);
+    // const CustomerContact = await processCustomerContact(projectDetails, connection);
+    const projectToUpdate = Object.assign(detailsToUpdate, projectDetails);
     const rowsAffected = await db.execute(connection, SQL.updateProjectDetail(projectToUpdate, req.params.id));
     util.successResponse(res, rowsAffected);
   } catch (exception) {

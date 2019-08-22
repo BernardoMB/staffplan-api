@@ -112,6 +112,7 @@ module.exports = {
     SELECT
       PROJECT.PROJECT_ID,
       PROJECT.PROJECT_NAME,
+      PROJECT.PROJECT_NO,
       PROJECT.START_DATE,
       PROJECT.END_DATE,
       PROJECT.PROJECT_DESCRIPTION,
@@ -173,6 +174,7 @@ module.exports = {
     `
     INSERT INTO PROJECT (
       PROJECT_NAME,
+      PROJECT_NO,
       PROJECT_ROM,
       PROJECT_ADDRESS,
       PROJECT_COUNTRY,
@@ -190,6 +192,7 @@ module.exports = {
       TIMELINE_TYPE_ID
     ) VALUES (
       '${project.PROJECT_NAME}',
+      '${project.PROJECT_NO}',
       ${project.PROJECT_ROM},
       '${project.PROJECT_ADDRESS}',
       '${project.PROJECT_COUNTRY}',
@@ -212,6 +215,7 @@ module.exports = {
     `
     UPDATE PROJECT SET 
       PROJECT_NAME = '${project.PROJECT_NAME}',
+      PROJECT_NO = '${project.PROJECT_NO}',
       PROJECT_ROM = ${project.PROJECT_ROM},
       PROJECT_ADDRESS = '${project.PROJECT_ADDRESS}',
       PROJECT_COUNTRY = '${project.PROJECT_COUNTRY}',
