@@ -389,7 +389,8 @@ module.exports = {
     SELECT
         PROJECT_STAFF.ID,
         PROJECT.PROJECT_ID,
-        PROJECT.PROJECT_NAME         
+        PROJECT.PROJECT_NAME,
+        PROJECT_STAFF.ALLOCATION       
       FROM 
         PROJECT_STAFF 
       INNER JOIN PROJECT
