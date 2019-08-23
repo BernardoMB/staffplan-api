@@ -222,6 +222,7 @@ const staffAdvanceSearch = async (req, res) => {
   try {
     const connection = await db.connection(req);
     const condition = searchFilter(req);
+    console.log(SQL.staffSearch(condition));
     const staffList = await db.execute(connection, SQL.staffSearch(condition));
     util.successResponse(res, staffList);
   }
@@ -241,17 +242,21 @@ const searchFilter = req => {
       if (filter.office) {
         condition = `${condition} AND STAFF.OFFICE_ID = ${filter.office}`
       }
+      // check Role
+      if (filter.roleId) {
+        condition = `${condition} AND STAFF.STAFF_ROLE_ID = ${filter.roleId}`
+      }
       // check same role
-      if (!filter.showAllRole) {
+      if (filter.showAllRole !== null && filter.showAllRole !== undefined && !filter.showAllRole) {
         condition = `${condition} AND STAFF_ROLE_ID IN (SELECT PROJECT_ROLE_ID FROM 
           PLANNED_PROJECT_STAFF WHERE ID = ${filter.plannedProjectId})`;
       }
       // Check Same client
-      if (!filter.showAllClient) {
+      if (filter.showAllClient !== null && filter.showAllClient !== undefined && !filter.showAllClient) {
         condition = `${condition} AND STAFF.STAFF_ID IN ( ${SQL.staffWithClient(filter.projectId)} )`;
       }
       // Check Availability
-      if (filter.availability !== 'All') {
+      if (filter.availability && filter.availability !== 'All') {
         if (filter.availability === 'Available') {
           condition = `${condition} AND STAFF.STAFF_ID IN ( ${SQL.staffAvailable(filter.startDate, filter.endDate)} )`;
         } else if (filter.availability === 'Gap') {
@@ -270,8 +275,8 @@ const getStaffAllocation = async (req, res) => {
     if (staffProject && staffProject.length) {
       for (let i = 0; i < staffProject.length; i++) {
         const project = staffProject[i];
-        const allocation = await db.execute(connection,SQL.staffAllocationList(project.ID)); 
-        staffProject[i].allocation = allocation;        
+        const calendar = await db.execute(connection,SQL.staffAllocationList(project.ID)); 
+        staffProject[i].calendar = calendar;        
       }
     }
     util.successResponse(res, staffProject);

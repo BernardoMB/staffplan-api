@@ -153,5 +153,24 @@ module.exports = {
       AND CALENDAR.END_DATE <= PLANNED_PROJECT_STAFF.END_DATE
       AND ${condition}
     `
+  ),
+  outlookList: (startDate, endDate, condition) => (
+    `
+    SELECT
+      CALENDAR.WEEK,
+      CALENDAR.YEAR,
+      PROJECT_STAFF.STAFF_ID,
+      STAFF_ALLOCATION.ALLOCATION
+    FROM
+      CALENDAR
+      INNER JOIN STAFF_ALLOCATION
+      ON CALENDAR.CALENDAR_ID = STAFF_ALLOCATION.CALENDAR_ID
+      INNER JOIN PROJECT_STAFF
+      ON PROJECT_STAFF.ID = STAFF_ALLOCATION.PROJECT_STAFF_ID
+    WHERE
+      CALENDAR.START_DATE >= '${startDate}'
+      AND CALENDAR.END_DATE <= '${endDate}'
+      AND ${condition}
+    `
   )
 }

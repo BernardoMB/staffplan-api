@@ -10,4 +10,5 @@ module.exports = (app) => {
   app.post(`/${CONST.API}/${MODULE}/:id/deleterole`, authenticate.isAuthenticated, assignment.deleteRole);
   app.post(`/${CONST.API}/${SUBMODULE}/assign`, authenticate.isAuthenticated, assignment.assignStaff);
   app.post(`/${CONST.API}/${SUBMODULE}/list`, authenticate.isAuthenticated, assignment.assignList);
+  app.post(`/${CONST.API}/${SUBMODULE}/outlook`, authenticate.isAuthenticated, assignment.outlookList);
 }

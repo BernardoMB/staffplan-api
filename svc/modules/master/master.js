@@ -31,6 +31,17 @@ const getOfficeList = async (req, res) => {
   }
 }
 
+const getYears = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const data = await db.execute(connection, SQL.getYears());
+    util.successResponse(res, data);
+  } catch (exception) {
+    log.error(exception);
+    util.errorResponse(res, exception);
+  }
+}
+
 const getCustomLabel = async (req, res) => {
   try {
     const connection = await db.connection(req);
@@ -71,6 +82,7 @@ const updatePreference = async (req, res) => {
 module.exports = {
   getMasterList,
   getOfficeList,
+  getYears,
   getCustomLabel,
   updatePreference
 }

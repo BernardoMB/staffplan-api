@@ -146,11 +146,29 @@ const assignList = async (req, res) => {
   }
 }
 
+const outlookList = async (req, res) => {
+  try {
+    const startDate = req.body.startDate;
+    const endDate = req.body.endDate;
+    
+    let condition = '1 = 1';
+    if (req.body.staffId && req.body.staffId.length) {
+      condition = ` PROJECT_STAFF.STAFF_ID in (${req.body.staffId.join(',')})`;
+    }
+    const connection = await db.connection(req);
+    const result = await db.execute(connection, SQL.outlookList(startDate, endDate, condition));
+    util.successResponse(res, result);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
 module.exports = {
   getProjectRole,
   insertProjectRole,
   bulkRoleUpdate,
   deleteRole,
   assignStaff,
-  assignList
+  assignList,
+  outlookList
 }

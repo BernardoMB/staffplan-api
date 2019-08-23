@@ -9,6 +9,13 @@ module.exports = {
     FROM 
       OFFICE`
   ),
+  getYears: () => (
+    `SELECT
+      YEAR ID, YEAR
+    FROM
+      CALENDAR 
+    GROUP BY YEAR`
+  ),
   Label: () => (
     `SELECT MODULE_NAME, FIELD_NAME, FIELD_VALUE FROM CUSTOM_LABEL ORDER BY MODULE_NAME, FIELD_NAME`
   ),
