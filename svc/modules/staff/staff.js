@@ -6,7 +6,17 @@ var moment = require('moment');
 const staffAssignments = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const staffAssignments = await db.execute(connection, SQL.staffAssignments(filters(req)));
+    const staffAssignments = await db.execute(connection, SQL.staffAssignments(req.params.id));
+    if (staffAssignments && staffAssignments.length) {
+      for (let i = 0; i < staffAssignments.length; i++) {
+        const assignment = staffAssignments[i];
+        if (assignment.STAFF_ID) {
+          // Getting Staff Experience
+          const experience = await db.execute(connection, SQL.getstaffExperienceById(assignment.STAFF_ID));
+          staffAssignments[i].experience = experience;
+        }
+      }
+    }
     util.successResponse(res, staffAssignments);
   }
   catch (exception) {
