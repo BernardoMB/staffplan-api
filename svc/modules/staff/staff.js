@@ -35,6 +35,17 @@ const staffList = async (req, res) => {
   }  
 }
 
+const assignmentList = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const staffAssignments = await db.execute(connection, SQL.assignmentList(filters(req)));
+    util.successResponse(res, staffAssignments);
+  }
+  catch (exception) {
+    util.errorResponse(res, exception);
+  }  
+}
+
 const getStaffProjectList = async (req, res) => {
   try {
     const connection = await db.connection(req);
@@ -314,6 +325,7 @@ module.exports = {
   staffAssignments,
   getStaffProjectList,
   staffList,
+  assignmentList,
   insertStaff,
   updateStaff,
   getStaffCertification,

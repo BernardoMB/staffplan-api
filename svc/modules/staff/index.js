@@ -11,7 +11,10 @@ module.exports = (app) => {
   app.post(`/${CONST.API}/${MODULE}/availability`, authenticate.isAuthenticated, staff.staffAdvanceSearch); 
 
   app.get(`/${CONST.API}/${MODULE}/:id/assignments`, authenticate.isAuthenticated, staff.staffAssignments);
+
   app.post(`/${CONST.API}/${MODULE}/stafflist`, authenticate.isAuthenticated, staff.staffList); 
+  app.post(`/${CONST.API}/${MODULE}/assignmentlist`, authenticate.isAuthenticated, staff.assignmentList);
+
   app.put(`/${CONST.API}/${MODULE}/info`, authenticate.isAuthenticated, staff.insertStaff);
   app.post(`/${CONST.API}/${MODULE}/:id/info`, authenticate.isAuthenticated, staff.updateStaff);
   
