@@ -65,7 +65,7 @@ const insertProjectDetail = async (req, res) => {
       GROUP_ID: null,
       TIMELINE_TYPE_ID: null
     };
-    const projectDetails = req.body.project;
+    const projectDetails = req.body;
     const connection = await db.connection(req);
     const CustomerContact = await processCustomerContact(projectDetails, connection);
     const projectToCreate = Object.assign(projectDefault, projectDetails, CustomerContact);
