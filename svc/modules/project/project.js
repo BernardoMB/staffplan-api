@@ -137,6 +137,14 @@ const filters = req => {
       filterCondition = `${filterCondition} AND PROJECT.START_DATE BETWEEN '${filter.startBetween}' AND '${filter.endBetween}'`;
     }
 
+    if (filter.StartIn) {
+      filterCondition = `${filterCondition} AND PROJECT.START_DATE >= NOW() and PROJECT.START_DATE <=  DATE_ADD(NOW(), INTERVAL 90 DAY)`
+    }
+
+    if (filter.EndIn) {
+      filterCondition = `${filterCondition} AND PROJECT.END_DATE >= NOW() and PROJECT.END_DATE <=  DATE_ADD(NOW(), INTERVAL 90 DAY)`
+    }
+
     if (filter.startDate) {
       filterCondition = `${filterCondition} AND PROJECT.START_DATE >= '${filter.startDate}'`;  
     }
