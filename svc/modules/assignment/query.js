@@ -173,5 +173,16 @@ module.exports = {
       AND CALENDAR.END_DATE <= '${endDate}'
       AND ${condition}
     `
+  ),
+  updateAllocation: (allocation, year, week, plannedStaffId) => (
+    `
+    UPDATE 
+      STAFF_ALLOCATION
+    SET
+      ALLOCATION = ${allocation}
+    WHERE
+      PROJECT_STAFF_ID = ${plannedStaffId}
+      AND CALENDAR_ID = (SELECT CALENDAR_ID FROM CALENDAR WHERE YEAR = ${year} AND WEEK = ${week})
+    `
   )
 }

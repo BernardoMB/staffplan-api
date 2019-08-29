@@ -92,6 +92,60 @@ const deleteRole = async (req, res) => {
     }
 }
 
+const updateAssignment = async (req, res) => {
+  try {
+    const assignments = req.body;
+    if (assignments && assignments.length) {
+      const connection = await db.connection(req);
+      for (let i = 0; i < assignments.length; i++) {
+        const assignment = assignments[i];
+        if (assignment.selectedView === 'Week') {
+          await db.execute(connection, SQL.updateAllocation(
+            assignment.allocation,
+            assignment.year,
+            assignment.week,
+            assignment.plannedStaffId
+          ));
+        } else {
+          // Get List of weeks in that month
+          // update for all
+          const weeks = getWeeknoInMonth(assignment.date, assignment.year);
+          for (let j = 0; j < weeks.length; j++) {
+            const week = weeks[j];
+            await db.execute(connection, SQL.updateAllocation(
+              assignment.allocation,
+              week.year,
+              week.week,
+              assignment.plannedStaffId
+            ));
+          }
+        }
+      }
+    }
+    util.successResponse(res, {})
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
+const getWeeknoInMonth = (selectedDate, year) => {
+  const firstDay = moment(selectedDate).startOf('month');
+  const lastDay = moment(selectedDate).endOf('month');
+  let date = firstDay;
+  let week = 0;
+  const dates = [];
+  while (date < lastDay && week !== 52) {
+    week = date.week();
+    const startDate = date.startOf('week').format('YYYY-MM-DD');
+    const endDate = date.endOf('week').format('YYYY-MM-DD');
+    dates.push({
+      year, week, startDate, endDate
+    });
+    date = date.add(7);
+  }
+  return dates;
+}
+
 const assignStaff = async (req, res) => {
   try {
     const plannedId = req.body.plannedId;
@@ -169,6 +223,7 @@ module.exports = {
   bulkRoleUpdate,
   deleteRole,
   assignStaff,
+  updateAssignment,
   assignList,
   outlookList
 }
