@@ -7,19 +7,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
-# Dump of table ACCESS_TYPE_COMBINATION
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `ACCESS_TYPE_COMBINATION`;
-
-CREATE TABLE `ACCESS_TYPE_COMBINATION` (
-  `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `COMBINATION` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
 # Dump of table ACCESS_ROLE
 # ------------------------------------------------------------
 
@@ -28,21 +15,9 @@ DROP TABLE IF EXISTS `ACCESS_ROLE`;
 CREATE TABLE `ACCESS_ROLE` (
   `ACCESS_ROLE_ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ROLE_NAME` varchar(255) NOT NULL,
-  `COMBINATION_ID` int(11) unsigned NOT NULL,
+  `ROLE` varchar(10) NOT NULL,
   PRIMARY KEY (`ACCESS_ROLE_ID`),
-  FOREIGN KEY (`COMBINATION_ID`) REFERENCES `ACCESS_TYPE_COMBINATION` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-# Dump of table ACCESS_TYPE
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `ACCESS_TYPE`;
-
-CREATE TABLE `ACCESS_TYPE` (
-  `ACCESS_TYPE_ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `TYPE` varchar(255) NOT NULL,
-  PRIMARY KEY (`ACCESS_TYPE_ID`)
+  UNIQUE KEY `ROLE` (`ROLE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -456,6 +431,7 @@ CREATE TABLE `USERS` (
   `CITY` varchar(255) NOT NULL,
   `COUNTRY` varchar(255) NOT NULL,
   `ZIP` varchar(255) NOT NULL,
+  `ACTIVE` int(1) unsigned DEFAULT '1',
   PRIMARY KEY (`USER_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

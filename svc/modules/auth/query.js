@@ -20,7 +20,7 @@ module.exports = {
       COMPANY.DOMAIN = '${domain}'`
   ),
   validate: (username, password) => (
-    `SELECT  USERS.*, ACCESS_ROLE.ROLE_NAME, ACCESS_ROLE.COMBINATION_ID 
+    `SELECT  USERS.*, ACCESS_ROLE.ROLE_NAME, ACCESS_ROLE.ROLE
       FROM USERS INNER JOIN ACCESS_ROLE ON USERS.ROLE_ID = ACCESS_ROLE.ACCESS_ROLE_ID 
       WHERE USERS.EMAIL = '${username}' AND USERS.PASSWORD = '${password}'`
   ),
@@ -51,6 +51,9 @@ module.exports = {
     `SELECT USERS.*  
       FROM USERS
       WHERE USERS.EMAIL = '${username}'`
+  ),
+  allOffice: () => (
+    `SELECT OFFICE.OFFICE_ID, OFFICE.OFFICE_NAME FROM OFFICE`
   ),
   office: (userId) => (
     `SELECT USER_ACCESS.OFFICE_ID, OFFICE.OFFICE_NAME FROM USER_ACCESS

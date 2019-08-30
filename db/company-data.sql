@@ -13,53 +13,13 @@
 LOCK TABLES `ACCESS_ROLE` WRITE;
 /*!40000 ALTER TABLE `ACCESS_ROLE` DISABLE KEYS */;
 
-INSERT INTO `ACCESS_ROLE` (`ACCESS_ROLE_ID`, `ROLE_NAME`, `COMBINATION_ID`)
+INSERT INTO `ACCESS_ROLE` (`ACCESS_ROLE_ID`, `ROLE_NAME`, `ROLE`)
 VALUES
-	(1,'All Company Access',1),
-	(2,'Regional Access',1),
-	(3,'Admin',1);
+	(1,'All Company Access', 'ALLCOMPANY'),
+	(2,'Regional Access', 'REGIONAL'),
+	(3,'Admin', 'ADMIN');
 
 /*!40000 ALTER TABLE `ACCESS_ROLE` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump of table ACCESS_TYPE
-# ------------------------------------------------------------
-
-LOCK TABLES `ACCESS_TYPE` WRITE;
-/*!40000 ALTER TABLE `ACCESS_TYPE` DISABLE KEYS */;
-
-INSERT INTO `ACCESS_TYPE` (`ACCESS_TYPE_ID`, `TYPE`)
-VALUES
-	(1,'View'),
-	(2,'Edit'),
-	(3,'Delete'),
-	(4,'Add'),
-	(5,'Add Staff'),
-	(6,'Add Project'),
-	(7,'Edit Project'),
-	(8,'Edit Staff'),
-	(9,'Delete Staff'),
-	(10,'Delete Project');
-
-/*!40000 ALTER TABLE `ACCESS_TYPE` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump of table ACCESS_TYPE_COMBINATION
-# ------------------------------------------------------------
-
-LOCK TABLES `ACCESS_TYPE_COMBINATION` WRITE;
-/*!40000 ALTER TABLE `ACCESS_TYPE_COMBINATION` DISABLE KEYS */;
-
-INSERT INTO `ACCESS_TYPE_COMBINATION` (`ID`, `COMBINATION`)
-VALUES
-	(1,'[1,2]'),
-	(3,'[2,3,4,1,6]'),
-	(4,'[2,3,4]'),
-	(5,'[6,7]');
-
-/*!40000 ALTER TABLE `ACCESS_TYPE_COMBINATION` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
@@ -737,7 +697,7 @@ LOCK TABLES `USER_ACCESS` WRITE;
 
 INSERT INTO `USER_ACCESS` (`USER_ACCESS_ID`, `USER_ID`, `OFFICE_ID`, `REGION_ID`)
 VALUES
-	(1,50,14,1);
+	(1,51,14,1);
 
 /*!40000 ALTER TABLE `USER_ACCESS` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -765,7 +725,9 @@ LOCK TABLES `USERS` WRITE;
 
 INSERT INTO `USERS` (`USER_ID`, `ROLE_ID`, `FIRST_NAME`, `MIDDLE_NAME`, `LAST_NAME`, `EMAIL`, `PASSWORD`, `VERIFIED`, `ADDRESS`, `CITY`, `COUNTRY`, `ZIP`)
 VALUES
-	(50,1,'StaffPlan','','Admin','admin@staffplan.io','39911a1da4d8b466068cb0af85cf0c52','true','USA','California','USA','94022');
+	(50,1,'StaffPlan','','All Company','allcompany@staffplan.io','39911a1da4d8b466068cb0af85cf0c52','true','USA','California','USA','94022'),
+	(51,2,'StaffPlan','','Regional','regional@staffplan.io','39911a1da4d8b466068cb0af85cf0c52','true','USA','California','USA','94022'),
+	(52,3,'StaffPlan','','Admin','admin@staffplan.io','39911a1da4d8b466068cb0af85cf0c52','true','USA','California','USA','94022');
 
 /*!40000 ALTER TABLE `USERS` ENABLE KEYS */;
 UNLOCK TABLES;

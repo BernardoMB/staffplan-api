@@ -13,5 +13,6 @@ module.exports = {
     res.status(200).json({
       errorCode
     });
-  }
+  },
+  officeAccessRestricted : (role) => (role && role === 'REGIONAL')
 };
