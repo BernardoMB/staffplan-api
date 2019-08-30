@@ -161,6 +161,10 @@ const filters = req => {
       filterCondition = `${filterCondition} AND PROJECT.PROJECT_ID = ${filter.projectId}`;
     }
   }
+  // List project based on user office access
+  if (util.officeAccessRestricted(req.payload.ROLE)) {
+    filterCondition = `${filterCondition} AND PROJECT.OFFICE_ID IN (SELECT OFFICE_ID FROM USER_ACCESS WHERE USER_ID = ${req.payload.ID})`;
+  }
   return (filterCondition); 
 }
 

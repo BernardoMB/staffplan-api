@@ -28,11 +28,12 @@ const parseResetToken = (token, callback) => {
   });
 }
 
-const generateToken = (userId, dbName) => {
+const generateToken = (userId, role, dbName) => {
   const jwt = require('jsonwebtoken');
   const payload = {
     ID: userId,
-    DB: dbName	
+    DB: dbName,
+    ROLE: role
   }
   const token = jwt.sign(payload, config.AUTH.KEY, {
     expiresIn: config.AUTH.SUPERSECRETTIME
@@ -54,7 +55,8 @@ const refreshToken = async (token, req) => {
     } else {
       let payload = {
         ID: decoded.ID,
-        DB: decoded.DB
+        DB: decoded.DB,
+        ROLE: decoded.ROLE
       }
       const newRefreshToken = jwt.sign(payload, config.AUTH.KEY, { expiresIn: config.AUTH.SUPERSECRETREFRESHTIME })
       authToken[token].refreshToken = newRefreshToken;

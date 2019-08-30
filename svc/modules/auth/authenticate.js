@@ -7,8 +7,13 @@ const SQL = require('./query');
 const subscription = require('./subscription');
 
 // Used to fetch office details for given user
-const fetchOffices = async (userId, connection) => {
-  const offices = await db.execute(connection, SQL.office(userId));
+const fetchOffices = async (userId, role, connection) => {
+  let offices;
+  if (util.officeAccessRestricted(role)) {
+    offices = await db.execute(connection, SQL.office(userId));  
+  } else {
+    offices = await db.execute(connection, SQL.allOffice());
+  }
   return offices;
 }
 
@@ -38,8 +43,9 @@ const encryptPassword = (password) => {
 // Populate user, office details and send the response
 const getUserDetails = (user, connection, res, dbName) => {
   const userId = user.USER_ID;
+  const role = user.ROLE;
   const tokenizer = require('./tokenization');
-  const response = tokenizer.generateToken(userId, dbName);
+  const response = tokenizer.generateToken(userId, role, dbName);
   let userObj = {};
   userObj.user = {
     USER_ID: user.USER_ID,
@@ -52,12 +58,12 @@ const getUserDetails = (user, connection, res, dbName) => {
     CITY: user.CITY,
     COUNTRY: user.COUNTRY,
     ZIP: user.ZIP,
-    ROLE_NAME: user.ROLE_NAME,
-    COMBINATION_ID: user.COMBINATION_ID,
+    ROLE: user.ROLE,
+    ROLE_NAME: user.ROLE_NAME
   };
   userObj.token = response.token;
   res.cookie('auth', response.token);
-  fetchOffices(userId, connection, res).then(offices => {
+  fetchOffices(userId, role, connection, res).then(offices => {
     userObj.user.OFFICE_LIST = offices;
     userPreferences(userId, connection, res).then(preference => {
       userObj.user.preference = preference;
@@ -100,6 +106,7 @@ const validateUser = (req, res) => {
     db.useDB(connection, dbName).then(() => {
       const encPassword = encryptPassword(req.body.password);
       db.execute(connection, SQL.validate(userName, encPassword)).then(user => {
+        console.log(user);
         if (user && user.length) {
           getUserDetails(user[0], connection, res, dbName);
         } else {
