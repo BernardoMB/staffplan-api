@@ -20,9 +20,9 @@ module.exports = (app) => {
   
   app.get(`/${CONST.API}/${MODULE}/:id/certification`, authenticate.isAuthenticated, staff.getStaffCertification);
   app.put(`/${CONST.API}/${MODULE}/:id/certification`, authenticate.isAuthenticated, staff.insertStaffCertification);
-  app.delete(`/${CONST.API}/${MODULE}/:id/certification`, authenticate.isAuthenticated, staff.deleteStaffCertification
+  app.delete(`/${CONST.API}/${MODULE}/:id/certification/:key`, authenticate.isAuthenticated, staff.deleteStaffCertification
   );
   app.get(`/${CONST.API}/${MODULE}/:id/experience`, authenticate.isAuthenticated, staff.getStaffExperience);
   app.put(`/${CONST.API}/${MODULE}/:id/experience`, authenticate.isAuthenticated, staff.insertStaffExperience);
-  app.delete(`/${CONST.API}/${MODULE}/:id/experience`, authenticate.isAuthenticated, staff.deleteStaffExperience);
+  app.post(`/${CONST.API}/${MODULE}/:id/experience`, authenticate.isAuthenticated, staff.removeStaffExperience);
 }
