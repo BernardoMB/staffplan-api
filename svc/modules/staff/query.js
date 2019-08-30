@@ -229,7 +229,7 @@ module.exports = {
   getStaffCertificationById: (id) => (
     `
     SELECT
-      STAFF_CERTIFICATION.STAFF_CERTIFICATION_ID,
+      STAFF_CERTIFICATION.CERTIFICATION_ID,
       CERTIFICATION_SKILLS.CERTIFICATION_NAME
     FROM
       STAFF_CERTIFICATION
@@ -239,24 +239,39 @@ module.exports = {
     STAFF_CERTIFICATION.STAFF_ID = ${id}
     `
   ),
-  insertStaffCertification: (certificate) => (
+  insertStaffCertification: (STAFF_ID, CERTIFICATION_ID) => (
     `
     INSERT INTO STAFF_CERTIFICATION (
       STAFF_ID,
       CERTIFICATION_ID
     ) VALUES (
-      ${certificate.STAFF_ID},
-      ${certificate.CERTIFICATION_ID}
+      ${STAFF_ID},
+      ${CERTIFICATION_ID}
     )
     `
   ),
-  deleteStaffCertification: (certificate) => (
+  deleteStaffCertification: (STAFF_ID, CERTIFICATION_ID) => (
     `
     DELETE FROM STAFF_CERTIFICATION 
       WHERE 
-      STAFF_ID = ${certificate.STAFF_ID}
+      STAFF_ID = ${STAFF_ID}
       AND
-      CERTIFICATION_ID = ${certificate.CERTIFICATION_ID}    
+      CERTIFICATION_ID = ${CERTIFICATION_ID}    
+    `
+  ),
+  getstaffProjectExperience: (staffId, projectId) => (
+    `
+    SELECT
+      EXPERIENCE.EXPERIENCE_ID as 'key',
+      EXPERIENCE.EXPERIENCE_LABEL as 'value'
+    FROM
+      STAFF_PROJECT_EXPERIENCE
+    INNER JOIN EXPERIENCE
+      on EXPERIENCE.EXPERIENCE_ID = STAFF_PROJECT_EXPERIENCE.EXPERIENCE_ID
+    WHERE
+      STAFF_PROJECT_EXPERIENCE.STAFF_ID = ${staffId}
+      AND
+      STAFF_PROJECT_EXPERIENCE.PROJECT_ID = ${projectId}
     `
   ),
   getstaffExperienceById: (id) => (
@@ -285,15 +300,15 @@ module.exports = {
     )
     `
   ),
-  deleteStaffExperience: (experience) => (
+  removeStaffExperience: (experience) => (
     `
     DELETE FROM STAFF_PROJECT_EXPERIENCE 
       WHERE 
-      EXPERIENCE_ID = ${experience.EXPERIENCE_ID}
+    EXPERIENCE_ID = ${experience.EXPERIENCE_ID}
       AND
-      STAFF_ID = ${experience.STAFF_ID}
+    STAFF_ID = ${experience.STAFF_ID}
       AND
-      PROJECT_ID = ${experience.PROJECT_ID}    
+    PROJECT_ID = ${experience.PROJECT_ID}    
     `
   ),
   getStaffDetailsById: (STAFF_ID) => (

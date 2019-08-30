@@ -12,7 +12,7 @@ const staffAssignments = async (req, res) => {
         const assignment = staffAssignments[i];
         if (assignment.STAFF_ID) {
           // Getting Staff Experience
-          const experience = await db.execute(connection, SQL.getstaffExperienceById(assignment.STAFF_ID));
+          const experience = await db.execute(connection, SQL.getstaffProjectExperience(assignment.STAFF_ID, assignment.PROJECT_ID));
           staffAssignments[i].experience = experience;
         }
       }
@@ -121,12 +121,10 @@ const getStaffCertification = async (req, res) => {
 
 const insertStaffCertification = async (req, res) => {
   try {      
-      const CertificateToCreate = {
-      STAFF_ID: req.params.id, 
-      CERTIFICATION_ID: req.body.staff.certificationID
-      };
+      const STAFF_ID = req.params.id;
+      const CERTIFICATION_ID = req.body.key;
       const connection = await db.connection(req);
-      const rowsAffected = await db.execute(connection, SQL.insertStaffCertification(CertificateToCreate));
+      const rowsAffected = await db.execute(connection, SQL.insertStaffCertification(STAFF_ID, CERTIFICATION_ID));
       util.successResponse(res, rowsAffected);
     } catch (exception) {
         util.errorResponse(res, exception);
@@ -135,12 +133,10 @@ const insertStaffCertification = async (req, res) => {
 
 const deleteStaffCertification = async (req, res) => {
   try {      
-      const CertificateToDelete = {
-      STAFF_ID: req.params.id, 
-      CERTIFICATION_ID: req.body.staff.certificationID
-    };
+      const STAFF_ID = req.params.id;
+      const CERTIFICATION_ID = req.params.key;
       const connection = await db.connection(req);
-      const rowsAffected = await db.execute(connection, SQL.deleteStaffCertification(CertificateToDelete));
+      const rowsAffected = await db.execute(connection, SQL.deleteStaffCertification(STAFF_ID, CERTIFICATION_ID));
       util.successResponse(res, rowsAffected);
     } catch (exception) {
         util.errorResponse(res, exception);
@@ -161,9 +157,9 @@ const getStaffExperience = async (req, res) => {
 const insertStaffExperience = async (req, res) => {
   try {      
       const ExperienceToCreate = {
-      EXPERIENCE_ID: req.body.staff.experienceID,
+      EXPERIENCE_ID: req.body.experienceId,
       STAFF_ID: req.params.id, 
-      PROJECT_ID: req.body.staff.projectID
+      PROJECT_ID: req.body.projectId
       };
       const connection = await db.connection(req);    
       const rowsAffected = await db.execute(connection, SQL.insertStaffExperience(ExperienceToCreate));
@@ -173,15 +169,15 @@ const insertStaffExperience = async (req, res) => {
     }
 }
 
-const deleteStaffExperience = async (req, res) => {
+const removeStaffExperience = async (req, res) => {
   try {      
       const ExperienceToDelete = {
-      EXPERIENCE_ID: req.body.staff.experienceID,
-      STAFF_ID: req.params.id, 
-      PROJECT_ID: req.body.staff.projectID
+        EXPERIENCE_ID: req.body.experienceId,
+        STAFF_ID: req.params.id, 
+        PROJECT_ID: req.body.projectId
       };
       const connection = await db.connection(req);
-      const rowsAffected = await db.execute(connection, SQL.deleteStaffExperience(ExperienceToDelete));
+      const rowsAffected = await db.execute(connection, SQL.removeStaffExperience(ExperienceToDelete));
       util.successResponse(res, rowsAffected);
     } catch (exception) {
         util.errorResponse(res, exception);
@@ -338,7 +334,7 @@ module.exports = {
   deleteStaffCertification,
   getStaffExperience,
   insertStaffExperience,
-  deleteStaffExperience,
+  removeStaffExperience,
   getStaffDetailsById,
   staffSearch,
   staffAdvanceSearch,
