@@ -9,40 +9,67 @@ module.exports = {
     INSERT INTO USERS (
       ROLE_ID,
       FIRST_NAME,
-      MIDDLE_INITIAL,
+      MIDDLE_NAME,
       LAST_NAME,
-      EMAIL_ID,
-      PASSWORD,
-      VERIFIED,
+      EMAIL,
       ADDRESS,
       CITY,
+      STATE,
       COUNTRY,
-      ZIP,
-      ISACTIVE
+      ZIP
     ) VALUES (
       ${user.ROLE_ID},
       '${user.FIRST_NAME}',
-      '${user.MIDDLE_INITIAL}',
+      '${user.MIDDLE_NAME}',
       '${user.LAST_NAME}',
-      '${user.EMAIL_ID}',
-      '${user.PASSWORD}',
-      ${user.VERIFIED},
+      '${user.EMAIL}',
       '${user.ADDRESS}',
       '${user.CITY}',
+      '${user.STATE}',
       '${user.COUNTRY}',
-      '${user.ZIP}',
-      ${user.ISACTIVE}
+      '${user.ZIP}'
     )  
     `
   ),
   getUserInfoByID: (id) => (
     `
     SELECT
-      *
+      ROLE_ID,
+      FIRST_NAME,
+      MIDDLE_NAME,
+      LAST_NAME,
+      EMAIL,
+      ADDRESS,
+      CITY,
+      STATE,
+      ZIP,
+      ACTIVE
     FROM 
       USERS 
     WHERE
       USERS.USER_ID = ${id}
+    `
+  ),
+  getUsers: () => (
+    `
+    SELECT
+      USER_ID,
+      USERS.ROLE_ID,
+      ACCESS_ROLE.ROLE_NAME,
+      FIRST_NAME,
+      MIDDLE_NAME,
+      LAST_NAME,
+      EMAIL,
+      ADDRESS,
+      CITY,
+      STATE,
+      ZIP,
+      if(ACTIVE, 'Yes', 'No') AS 'ACTIVE'
+    FROM
+      USERS
+    INNER JOIN
+      ACCESS_ROLE
+      ON ACCESS_ROLE.ACCESS_ROLE_ID = USERS.ROLE_ID
     `
   ),
   updateUser: (id, user) => (
@@ -50,16 +77,21 @@ module.exports = {
     UPDATE USERS SET
       ROLE_ID = ${user.ROLE_ID},
       FIRST_NAME = '${user.FIRST_NAME}',
-      MIDDLE_INITIAL = '${user.MIDDLE_INITIAL}',
+      MIDDLE_NAME = '${user.MIDDLE_NAME}',
       LAST_NAME = '${user.LAST_NAME}',
-      EMAIL_ID = '${user.EMAIL_ID}',
-      PASSWORD = '${user.PASSWORD}',
-      VERIFIED = ${user.VERIFIED},
+      EMAIL = '${user.EMAIL}',
       ADDRESS = '${user.ADDRESS}',
       CITY = '${user.CITY}',
-      COUNTRY = '${user.COUNTRY}',
-      ZIP = '${user.ZIP}',
-      ISACTIVE = ${user.ISACTIVE}
+      STATE = '${user.STATE}',
+      ZIP = '${user.ZIP}'
+    WHERE
+      USERS.USER_ID = ${id}
+    `
+  ),
+  activateUser: (id, activate) => (
+    `
+    UPDATE USERS SET
+      ACTIVE = ${activate}
     WHERE
       USERS.USER_ID = ${id}
     `

@@ -1,6 +1,7 @@
 var moment = require('moment');
 const db = require('../../common/connection');
 const SQL = require('./query');
+const AuthSQL = require('../auth/query');
 const util = require("../../common/util");
 const log = require("../../common/logger");
 
@@ -46,16 +47,14 @@ const insertUser = async (req, res) => {
     const userDefault = {
       ROLE_ID: null,
       FIRST_NAME: '',
-      MIDDLE_INITIAL: '',
+      MIDDLE_NAME: '',
       LAST_NAME: '',
-      EMAIL_ID: '',
-      PASSWORD: '',
-      VERIFIED: 0,
+      EMAIL: '',
       ADDRESS: '',
       CITY: '',
+      STATE: '',
       COUNTRY: '',
-      ZIP: '',
-      ISACTIVE: 0
+      ZIP: ''
     };
     const userInfo = req.body;
     const userToCreate = Object.assign(userDefault, userInfo);
@@ -69,7 +68,7 @@ const insertUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const user = req.body;    
+    const user = req.body;
     const connection = await db.connection(req);
     const result = await db.execute(connection, SQL.getUserInfoByID(req.params.id));
     let detailsToUpdate = {};
@@ -79,14 +78,94 @@ const updateUser = async (req, res) => {
     const userToUpdate = Object.assign(detailsToUpdate, user);
     const rowsAffected = await db.execute(connection, SQL.updateUser(req.params.id, userToUpdate));
     util.successResponse(res, rowsAffected);
-    } catch (exception) {
-        util.errorResponse(res, exception);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+}
+
+const getUser = async (req, res) => {
+  try {
+    if (util.isAdmin(req.payload.ROLE)) {
+      const connection = await db.connection(req);
+      const result = await db.execute(connection, SQL.getUsers());
+      util.successResponse(res, result);  
+    } else {
+      util.errorResponse(res, 'User Access Restricted');
     }
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+}
+
+const activeUser = async (req, res) => {
+  try {
+    if (util.isAdmin(req.payload.ROLE)) {
+      const connection = await db.connection(req);
+      const userId = req.params.id;
+      const user = await db.execute(connection, SQL.getUserInfoByID(userId));
+      if (user && user.length > 0) {
+        const ACTIVE = user[0].ACTIVE;
+        if (ACTIVE) {
+          await db.execute(connection, SQL.activateUser(userId, 0));
+        } else {
+          await db.execute(connection, SQL.activateUser(userId, 1));
+        }
+        util.successResponse(res, {
+          activated: (ACTIVE === 0)
+        });    
+      } else {
+        util.errorResponse(res, 'Activation failed');
+      }
+      
+    } else {
+      util.errorResponse(res, 'User Access Restricted');
+    }
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
+const resetPassword = async (req, res) => {
+  try {
+    if (util.isAdmin(req.payload.ROLE)) {
+      const connection = await db.connection(req);
+      const userId = req.params.id;
+      const hostname = req.body.hostname;
+      const user = await db.execute(connection, SQL.getUserInfoByID(userId));
+      if (user && user.length > 0) {
+        const userName = user[0].EMAIL;
+        const uuidv4 = require('uuid/v4');
+        const resetId = uuidv4();
+        log.info(`${userName} requested password reset`);
+        await db.execute(connection, AuthSQL.clearPasswordReset(userId));
+        const result = await db.execute(connection, AuthSQL.passwordReset(userId, resetId));
+        if (result) {
+          const tokenizer = require('../auth/tokenization');
+          const resetToken = tokenizer.generateResetToken(userName, resetId);
+          log.debug(`Reset Token - ${resetToken}`);
+          const notification = require('../notification');
+          notification.passwordReset(userName, user[0].FIRST_NAME, resetToken, hostname);
+          util.successResponse(res)
+        } else {
+          util.errorResponse(res, 'Password reset failed');
+        }
+      } else {
+        util.errorResponse(res, 'Password reset failed');
+      }
+    } else {
+      util.errorResponse(res, 'User Access Restricted');
+    }
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
 }
 
 module.exports = {
   insertCalendar,
+  getUser,
   insertUser,
+  activeUser,
+  resetPassword,
   updateUser
 }
 
