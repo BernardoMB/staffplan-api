@@ -62,7 +62,7 @@ const insertUser = async (req, res) => {
     const rowsAffected = await db.execute(connection, SQL.insertUser(userToCreate));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
-      util.errorResponse(res, exception);
+    util.errorResponse(res, exception);
   }
 }
 
@@ -79,7 +79,7 @@ const updateUser = async (req, res) => {
     const rowsAffected = await db.execute(connection, SQL.updateUser(req.params.id, userToUpdate));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
-      util.errorResponse(res, exception);
+    util.errorResponse(res, exception);
   }
 }
 
@@ -93,7 +93,7 @@ const getUser = async (req, res) => {
       util.errorResponse(res, 'User Access Restricted');
     }
   } catch (exception) {
-      util.errorResponse(res, exception);
+    util.errorResponse(res, exception);
   }
 }
 
@@ -156,7 +156,42 @@ const resetPassword = async (req, res) => {
       util.errorResponse(res, 'User Access Restricted');
     }
   } catch (exception) {
-      util.errorResponse(res, exception);
+    util.errorResponse(res, exception);
+  }
+}
+
+const getOfficeAccess = async (req, res) => {
+ try {
+    const userId = req.params.id;
+    const connection = await db.connection(req);
+    const result = await db.execute(connection, SQL.getOfficeAccess(userId));
+    util.successResponse(res, result);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
+const addOfficeAccess = async (req, res) => {
+ try {
+    const userId = req.params.id;
+    const officeId = req.params.officeId;
+    const connection = await db.connection(req);
+    const result = await db.execute(connection, SQL.addOfficeAccess(userId, officeId));
+    util.successResponse(res, result);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
+const removeOfficeAccess = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const officeId = req.params.officeId;
+    const connection = await db.connection(req);
+    const result = await db.execute(connection, SQL.removeOfficeAccess(userId, officeId));
+    util.successResponse(res, result);
+  } catch (exception) {
+    util.errorResponse(res, exception);
   }
 }
 
@@ -166,6 +201,9 @@ module.exports = {
   insertUser,
   activeUser,
   resetPassword,
+  getOfficeAccess,
+  addOfficeAccess,
+  removeOfficeAccess,
   updateUser
 }
 
