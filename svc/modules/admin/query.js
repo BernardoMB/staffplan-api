@@ -56,6 +56,7 @@ module.exports = {
       USER_ID,
       USERS.ROLE_ID,
       ACCESS_ROLE.ROLE_NAME,
+      ACCESS_ROLE.ROLE,
       FIRST_NAME,
       MIDDLE_NAME,
       LAST_NAME,
@@ -94,6 +95,24 @@ module.exports = {
       ACTIVE = ${activate}
     WHERE
       USERS.USER_ID = ${id}
+    `
+  ),
+  getOfficeAccess: (userId) => (
+    `
+     SELECT OFFICE.OFFICE_ID AS 'key', OFFICE.OFFICE_NAME AS 'value' FROM 
+      USER_ACCESS INNER JOIN OFFICE ON OFFICE.OFFICE_ID = USER_ACCESS.OFFICE_ID 
+      WHERE USER_ACCESS.USER_ID = ${userId}
+    `
+  ),
+  addOfficeAccess: (userId, officeId) => (
+    `
+     INSERT INTO USER_ACCESS (USER_ID, OFFICE_ID, REGION_ID)
+      SELECT ${userId}, OFFICE_ID, REGION_ID FROM OFFICE WHERE OFFICE_ID = ${officeId}
+    `
+  ),
+  removeOfficeAccess: (userId, officeId) => (
+    `
+     DELETE FROM USER_ACCESS WHERE USER_ID = ${userId} AND OFFICE_ID = ${officeId}
     `
   )
 };
