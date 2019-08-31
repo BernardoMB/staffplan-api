@@ -429,6 +429,7 @@ CREATE TABLE `USERS` (
   `VERIFIED` enum('true','false') NOT NULL,
   `ADDRESS` varchar(255) NOT NULL,
   `CITY` varchar(255) NOT NULL,
+  `STATE` varchar(255) DEFAULT NULL,
   `COUNTRY` varchar(255) NOT NULL,
   `ZIP` varchar(255) NOT NULL,
   `ACTIVE` int(1) unsigned DEFAULT '1',

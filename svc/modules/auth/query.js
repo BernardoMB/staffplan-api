@@ -22,7 +22,7 @@ module.exports = {
   validate: (username, password) => (
     `SELECT  USERS.*, ACCESS_ROLE.ROLE_NAME, ACCESS_ROLE.ROLE
       FROM USERS INNER JOIN ACCESS_ROLE ON USERS.ROLE_ID = ACCESS_ROLE.ACCESS_ROLE_ID 
-      WHERE USERS.EMAIL = '${username}' AND USERS.PASSWORD = '${password}'`
+      WHERE USERS.EMAIL = '${username}' AND USERS.PASSWORD = '${password}' AND USERS.ACTIVE = 1`
   ),
   passwordReset: (userId, resetId) => (
     `INSERT INTO

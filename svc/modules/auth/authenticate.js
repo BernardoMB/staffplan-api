@@ -75,7 +75,7 @@ const getUserDetails = (user, connection, res, dbName) => {
 // Validate the request is authenticated
 const isAuthenticated = async (req, res, next) => {
   /* uncomment below two lines if you want to debug service without new token */
-  // req.payload = { ID: 50, DB: 'staffplan' };
+  // req.payload = { ID: 50, DB: 'staffplan', ROLE: 'ADMIN' };
   // const connection = await db.connection(req);
   // await db.useDB(connection, req.payload.DB);
   // next();

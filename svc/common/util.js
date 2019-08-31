@@ -14,5 +14,6 @@ module.exports = {
       errorCode
     });
   },
-  officeAccessRestricted : (role) => (role && role === 'REGIONAL')
+  officeAccessRestricted : (role) => (role && role === 'REGIONAL'),
+  isAdmin : (role) => (role && role === 'ADMIN')
 };
