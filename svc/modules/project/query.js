@@ -189,7 +189,9 @@ module.exports = {
       CATEGORY_ID,
       PROJECT_DESCRIPTION,
       GROUP_ID,
-      TIMELINE_TYPE_ID
+      TIMELINE_TYPE_ID,
+      CUSTOMER_ID,
+      CONTACT_ID
     ) VALUES (
       '${project.PROJECT_NAME}',
       '${project.PROJECT_NO}',
@@ -207,7 +209,9 @@ module.exports = {
       ${project.CATEGORY_ID},
       '${project.PROJECT_DESCRIPTION}',
       ${project.GROUP_ID},
-      ${project.TIMELINE_TYPE_ID}
+      ${project.TIMELINE_TYPE_ID},
+      ${project.CUSTOMER_ID},
+      ${project.CONTACT_ID}
     )
     `
   ),
