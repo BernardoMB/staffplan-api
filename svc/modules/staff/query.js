@@ -72,6 +72,7 @@ module.exports = {
     INNER JOIN STAFF_GROUP
         ON STAFF_GROUP.GROUP_ID = STAFF.STAFF_GROUP_ID
       ${Condition} 
+    ORDER BY STAFF.FIRST_NAME
     `   
   ),
   assignmentList: (Condition) => (
@@ -111,6 +112,7 @@ module.exports = {
     INNER JOIN PROJECT_STATUS
         ON PROJECT.PROJECT_STATUS_ID=PROJECT_STATUS.STATUS_ID
       ${Condition}
+    ORDER BY STAFF.FIRST_NAME
     `   
   ),
   getStaffProjectList: (id) => (
@@ -351,6 +353,7 @@ module.exports = {
     INNER JOIN 
       OFFICE ON STAFF.OFFICE_ID = OFFICE.OFFICE_ID
     ${Condition} 
+    ORDER BY STAFF.FIRST_NAME
     `   
   ),
   staffWithClient: (PROJECT_ID) => (
