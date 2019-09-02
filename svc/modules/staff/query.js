@@ -408,6 +408,8 @@ module.exports = {
         PROJECT_STAFF.ID,
         PROJECT.PROJECT_ID,
         PROJECT.PROJECT_NAME,
+        PROJECT.START_DATE,
+        PROJECT.END_DATE,
         PROJECT_STAFF.ALLOCATION       
       FROM 
         PROJECT_STAFF 
