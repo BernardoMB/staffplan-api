@@ -7,7 +7,7 @@ const getProjectRole = async (req, res) => {
   try {
     const connection = await db.connection(req);
     let condition = `PROJECT_TEAM.PROJECT_ID = ${req.params.id} `;
-    if (req.query && req.query.active) {
+    if (req.query && req.query.active === 'true') {
       condition = `${condition} AND  PROJECT_TEAM.END_DATE >= CURDATE()`
     }
     const projectRoles = await db.execute(connection, SQL.getProjectTeams(condition));
