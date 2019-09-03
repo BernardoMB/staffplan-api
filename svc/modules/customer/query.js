@@ -54,5 +54,12 @@ module.exports = {
         '${contact.PHONE}'
       )
     `
+  ),
+  insertCustomerContact: (clientId, contactId) => (
+    `
+      INSERT INTO CUSTOMER_CONTACTS VALUES (
+        ${clientId}, ${contactId}
+      )
+    `
   )
 }
