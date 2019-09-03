@@ -46,6 +46,7 @@ const insertCustomer = async (req, res) => {
 const insertContact = async (req, res) => {
   try {
     const contact = req.body;
+
     const connection = await db.connection(req);
     const contactDefault = {
       NAME: '',
@@ -53,8 +54,11 @@ const insertContact = async (req, res) => {
       PHONE: ''
     }
     const contactToCreate = Object.assign(contactDefault, contact);
-    const result = await db.execute(connection, SQL.insertCustomer(contactToCreate));
-    util.successResponse(res, result);
+    const result = await db.execute(connection, SQL.insertContact(contactToCreate));
+    const contactId = result.insertId;
+    const clientId = req.body.clientId;
+    const response = await db.execute(connection, SQL.insertCustomerContact(clientId, contactId));
+    util.successResponse(res, response);
   }
   catch (exception) {
     util.errorResponse(res, exception);
