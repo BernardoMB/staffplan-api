@@ -15,5 +15,6 @@ module.exports = {
   RESET_EXPIRY_IN_HOUR: 24,
   LOG_LEVEL: 'debug',
   COMPANY_NAME: environment.companyName,
-  ENVIRONMENT_NAME: environment.name
+  ENVIRONMENT_NAME: environment.name,
+  AWS: { ...environment.aws }
 }

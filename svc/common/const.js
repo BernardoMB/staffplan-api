@@ -5,5 +5,8 @@ module.exports = {
   ACTIVE:'Active',
   GAP: 90,
   OPERATION: 'Operation',
-  TBD: 'TBD'
+  TBD: 'TBD',
+  THUMBNAIL: 'thumbnail',
+  ORGINAL: 'orginal',
+  IMGEXTN: 'png'
 }
