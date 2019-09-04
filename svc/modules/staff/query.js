@@ -437,5 +437,15 @@ module.exports = {
       CALENDAR.START_DATE >= DATE_ADD(CURDATE(), INTERVAL(1-DAYOFWEEK(CURDATE())) DAY)
       AND PROJECT_STAFF.ID = ${projectStaffId}
     `
-  )
+  ),
+  getStaffPhoto: (staffId) => (
+    `
+      SELECT STAFF_PHOTO FROM STAFF WHERE STAFF_ID = ${staffId}
+    `
+  ),
+  insertStaffPhoto: (staffId, photo) => (
+    `
+      UPDATE STAFF SET STAFF_PHOTO = '${photo}' WHERE STAFF_ID = ${staffId}
+    `
+  ),
 }
