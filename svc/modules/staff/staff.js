@@ -218,7 +218,6 @@ const staffAdvanceSearch = async (req, res) => {
   try {
     const connection = await db.connection(req);
     const condition = searchFilter(req);
-    console.log(SQL.staffSearch(condition));
     const staffList = await db.execute(connection, SQL.staffSearch(condition));
     util.successResponse(res, staffList);
   }
@@ -302,6 +301,10 @@ const filters = req => {
       filterCondition = `${filterCondition} AND STAFF.STAFF_STATUS_ID IN (${filter.status.join(',')})`;
     }
 
+    if (filter.staffStatus) {
+      filterCondition = `${filterCondition} AND STAFF.STAFF_STATUS_ID IN (${filter.staffStatus.join(',')})`;
+    }
+
     if (filter.group) {
       filterCondition = `${filterCondition} AND STAFF_GROUP_ID IN (${filter.group.join(',')})`;
     }
@@ -309,12 +312,13 @@ const filters = req => {
     if (filter.staffId) {
       filterCondition = `${filterCondition} AND STAFF.STAFF_ID = ${filter.staffId}`;
     }
-    if (filter.staffStatus) {
-      if (filter.staffStatus === 'Gap') {
+  
+    if (filter.alert) {
+      if (filter.alert === 'Gap') {
         filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffGap(moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'))})`;
-      } else if (filter.staffStatus === 'Alert') {
+      } else if (filter.alert === 'Alert') {
         filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffAlert()})`;
-      } else if (filter.staffStatus === 'Bench') {
+      } else if (filter.alert === 'Bench') {
         filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffOnBench()})`;
       }
     }

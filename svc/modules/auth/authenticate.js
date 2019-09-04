@@ -106,7 +106,6 @@ const validateUser = (req, res) => {
     db.useDB(connection, dbName).then(() => {
       const encPassword = encryptPassword(req.body.password);
       db.execute(connection, SQL.validate(userName, encPassword)).then(user => {
-        console.log(user);
         if (user && user.length) {
           getUserDetails(user[0], connection, res, dbName);
         } else {
