@@ -1,6 +1,9 @@
 const db = require('../../common/connection');
 const SQL = require('./query');
 const util = require("../../common/util");
+const log = require('../../common/logger');
+const CONST = require('../../common/const');
+const config = require('../../common/config');
 var moment = require('moment');
 
 const staffAssignments = async (req, res) => {
@@ -281,6 +284,71 @@ const getStaffAllocation = async (req, res) => {
   }  
 }
 
+const uploadImage = async (buffer, fileName) => {
+  const aws = require('aws-sdk');
+  aws.config.update({
+    accessKeyId: config.AWS.accessKeyId,
+    secretAccessKey: config.AWS.secretAccessKey,
+    region: config.AWS.region
+  });
+  const s3 = new aws.S3();
+  return s3.upload({
+    Bucket: config.AWS.bucket,
+    Key: fileName,
+    Body: buffer,
+    ACL: 'public-read'
+   }).promise();
+}
+
+const insertStaffPhoto = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    // Get Staff ID and check is staff already have photo key
+    const staffId = req.params.id;
+    let key = '';
+    const result = await db.execute(connection, SQL.getStaffPhoto(staffId));
+    if (result && result.length > 0 && result[0].STAFF_PHOTO.length > 3) {
+      key = result[0].STAFF_PHOTO;
+    } else {
+      // Generate new key if staff doesn't have
+      const uuidv4 = require('uuid/v4');
+      key = uuidv4();
+      await db.execute(connection, SQL.insertStaffPhoto(staffId, key));
+    }
+    // User sharp to get meta data and set file info
+    const sharp = require('sharp');
+    const orginalUrl = await uploadImage(req.file.buffer, `${key}/${CONST.ORGINAL}.${CONST.IMGEXTN}`);
+    const buffer = await sharp(req.file.buffer).resize(40, 40).toBuffer();
+    const thumbnailUrl = await uploadImage(buffer, `${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`);
+    util.successResponse(res, { orginalUrl, thumbnailUrl, key });
+  }
+  catch (exception) {
+    log.error(exception);
+    util.errorResponse(res, exception);
+  }
+}
+
+const getStaffPhoto = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    // Get Staff ID and check is staff already have photo key
+    const staffId = req.params.id;
+    let key = '';
+    const result = await db.execute(connection, SQL.getStaffPhoto(staffId));
+    if (result && result.length > 0 && result[0].STAFF_PHOTO.length > 3) {
+      key = result[0].STAFF_PHOTO;
+      util.successResponse(res, util.getThumbnailUrl(key));
+    } else {
+      util.errorResponse(res, "Photo doesnot exists");  
+    }
+  }
+  catch (exception) {
+    log.error(exception);
+    util.errorResponse(res, exception);
+  }
+}
+
+
 const filters = req => {
   const filter = req.body.filter;
   let filterCondition = " where 1 = 1 ";
@@ -342,5 +410,7 @@ module.exports = {
   getStaffDetailsById,
   staffSearch,
   staffAdvanceSearch,
-  getStaffAllocation
+  getStaffAllocation,
+  insertStaffPhoto,
+  getStaffPhoto
 }

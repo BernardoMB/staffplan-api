@@ -1,5 +1,7 @@
 const error = require('./error');
 const log = require('./logger');
+const config = require('./config');
+const CONST = require('./const');
 
 module.exports = {
   errorResponse: (res, message = "Something went wrong", status = 500) => {
@@ -14,6 +16,9 @@ module.exports = {
       errorCode
     });
   },
-  officeAccessRestricted : (role) => (role && role === 'REGIONAL'),
-  isAdmin : (role) => (role && role === 'ADMIN')
+  officeAccessRestricted: (role) => (role && role === 'REGIONAL'),
+  isAdmin: (role) => (role && role === 'ADMIN'),
+  getThumbnailUrl: (key) => (
+    `https://${config.AWS.region}.amazonaws.com/${config.AWS.bucket}/${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`
+  )
 };

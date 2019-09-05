@@ -2,6 +2,13 @@ const staff = require('./staff');
 const authenticate = require('../auth/authenticate');
 const CONST = require('../../common/const');
 const MODULE = 'staff';
+
+const multer = require('multer');
+const upload = multer({
+  storage: multer.memoryStorage(),
+  fileSize: 10 * 1024 * 1024
+});
+
 module.exports = (app) => {
   app.get(`/${CONST.API}/${MODULE}/:id/details`, authenticate.isAuthenticated, staff.getStaffDetailsById);
   app.get(`/${CONST.API}/${MODULE}/:id/projectlist`, authenticate.isAuthenticated, staff.getStaffProjectList);
@@ -25,4 +32,7 @@ module.exports = (app) => {
   app.get(`/${CONST.API}/${MODULE}/:id/experience`, authenticate.isAuthenticated, staff.getStaffExperience);
   app.put(`/${CONST.API}/${MODULE}/:id/experience`, authenticate.isAuthenticated, staff.insertStaffExperience);
   app.post(`/${CONST.API}/${MODULE}/:id/experience`, authenticate.isAuthenticated, staff.removeStaffExperience);
+
+  app.get(`/${CONST.API}/${MODULE}/:id/photo`, authenticate.isAuthenticated, staff.getStaffPhoto);
+  app.put(`/${CONST.API}/${MODULE}/:id/photo`, authenticate.isAuthenticated, upload.single('photo'), staff.insertStaffPhoto);
 }
