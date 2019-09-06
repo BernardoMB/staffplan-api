@@ -36,7 +36,8 @@ const insertCustomer = async (req, res) => {
     }
     const customerToCreate = Object.assign(customerDefault, customer);
     const result = await db.execute(connection, SQL.insertCustomer(customerToCreate));
-    util.successResponse(res, result);
+    const clientId = result.insertId;
+    util.successResponse(res, { clientId });
   }
   catch (exception) {
     util.errorResponse(res, exception);
@@ -57,8 +58,8 @@ const insertContact = async (req, res) => {
     const result = await db.execute(connection, SQL.insertContact(contactToCreate));
     const contactId = result.insertId;
     const clientId = req.body.clientId;
-    const response = await db.execute(connection, SQL.insertCustomerContact(clientId, contactId));
-    util.successResponse(res, response);
+    await db.execute(connection, SQL.insertCustomerContact(clientId, contactId));
+    util.successResponse(res,  { clientId, contactId });
   }
   catch (exception) {
     util.errorResponse(res, exception);

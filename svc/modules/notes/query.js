@@ -9,6 +9,7 @@ module.exports = {
       NOTES.NODE_PARENT_ID,
       NOTES.IS_PARENT,
       NOTES.UPDATED,
+      USERS.USER_ID,
       USERS.FIRST_NAME,
       USERS.MIDDLE_NAME,
       USERS.LAST_NAME,
@@ -22,7 +23,7 @@ module.exports = {
     WHERE
       ${condition}
     ORDER BY
-      NOTES.NOTE_ID DESC
+      NOTES.CREATED DESC
     `
   ),
   insertProjectNotes: (notes) => (
