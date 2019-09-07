@@ -3,6 +3,8 @@ const log = require('./logger');
 const config = require('./config');
 const CONST = require('./const');
 
+const url = `https://s3.${config.AWS.region}.amazonaws.com/${config.AWS.bucket}`;
+
 module.exports = {
   errorResponse: (res, message = "Something went wrong", status = 500) => {
     log.error(message);
@@ -18,7 +20,18 @@ module.exports = {
   },
   officeAccessRestricted: (role) => (role && role === 'REGIONAL'),
   isAdmin: (role) => (role && role === 'ADMIN'),
-  getThumbnailUrl: (key) => (
-    `https://${config.AWS.region}.amazonaws.com/${config.AWS.bucket}/${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`
-  )
+  getThumbnailUrl: (key) => {
+    if (key && key.length > 3) {
+      return `${url}/${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`;
+    }
+    return null;
+  },
+  cleanObject: (obj) => {
+    for (var propName in obj) { 
+      if(!obj[propName]) {
+        delete obj[propName];
+      }
+    }
+    return obj;
+  }
 };

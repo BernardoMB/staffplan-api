@@ -47,7 +47,7 @@ const insertProjectDetail = async (req, res) => {
   try {
     const projectDefault = {
       PROJECT_NAME: '',
-      PROJECT_NO: null,
+      PROJECT_NO: '',
       PROJECT_ROM: 0,
       PROJECT_ADDRESS: '',
       PROJECT_COUNTRY: '',

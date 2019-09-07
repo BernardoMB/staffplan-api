@@ -85,7 +85,7 @@ const insertStaff = async (req, res) => {
       CANCOMMUTE: 0
     };
     const staffInfo = req.body;
-    const staffToCreate = Object.assign(staffDefault, staffInfo);
+    const staffToCreate = Object.assign(staffDefault, util.cleanObject(staffInfo));
     const connection = await db.connection(req);
     const rowsAffected = await db.execute(connection, SQL.insertStaff(staffToCreate));
     util.successResponse(res, rowsAffected);
@@ -194,6 +194,7 @@ const getStaffDetailsById = async (req, res) => {
     let staffDetails = {};
     if (result && result.length) {
       staffDetails = result[0];
+      staffDetails.STAFF_PHOTO = util.getThumbnailUrl(staffDetails.STAFF_PHOTO);
     }
     util.successResponse(res, staffDetails);
   }
@@ -209,7 +210,16 @@ const staffSearch = async (req, res) => {
     if (req.query && req.query.name) {
       condition = ` WHERE FIRST_NAME LIKE '%${req.query.name}%'`;
     }
-    const staffList = await db.execute(connection, SQL.staffSearch(condition));
+    const result = await db.execute(connection, SQL.staffSearch(condition));
+    let staffList = [];
+    if (result && result.length > 0) {
+      staffList = result.map((item) => {
+        return {
+          ...item,
+          STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO)
+        }
+      });
+    }
     util.successResponse(res, staffList);
   }
   catch (exception) {
@@ -221,7 +231,16 @@ const staffAdvanceSearch = async (req, res) => {
   try {
     const connection = await db.connection(req);
     const condition = searchFilter(req);
-    const staffList = await db.execute(connection, SQL.staffSearch(condition));
+    const result = await db.execute(connection, SQL.staffSearch(condition));
+    let staffList = [];
+    if (result && result.length > 0) {
+      staffList = result.map((item) => {
+        return {
+          ...item,
+          STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO)
+        }
+      });
+    }
     util.successResponse(res, staffList);
   }
   catch (exception) {
@@ -318,7 +337,7 @@ const insertStaffPhoto = async (req, res) => {
     // User sharp to get meta data and set file info
     const sharp = require('sharp');
     const orginalUrl = await uploadImage(req.file.buffer, `${key}/${CONST.ORGINAL}.${CONST.IMGEXTN}`);
-    const buffer = await sharp(req.file.buffer).resize(40, 40).toBuffer();
+    const buffer = await sharp(req.file.buffer).resize(80, 80).toBuffer();
     const thumbnailUrl = await uploadImage(buffer, `${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`);
     util.successResponse(res, { orginalUrl, thumbnailUrl, key });
   }
