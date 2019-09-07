@@ -10,7 +10,7 @@ pipelines:
             - node
           script:
             - cd svc
-            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" | sed "s:AWS_ACCESS_KEY_ID:$AWS_ACCESS_KEY_ID:g" | sed "s:AWS_SECRET_ACCESS_KEY:$AWS_SECRET_ACCESS_KEY:g" | sed "s:AWS_DEFAULT_REGION:$AWS_DEFAULT_REGION:g" | sed "s:AWS_S3_BUCKET:$AWS_S3_BUCKET:g" > env.json
+            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" | sed "s:API_AWS_ACCESS_KEY_ID:$API_AWS_ACCESS_KEY_ID:g" | sed "s:API_AWS_SECRET_ACCESS_KEY:$API_AWS_SECRET_ACCESS_KEY:g" | sed "s:AWS_DEFAULT_REGION:$AWS_DEFAULT_REGION:g" | sed "s:AWS_S3_PROFILE_BUCKET:$AWS_S3_PROFILE_BUCKET:g" > env.json
             - cat env.json
             - npm install
             # temporary disable test run
@@ -35,7 +35,7 @@ pipelines:
             - node
           script:
             - cd svc
-            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" | sed "s:AWS_ACCESS_KEY_ID:$AWS_ACCESS_KEY_ID:g" | sed "s:AWS_SECRET_ACCESS_KEY:$AWS_SECRET_ACCESS_KEY:g" | sed "s:AWS_DEFAULT_REGION:$AWS_DEFAULT_REGION:g" | sed "s:AWS_S3_BUCKET:$AWS_S3_BUCKET:g" > env.json
+            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" | sed "s:API_AWS_ACCESS_KEY_ID:$API_AWS_ACCESS_KEY_ID:g" | sed "s:API_AWS_SECRET_ACCESS_KEY:$API_AWS_SECRET_ACCESS_KEY:g" | sed "s:AWS_DEFAULT_REGION:$AWS_DEFAULT_REGION:g" | sed "s:AWS_S3_PROFILE_BUCKET:$AWS_S3_PROFILE_BUCKET:g" > env.json
             - cat env.json
             - npm install
             # temporary disable test run
@@ -60,7 +60,7 @@ pipelines:
             - node
           script:
             - cd svc
-            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" | sed "s:AWS_ACCESS_KEY_ID:$AWS_ACCESS_KEY_ID:g" | sed "s:AWS_SECRET_ACCESS_KEY:$AWS_SECRET_ACCESS_KEY:g" | sed "s:AWS_DEFAULT_REGION:$AWS_DEFAULT_REGION:g" | sed "s:AWS_S3_BUCKET:$AWS_S3_BUCKET:g" > env.json
+            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" | sed "s:API_AWS_ACCESS_KEY_ID:$API_AWS_ACCESS_KEY_ID:g" | sed "s:API_AWS_SECRET_ACCESS_KEY:$API_AWS_SECRET_ACCESS_KEY:g" | sed "s:AWS_DEFAULT_REGION:$AWS_DEFAULT_REGION:g" | sed "s:AWS_S3_PROFILE_BUCKET:$AWS_S3_PROFILE_BUCKET:g" > env.json
             - cat env.json
             - npm install
             # temporary disable test run
