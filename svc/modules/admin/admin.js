@@ -53,14 +53,14 @@ const insertUser = async (req, res) => {
       ADDRESS: '',
       CITY: '',
       STATE: '',
-      COUNTRY: '',
+      COUNTRY: 'USA',
       ZIP: ''
     };
     const userInfo = req.body;
-    const userToCreate = Object.assign(userDefault, userInfo);
+    const userToCreate = Object.assign(userDefault, util.cleanObject(userInfo));
     const connection = await db.connection(req);
     const rowsAffected = await db.execute(connection, SQL.insertUser(userToCreate));
-    util.successResponse(res, rowsAffected);
+    await setPassword(req, res, rowsAffected.insertId, req.body.url, true);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
@@ -125,33 +125,41 @@ const activeUser = async (req, res) => {
   }
 }
 
-const resetPassword = async (req, res) => {
-  try {
-    if (util.isAdmin(req.payload.ROLE)) {
-      const connection = await db.connection(req);
-      const userId = req.params.id;
-      const hostname = req.body.hostname;
-      const user = await db.execute(connection, SQL.getUserInfoByID(userId));
-      if (user && user.length > 0) {
-        const userName = user[0].EMAIL;
-        const uuidv4 = require('uuid/v4');
-        const resetId = uuidv4();
-        log.info(`${userName} requested password reset`);
-        await db.execute(connection, AuthSQL.clearPasswordReset(userId));
-        const result = await db.execute(connection, AuthSQL.passwordReset(userId, resetId));
-        if (result) {
-          const tokenizer = require('../auth/tokenization');
-          const resetToken = tokenizer.generateResetToken(userName, resetId);
-          log.debug(`Reset Token - ${resetToken}`);
-          const notification = require('../notification');
-          notification.passwordReset(userName, user[0].FIRST_NAME, resetToken, hostname);
-          util.successResponse(res)
-        } else {
-          util.errorResponse(res, 'Password reset failed');
-        }
+const setPassword = async (req, res, userId, url, isNewUser) => {
+  if (util.isAdmin(req.payload.ROLE)) {
+    const connection = await db.connection(req);
+    // const userId = req.params.id;
+    // const hostname = req.body.hostname;
+    const user = await db.execute(connection, SQL.getUserInfoByID(userId));
+    if (user && user.length > 0) {
+      const userName = user[0].EMAIL;
+      const uuidv4 = require('uuid/v4');
+      const resetId = uuidv4();
+      log.info(`${userName} requested password reset`);
+      await db.execute(connection, AuthSQL.clearPasswordReset(userId));
+      const result = await db.execute(connection, AuthSQL.passwordReset(userId, resetId));
+      if (result) {
+        const tokenizer = require('../auth/tokenization');
+        const resetToken = tokenizer.generateResetToken(userName, resetId);
+        log.debug(`Reset Token - ${resetToken}`);
+        const notification = require('../notification');
+        notification.passwordReset(userName, user[0].FIRST_NAME, resetToken, util.getHostPath(url), isNewUser);
+        util.successResponse(res)
       } else {
         util.errorResponse(res, 'Password reset failed');
       }
+    } else {
+      util.errorResponse(res, 'Password reset failed');
+    }
+  } else {
+    util.errorResponse(res, 'User Access Restricted');
+  }
+}
+
+const resetPassword = async (req, res) => {
+  try {
+    if (util.isAdmin(req.payload.ROLE)) {
+      await setPassword(req, res, req.params.id, req.body.url, false);
     } else {
       util.errorResponse(res, 'User Access Restricted');
     }

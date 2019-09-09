@@ -68,7 +68,7 @@ const insertProjectDetail = async (req, res) => {
     };
     const projectDetails = req.body;
     const connection = await db.connection(req);
-    const projectToCreate = Object.assign(projectDefault, projectDetails);
+    const projectToCreate = Object.assign(projectDefault, util.cleanObject(projectDetails));
     const rowsAffected = await db.execute(connection, SQL.insertProjectDetail(projectToCreate));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
