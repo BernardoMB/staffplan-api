@@ -9,7 +9,7 @@ const getValue = (rows => {
   return 0;
 })
 
-const calculateGap = (StaffAssignments => {
+/* const calculateGap = (StaffAssignments => {
   let gap = 0;
   if (StaffAssignments && StaffAssignments.length) {
     StaffAssignments.forEach((currentInfo, index) => {
@@ -32,7 +32,7 @@ const calculateGap = (StaffAssignments => {
     })
   }
   return gap;
-});
+}); */
 
 const getDashboardDetails = async (req, res) => {
   try {
@@ -48,8 +48,9 @@ const getDashboardDetails = async (req, res) => {
     const ProposalProjectCount = await db.execute(connection, SQL.Proposal(condition));
     const UnassignedRoleCount = await db.execute(connection, SQL.UnassignedRole(condition));
     const OnBench = await db.execute(connection, SQL.OnBench(condition));
-    const StaffAssignments = await db.execute(connection, SQL.StaffingGap(condition));
-    const StaffingGap = calculateGap(StaffAssignments);
+    //const StaffAssignments = await db.execute(connection, SQL.StaffingGap(condition));
+    //const StaffingGap = calculateGap(StaffAssignments);
+    const StaffingGap = await db.execute(connection, SQL.StaffingGap(condition));
     const OverUnderAllocation = await db.execute(connection, SQL.OverUnderAllocation(condition));
 
     util.successResponse(res, {
@@ -57,7 +58,7 @@ const getDashboardDetails = async (req, res) => {
       ProposalProjectCount: getValue(ProposalProjectCount),
       UnassignedRoleCount: getValue(UnassignedRoleCount),
       OnBench: getValue(OnBench),
-      StaffingGap,
+      StaffingGap: getValue(StaffingGap),      
       OverUnderAllocation: getValue(OverUnderAllocation)
     });
   } catch(exception) {
