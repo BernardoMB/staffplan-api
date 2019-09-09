@@ -33,5 +33,10 @@ module.exports = {
       }
     }
     return obj;
+  },
+  getHostPath: (url) => {
+    const arr = url.split("/");
+    const hostFullpath = arr[0] + "//" + arr[2];
+    return hostFullpath;
   }
 };

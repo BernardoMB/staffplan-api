@@ -125,6 +125,7 @@ const validateUser = (req, res) => {
 const forgot = (req, res) => {
   const userName = req.body.username;
   const hostname = req.body.hostname;
+  const url = req.body.url;
   subscription.getCompanyDB(userName, hostname, req).then(({ connection, dbName }) => {
     db.useDB(connection, dbName).then(() => {
       db.execute(connection, SQL.getuser(userName)).then(user => {
@@ -140,7 +141,7 @@ const forgot = (req, res) => {
                 const resetToken = tokenizer.generateResetToken(userName, resetId);
                 log.debug(`Reset Token - ${resetToken}`);
                 const notification = require('../notification');
-                notification.passwordReset(userName, user[0].FIRST_NAME, resetToken, hostname);
+                notification.passwordReset(userName, user[0].FIRST_NAME, resetToken, util.getHostPath(url));
                 util.successResponse(res)
               } else {
                 log.error('Password reset failed');
