@@ -14,9 +14,9 @@
 LOCK TABLES `COMPANY` WRITE;
 /*!40000 ALTER TABLE `COMPANY` DISABLE KEYS */;
 
-INSERT INTO `COMPANY` (`ID`, `NAME`, `ADDRESS`, `PRIMARY_CONTACT`, `PRIMARY_CONTACT_EMAIL`, `PRIMARY_CONTACT_PHONE`, `PRIMARY_CONTACT_TITLE`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`, `COMPANY_DB`, `DOMAIN`)
+INSERT INTO `COMPANY` (`ID`, `NAME`, `ADDRESS`, `PRIMARY_CONTACT`, `PRIMARY_CONTACT_EMAIL`, `PRIMARY_CONTACT_PHONE`, `PRIMARY_CONTACT_TITLE`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`, `DOMAIN`)
 VALUES
-	(1,'StaffPlan','USA','Admin','admin@staffplan.io','888-555-9021','System Admin','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','staffplan','StaffPlan');
+	(1,'StaffPlan','USA','Admin','admin@staffplan.io','888-555-9021','System Admin','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','StaffPlan');
 
 /*!40000 ALTER TABLE `COMPANY` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -28,11 +28,12 @@ UNLOCK TABLES;
 LOCK TABLES `COMPANY_ENVIRONMENT` WRITE;
 /*!40000 ALTER TABLE `COMPANY_ENVIRONMENT` DISABLE KEYS */;
 
-INSERT INTO `COMPANY_ENVIRONMENT` (`ID`, `COMPANY_ID`, `ENVIRONMENT_TYPE_ID`, `STATUS`, `START_DATE_TIME`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`)
+INSERT INTO `COMPANY_ENVIRONMENT` (`ID`, `COMPANY_ID`, `ENVIRONMENT_TYPE_ID`, `STATUS`, `START_DATE_TIME`, `CREATED_DATE_TIME`, `UPDATED_DATE_TIME`, `CREATED_BY`, `UPDATED_BY`, `COMPANY_DB`)
 VALUES
-	(1,1,1,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com'),
-	(2,1,2,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com'),
-	(3,1,3,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com');
+	(1,1,1,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','staging_staffplan'),
+	(2,1,2,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','demo_staffplan'),
+	(3,1,3,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','prod_staffplan'),
+	(4,1,4,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','qa_staffplan'),;
 
 /*!40000 ALTER TABLE `COMPANY_ENVIRONMENT` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -48,7 +49,9 @@ INSERT INTO `ENVIRONMENT_TYPE` (`ID`, `NAME`, `DETAILS`, `CREATED_DATE_TIME`, `U
 VALUES
 	(1,'Staging','Environment for testing before push to production','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','Staging'),
 	(2,'Demo','Environment staffplan will provide to customer for demoing ','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','Demo'),
-	(3,'Prod','Production environment','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','Prod');
+	(3,'Prod','Production environment','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com',''),
+	(4,'Trial','Trial environment','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','Trial');
+;
 
 /*!40000 ALTER TABLE `ENVIRONMENT_TYPE` ENABLE KEYS */;
 UNLOCK TABLES;

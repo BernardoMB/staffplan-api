@@ -6,6 +6,7 @@
   "database": "MASTER_DB",
   "name": "ENVIRONMENT_NAME",
   "companyName": "COMPANY_NAME",
+  "domainCheck": "DOMAIN_CHECK",
   "dateStrings": true,
   "aws": {
     "accessKeyId": "API_AWS_ACCESS_KEY_ID",
