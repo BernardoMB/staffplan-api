@@ -70,8 +70,8 @@ module.exports = {
       PROJECT.PROJECT_STATE,
       STAFF_ROLE.ROLE_NAME,
       PROJECT_STATUS.STATUS_NAME,
-      PROJECT.START_DATE,
-      PROJECT.END_DATE,
+      PROJECT_TEAM.START_DATE,
+      PROJECT_TEAM.END_DATE,
       PROJECT_TEAM.ALLOCATION,
       PROJECT_TEAM.RESUME_SUBMITTED
     FROM
@@ -82,6 +82,8 @@ module.exports = {
           PROJECT_ID,
           STAFF_ID,
           PROJECT_ROLE_ID,
+          START_DATE,
+          END_DATE,
           ALLOCATION,
           RESUME_SUBMITTED
         FROM 
@@ -91,6 +93,8 @@ module.exports = {
           PROJECT_ID,
           NULL,
           PROJECT_ROLE_ID,
+          START_DATE,
+          END_DATE,
           ALLOCATION,
           RESUME_SUBMITTED
         FROM
