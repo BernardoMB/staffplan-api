@@ -10,15 +10,15 @@ module.exports = {
     WHERE
       ENVIRONMENT_TYPE.SUBDOMAIN = '${environment}'
     AND 
-      COMPANY.DOMAIN = '${domain}'
+      COMPANY_ENVIRONMENT.DOMAIN = '${domain}'
     AND COMPANY_ENVIRONMENT.STATUS = 'active'`
   ),
   fetchCompanyByDomain: (domain) => (
     `SELECT
-        COMPANY.* 
-    FROM COMPANY
+        COMPANY_ENVIRONMENT.* 
+    FROM COMPANY_ENVIRONMENT
     WHERE 
-      COMPANY.DOMAIN = '${domain}'`
+      COMPANY_ENVIRONMENT.DOMAIN = '${domain}'`
   ),
   validate: (username, password) => (
     `SELECT  USERS.*, ACCESS_ROLE.ROLE_NAME, ACCESS_ROLE.ROLE
