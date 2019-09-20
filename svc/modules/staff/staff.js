@@ -402,7 +402,8 @@ const filters = req => {
   
     if (filter.alert) {
       if (filter.alert === 'Gap') {
-        filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffGap(moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'))})`;
+        filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffGap(moment().format('YYYY-MM-DD'), 
+          moment().add(3,'month').format('YYYY-MM-DD'))})`;
       } else if (filter.alert === 'Alert') {
         filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffAlert()})`;
       } else if (filter.alert === 'Bench') {

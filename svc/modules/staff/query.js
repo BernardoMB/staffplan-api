@@ -377,7 +377,7 @@ module.exports = {
     SELECT STAFF.STAFF_ID 
     FROM STAFF LEFT JOIN PROJECT_STAFF ON PROJECT_STAFF.STAFF_ID = STAFF.STAFF_ID 
     WHERE PROJECT_STAFF.ID IS NULL || 
-    PROJECT_STAFF.END_DATE <= '${endDate}' || PROJECT_STAFF.START_DATE >= '${startDate}'
+    PROJECT_STAFF.END_DATE < '${endDate}' || PROJECT_STAFF.START_DATE > '${startDate}'
     `
   ),
   staffAvailable: (startDate, endDate) => (
@@ -406,6 +406,10 @@ module.exports = {
       PROJECT_STAFF.END_DATE > CURDATE()
       AND PROJECT_STAFF.START_DATE <= CURDATE()
       AND PROJECT_STAFF.END_DATE >  CURDATE()
+    GROUP BY 
+      STAFF_ID
+    HAVING
+      SUM(ALLOCATION) <> 100
     `
   ),
   getStaffProject: (id) => (
