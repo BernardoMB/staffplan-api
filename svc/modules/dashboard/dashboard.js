@@ -53,7 +53,7 @@ const getDashboardDetails = async (req, res) => {
     OnBench = getValue(OnBench);
     const result = await db.execute(connection, SQL.StaffingGap(condition));
 
-    const StaffingGap = OnBench + result.length
+    const StaffingGap = getValue(result);
     const OverUnderAllocation = await db.execute(connection, SQL.OverUnderAllocation(condition));
 
     util.successResponse(res, {
