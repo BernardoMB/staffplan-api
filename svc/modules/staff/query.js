@@ -380,6 +380,22 @@ module.exports = {
     PROJECT_STAFF.END_DATE < '${endDate}' || PROJECT_STAFF.START_DATE > '${startDate}'
     `
   ),
+  staffListGap: () => (
+    `
+    SELECT
+      CURRENT.STAFF_ID
+    FROM 
+      PROJECT_STAFF CURRENT
+    INNER JOIN PROJECT_STAFF FUTURE
+      ON CURRENT.STAFF_ID = FUTURE.STAFF_ID 
+      AND DATEDIFF(FUTURE.START_DATE, CURRENT.END_DATE) > 1
+      AND CURRENT.ID <> FUTURE.ID
+    WHERE 
+      CURRENT.END_DATE > CURDATE()
+      AND
+      FUTURE.END_DATE > CURDATE()
+    `
+  ),
   staffAvailable: (startDate, endDate) => (
     `
     SELECT STAFF.STAFF_ID 
