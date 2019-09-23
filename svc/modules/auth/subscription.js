@@ -8,15 +8,19 @@ const getCompanyDB = async (userName, hostname, req) => {
   let connection= null;
   let company = [];
   if (config.DOMAINCHECK) {
+    log.info("**** DOMAIN CHECK: true")
     const host = getEnvAndDomain(hostname);
-    log.info(host)
+    log.info("**** host: " + host);
     connection = await db.connection(req);
     company = await db.execute(connection, SQL.fetchCompany(host.environment, host.domain));
   } else {
+    log.info("**** DOMAIN CHECK: false")
     const domain = getDomain(userName);
+    log.info("**** domain: " + domain);
     connection = await db.connection(req);
     company = await db.execute(connection, SQL.fetchCompanyByDomain(domain));
   }
+  log.info("**** company: " + company);
   if (company && !company.length) {
     throw `Authentication failed. Subscription not found`;
   }
