@@ -51,28 +51,3 @@ pipelines:
                 ENVIRONMENT_NAME: $ENVIRONMENT_NAME
                 ZIP_FILE: $ZIP_FILE
                 S3_BUCKET: $S3_NODE_BUCKET
-    ###  BnBuidlers Deployment scripts ###
-    deploy-to-demo-bnbuidlers:
-      - step:
-          deployment: Demo-bnbuilders
-          name: Deploy service
-          caches:
-            - node
-          script:
-            - cd svc
-            - cat env_template.json | sed "s:MASTER_DB_HOST:$MASTER_DB_HOST:g" | sed "s:MASTER_DB_USER:$MASTER_DB_USER:g" | sed "s:MASTER_DB_PASSWORD:$MASTER_DB_PASSWORD:g" | sed "s:MASTER_DB:$MASTER_DB:g" | sed "s:ENVIRONMENT_NAME:$ENVIRONMENT_NAME:g" | sed "s:COMPANY_NAME:$COMPANY_NAME:g" | sed "s:API_AWS_ACCESS_KEY_ID:$API_AWS_ACCESS_KEY_ID:g" | sed "s:API_AWS_SECRET_ACCESS_KEY:$API_AWS_SECRET_ACCESS_KEY:g" | sed "s:AWS_DEFAULT_REGION:$AWS_DEFAULT_REGION:g" | sed "s:AWS_S3_PROFILE_BUCKET:$AWS_S3_PROFILE_BUCKET:g" | sed "s:DOMAIN_CHECK:$DOMAIN_CHECK:g" > env.json
-            - cat env.json
-            - npm install
-            # temporary disable test run
-            #- npm test
-            - zip -r api.zip .
-            - ls
-            - pipe: atlassian/aws-elasticbeanstalk-deploy:0.2.9
-              variables:
-                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-                APPLICATION_NAME: $APPLICATION_NAME
-                ENVIRONMENT_NAME: $ENVIRONMENT_NAME
-                ZIP_FILE: $ZIP_FILE
-                S3_BUCKET: $S3_NODE_BUCKET
