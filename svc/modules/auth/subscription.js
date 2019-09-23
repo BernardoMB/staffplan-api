@@ -7,10 +7,10 @@ const log = require("../../common/logger");
 const getCompanyDB = async (userName, hostname, req) => {
   let connection= null;
   let company = [];
-  if (config.DOMAINCHECK) {
+  if (config.DOMAINCHECK === "true") {
     log.info("**** DOMAIN CHECK: true")
     const host = getEnvAndDomain(hostname);
-    log.info("**** host: " + host);
+    log.info("**** host: " + host.environment + " " + host.domain);
     connection = await db.connection(req);
     company = await db.execute(connection, SQL.fetchCompany(host.environment, host.domain));
   } else {
