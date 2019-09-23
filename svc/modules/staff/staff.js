@@ -333,11 +333,14 @@ const insertStaffPhoto = async (req, res) => {
       key = uuidv4();
       await db.execute(connection, SQL.insertStaffPhoto(staffId, key));
     }
-    // User sharp to get meta data and set file info
-    const sharp = require('sharp');
+
+    // TODO: renable Sharp when they fix the install issue https://github.com/lovell/sharp/issues/1883
+    // Use sharp to get meta data and set file info
+    // const sharp = require('sharp');
     const orginalUrl = await uploadImage(req.file.buffer, `${key}/${CONST.ORGINAL}.${CONST.IMGEXTN}`);
-    const buffer = await sharp(req.file.buffer).resize(80, 80).toBuffer();
-    const thumbnailUrl = await uploadImage(buffer, `${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`);
+    const thumbnailUrl = orginalUrl;
+    // const buffer = await sharp(req.file.buffer).resize(80, 80).toBuffer();
+    // const thumbnailUrl = await uploadImage(buffer, `${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`);
     util.successResponse(res, { orginalUrl, thumbnailUrl, key });
   }
   catch (exception) {
