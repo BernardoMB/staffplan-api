@@ -47,18 +47,21 @@ const getDashboardDetails = async (req, res) => {
     const InProgressProjectCount = await db.execute(connection, SQL.InProgress(condition));
     const ProposalProjectCount = await db.execute(connection, SQL.Proposal(condition));
     const UnassignedRoleCount = await db.execute(connection, SQL.UnassignedRole(condition));
-    const OnBench = await db.execute(connection, SQL.OnBench(condition));
+    let OnBench = await db.execute(connection, SQL.OnBench(condition));
     //const StaffAssignments = await db.execute(connection, SQL.StaffingGap(condition));
     //const StaffingGap = calculateGap(StaffAssignments);
-    const StaffingGap = await db.execute(connection, SQL.StaffingGap(condition));
+    OnBench = getValue(OnBench);
+    const result = await db.execute(connection, SQL.StaffingGap(condition));
+
+    const StaffingGap = getValue(result);
     const OverUnderAllocation = await db.execute(connection, SQL.OverUnderAllocation(condition));
 
     util.successResponse(res, {
       InProgressProjectCount: getValue(InProgressProjectCount),
       ProposalProjectCount: getValue(ProposalProjectCount),
       UnassignedRoleCount: getValue(UnassignedRoleCount),
-      OnBench: getValue(OnBench),
-      StaffingGap: getValue(StaffingGap),      
+      OnBench: OnBench,
+      StaffingGap: StaffingGap,      
       OverUnderAllocation: getValue(OverUnderAllocation)
     });
   } catch(exception) {
