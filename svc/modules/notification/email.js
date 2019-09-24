@@ -8,7 +8,7 @@ const send = (emailId, name, resetId, hostname, isNewUser) => {
   console.log(isNewUser);
   if (isNewUser) {
     template = 'newUserTemplate.txt'
-    subject = 'Welcome to Saffplan'
+    subject = 'Welcome to Staffplan'
   }
   // Hard your email id to validate reset flow
   // emailId = '';
