@@ -16,7 +16,7 @@ LOCK TABLES `ACCESS_ROLE` WRITE;
 INSERT INTO `ACCESS_ROLE` (`ACCESS_ROLE_ID`, `ROLE_NAME`, `ROLE`)
 VALUES
 	(1,'All Company Access', 'ALLCOMPANY'),
-	(2,'Regional Access', 'REGIONAL'),
+	(2,'Office Access', 'OFFICE'),
 	(3,'Admin', 'ADMIN');
 
 /*!40000 ALTER TABLE `ACCESS_ROLE` ENABLE KEYS */;

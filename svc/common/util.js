@@ -18,7 +18,7 @@ module.exports = {
       errorCode
     });
   },
-  officeAccessRestricted: (role) => (role && role === 'REGIONAL'),
+  officeAccessRestricted: (role) => (role && role === 'OFFICE'),
   isAdmin: (role) => (role && role === 'ADMIN'),
   getThumbnailUrl: (key) => {
     if (key && key.length > 3) {
