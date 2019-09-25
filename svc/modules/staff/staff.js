@@ -207,7 +207,11 @@ const staffSearch = async (req, res) => {
     const connection = await db.connection(req);
     let condition = '';
     if (req.query && req.query.name) {
-      condition = ` WHERE FIRST_NAME LIKE '%${req.query.name}%'`;
+      condition = ` WHERE FIRST_NAME LIKE '%${req.query.name}%' OR PREFERRED_NAME LIKE '%${req.query.name}%'`;
+    }
+    // List staff based on user office access
+    if (util.officeAccessRestricted(req.payload.ROLE)) {
+      condition = `${condition} AND STAFF.OFFICE_ID IN (SELECT OFFICE_ID FROM USER_ACCESS WHERE USER_ID = ${req.payload.ID})`;
     }
     const result = await db.execute(connection, SQL.staffSearch(condition));
     let staffList = [];
@@ -280,6 +284,10 @@ const searchFilter = req => {
         }      
       }
     }
+  }
+  // List staff based on user office access
+  if (util.officeAccessRestricted(req.payload.ROLE)) {
+    condition = `${condition} AND STAFF.OFFICE_ID IN (SELECT OFFICE_ID FROM USER_ACCESS WHERE USER_ID = ${req.payload.ID})`;
   }
   return condition;
 }
@@ -409,6 +417,10 @@ const filters = req => {
         filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffOnBench()})`;
       }
     }
+  }
+  // List staff based on user office access
+  if (util.officeAccessRestricted(req.payload.ROLE)) {
+    filterCondition = `${filterCondition} AND STAFF.OFFICE_ID IN (SELECT OFFICE_ID FROM USER_ACCESS WHERE USER_ID = ${req.payload.ID})`;
   }
   return (filterCondition); 
 }

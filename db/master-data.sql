@@ -33,7 +33,7 @@ VALUES
 	(1,1,1,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','staging_staffplan', 'StaffPlan'),
 	(2,1,2,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','demo_staffplan', 'StaffPlan'),
 	(3,1,3,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','prod_staffplan', 'StaffPlan'),
-	(4,1,4,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','qa_staffplan', 'StaffPlan'),;
+	(4,1,4,'active','2019-04-01 00:00:00','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com','qa_staffplan', 'StaffPlan');
 
 /*!40000 ALTER TABLE `COMPANY_ENVIRONMENT` ENABLE KEYS */;
 UNLOCK TABLES;
