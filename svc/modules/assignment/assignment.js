@@ -39,7 +39,8 @@ const insertProjectRole = async (req, res) => {
       PROJECT_ID: req.params.id,
       PROJECT_ROLE_ID: req.body.roleId,
       START_DATE: req.body.startDate,
-      END_DATE: req.body.endDate
+      END_DATE: req.body.endDate,
+      RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0
     };
     const connection = await db.connection(req);
     const rowsAffected = await db.execute(connection, SQL.insertProjectRole(roleToCreate));

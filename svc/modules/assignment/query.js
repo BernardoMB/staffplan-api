@@ -52,13 +52,15 @@ module.exports = {
       END_DATE,
       ALLOCATION,
       PROJECT_ROLE_ID,
-      PROJECT_ID      
+      PROJECT_ID,
+      RESUME_SUBMITTED
     ) VALUES (
       '${role.START_DATE}',
       '${role.END_DATE}',
       ${role.ALLOCATION},
       ${role.PROJECT_ROLE_ID},
-      ${role.PROJECT_ID}
+      ${role.PROJECT_ID},
+      '${role.RESUME_SUBMITTED}'
     )
     `
   ),
