@@ -50,6 +50,26 @@ const insertProjectRole = async (req, res) => {
   }
 }
 
+const updateProjectRole = async (req, res) => {
+  try {      
+    const roleToCreate = {
+      ID: req.params.roleId,   
+      ALLOCATION: req.body.allocation,      
+      PROJECT_ID: req.params.id,
+      PROJECT_ROLE_ID: req.body.roleId,
+      START_DATE: req.body.startDate,
+      END_DATE: req.body.endDate,
+      RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0
+    };
+    const connection = await db.connection(req);
+    console.log(SQL.updateProjectRole(roleToCreate));
+    const rowsAffected = await db.execute(connection, SQL.updateProjectRole(roleToCreate));
+    util.successResponse(res, rowsAffected);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
 const bulkRoleUpdate = async (req, res) => {
   try {
     const projectId = req.params.id;
@@ -221,6 +241,7 @@ const outlookList = async (req, res) => {
 module.exports = {
   getProjectRole,
   insertProjectRole,
+  updateProjectRole,
   bulkRoleUpdate,
   deleteRole,
   assignStaff,

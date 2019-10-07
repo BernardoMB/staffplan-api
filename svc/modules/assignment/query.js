@@ -8,11 +8,13 @@ module.exports = {
       STAFF.MIDDLE_INITIAL,
       STAFF.LAST_NAME,
       STAFF.PREFERRED_NAME,
+      STAFF_ROLE.ROLE_ID,
       STAFF_ROLE.ROLE_NAME,
       PROJECT_TEAM.PROJECT_ID,
       PROJECT_TEAM.START_DATE,
       PROJECT_TEAM.END_DATE,
-      PROJECT_TEAM.ALLOCATION      
+      PROJECT_TEAM.ALLOCATION,
+      PROJECT_TEAM.RESUME_SUBMITTED      
     FROM
     (
       SELECT
@@ -22,7 +24,8 @@ module.exports = {
         PROJECT_ROLE_ID,
         START_DATE,
         END_DATE,
-        ALLOCATION
+        ALLOCATION,
+        RESUME_SUBMITTED
       FROM 
         PROJECT_STAFF
       UNION ALL
@@ -33,7 +36,8 @@ module.exports = {
         PROJECT_ROLE_ID,
         START_DATE,
         END_DATE,
-        ALLOCATION
+        ALLOCATION,
+        RESUME_SUBMITTED
       FROM
         PLANNED_PROJECT_STAFF
     ) PROJECT_TEAM
@@ -62,6 +66,18 @@ module.exports = {
       ${role.PROJECT_ID},
       '${role.RESUME_SUBMITTED}'
     )
+    `
+  ),
+  updateProjectRole: (role) => (
+    `
+    UPDATE PLANNED_PROJECT_STAFF SET 
+      START_DATE = '${role.START_DATE}',
+      END_DATE = '${role.END_DATE}',
+      ALLOCATION = ${role.ALLOCATION},
+      PROJECT_ROLE_ID  = ${role.PROJECT_ROLE_ID}, 
+      PROJECT_ID = ${role.PROJECT_ID},
+      RESUME_SUBMITTED = '${role.RESUME_SUBMITTED}'
+    WHERE ID = ${role.ID}
     `
   ),
   bulkRoleUpdate: (tableName, startDate, endDate, projectId, ids) => (
