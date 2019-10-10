@@ -341,7 +341,7 @@ module.exports = {
     WHERE STAFF_ID = ${STAFF_ID}  
     `   
   ),
-  staffSearch: (Condition) => (
+  staffSearch: (Condition, OrderBy = 'ORDER BY STAFF.FIRST_NAME') => (
     ` 
     SELECT
       STAFF.STAFF_ID,
@@ -359,7 +359,7 @@ module.exports = {
     INNER JOIN 
       OFFICE ON STAFF.OFFICE_ID = OFFICE.OFFICE_ID
     ${Condition} 
-    ORDER BY STAFF.FIRST_NAME
+    ${OrderBy}
     `   
   ),
   staffWithClient: (PROJECT_ID) => (
