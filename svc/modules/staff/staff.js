@@ -234,7 +234,13 @@ const staffAdvanceSearch = async (req, res) => {
   try {
     const connection = await db.connection(req);
     const condition = searchFilter(req);
-    const result = await db.execute(connection, SQL.staffSearch(condition));
+    let orderBy = '';
+    if (req.body.sortByRole) {
+      orderBy = 'ORDER BY STAFF_ROLE.ROLE_NAME, STAFF.FIRST_NAME';
+    } else {
+      orderBy = 'ORDER BY STAFF.FIRST_NAME';
+    }
+    const result = await db.execute(connection, SQL.staffSearch(condition, orderBy));
     let staffList = [];
     if (result && result.length > 0) {
       staffList = result.map((item) => {
