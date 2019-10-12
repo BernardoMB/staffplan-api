@@ -160,6 +160,16 @@ VALUES
 	(39,'Staff','OFFICE','office'),
 	(40,'Staff','GROUP','Group');
 
+INSERT INTO `CUSTOM_LABEL` (`MODULE_NAME`, `FIELD_NAME`, `FIELD_VALUE`)
+	VALUES
+		('Assignment','AVAIL','Availability'),
+		('Assignment','NAME','Staff Name'),
+		('Assignment','AVAIL_AVAILABLE','Only Available Staff'),
+		('Assignment','AVAIL_GAP','Staff With Gaps'),
+		('Assignment','AVAIL_ALL','No Preference'),
+		('Assignment','EXP_CLIENT','Client Experience'),
+		('Assignment','EXP_NOPREF','No Preference'),
+		('Assignment','NOTAVAIL','Not Available')
 /*!40000 ALTER TABLE `CUSTOM_LABEL` ENABLE KEYS */;
 UNLOCK TABLES;
 
