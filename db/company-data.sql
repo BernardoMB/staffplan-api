@@ -170,6 +170,13 @@ INSERT INTO `CUSTOM_LABEL` (`MODULE_NAME`, `FIELD_NAME`, `FIELD_VALUE`)
 		('Assignment','EXP_CLIENT','Client Experience'),
 		('Assignment','EXP_NOPREF','No Preference'),
 		('Assignment','NOTAVAIL','Not Available')
+
+INSERT INTO `CUSTOM_LABEL` (`MODULE_NAME`, `FIELD_NAME`, `FIELD_VALUE`)
+	VALUES
+		('LEGEND','FULL','Not Available'),
+		('LEGEND','PARTIAL','Partially Available'),
+		('LEGEND','LOW','Available')
+
 /*!40000 ALTER TABLE `CUSTOM_LABEL` ENABLE KEYS */;
 UNLOCK TABLES;
 
