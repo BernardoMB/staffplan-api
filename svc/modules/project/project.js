@@ -85,7 +85,7 @@ const updateProjectDetail = async (req, res) => {
     if (result && result.length > 0) {
       detailsToUpdate = result[0];
     }
-    const projectToUpdate = Object.assign(detailsToUpdate, projectDetails);
+    const projectToUpdate = Object.assign(detailsToUpdate, util.cleanObject(projectDetails));
     const rowsAffected = await db.execute(connection, SQL.updateProjectDetail(projectToUpdate, req.params.id));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
