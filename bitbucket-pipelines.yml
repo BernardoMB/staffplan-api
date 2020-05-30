@@ -4,7 +4,7 @@ pipelines:
   branches:
     master:
       - step:
-          deployment: trial
+          deployment: dev
           name: Deploy service
           caches:
             - node
