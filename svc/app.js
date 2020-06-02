@@ -16,7 +16,7 @@ app.use(cookieParser());
 const mysql = require('mysql');
 const connection  = require('express-myconnection');
 const config = require('./common/config');
-app.use(connection(mysql, config.DB, 'request'));
+app.use(connection(mysql, config.DB, 'pool'));
 
 // Create app level log trace
 require('./apptrace')(app);
