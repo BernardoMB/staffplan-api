@@ -7,7 +7,7 @@ const getValue = (rows => {
     return rows[0].TOTAL;
   }
   return 0;
-})
+});
 
 /* const calculateGap = (StaffAssignments => {
   let gap = 0;
@@ -38,15 +38,15 @@ const getDashboardDetails = async (req, res) => {
   try {
     const connection = await db.connection(req);
     const officeId = req.params.officeId;
+    const date = req.params.date;
     let condition = '';
-    if (officeId === 'all'){
-      condition = '1 = 1';
-    } else {
-      condition = `OFFICE_ID = '${officeId}'`;
-    }
-    const InProgressProjectCount = await db.execute(connection, SQL.InProgress(condition));
-    const ProposalProjectCount = await db.execute(connection, SQL.Proposal(condition));
-    const UnassignedRoleCount = await db.execute(connection, SQL.UnassignedRole(condition));
+    condition = (officeId === 'all') ? '1 = 1' : `OFFICE_ID = '${officeId}'`;
+
+    if (!condition || !date) return;
+
+    const InProgressProjectCount = await db.execute(connection, SQL.InProgress(condition, date));
+    const ProposalProjectCount = await db.execute(connection, SQL.Proposal(condition, date));
+    const UnassignedRoleCount = await db.execute(connection, SQL.UnassignedRole(condition, date));
     let OnBench = await db.execute(connection, SQL.OnBench(condition));
     //const StaffAssignments = await db.execute(connection, SQL.StaffingGap(condition));
     //const StaffingGap = calculateGap(StaffAssignments);
@@ -61,13 +61,14 @@ const getDashboardDetails = async (req, res) => {
       ProposalProjectCount: getValue(ProposalProjectCount),
       UnassignedRoleCount: getValue(UnassignedRoleCount),
       OnBench: OnBench,
-      StaffingGap: StaffingGap,      
+      StaffingGap: StaffingGap,
       OverUnderAllocation: getValue(OverUnderAllocation)
     });
-  } catch(exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
   }
-}
+};
+
 module.exports = {
   getDashboardDetails
-}
+};
