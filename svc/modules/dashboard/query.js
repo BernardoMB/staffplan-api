@@ -1,23 +1,26 @@
 const CONST = require('../../common/const');
 
 module.exports = {
-  InProgress: (condition) => (
+  InProgress: (condition, date) => (
     `SELECT COUNT(PROJECT_ID) AS TOTAL FROM PROJECT 
       WHERE PROJECT_STATUS_ID = 
         (SELECT STATUS_ID FROM PROJECT_STATUS WHERE STATUS_NAME = '${CONST.INPROGRESS}')
-      AND PROJECT.${condition}`
+      AND PROJECT.${condition}
+      AND END_DATE >= '${date}'`
   ),
-  Proposal: (condition) => (
+  Proposal: (condition, date) => (
     `SELECT COUNT(PROJECT_ID) AS TOTAL FROM PROJECT 
       WHERE PROJECT_STATUS_ID = 
         (SELECT STATUS_ID FROM PROJECT_STATUS WHERE STATUS_NAME = '${CONST.PROPOSAL}')
-      AND PROJECT.${condition}`
+      AND PROJECT.${condition}
+      AND END_DATE >= '${date}'`
   ),
-  UnassignedRole: (condition) => (
+  UnassignedRole: (condition, date) => (
     `SELECT SUM(COUNT) AS TOTAL FROM 
       (SELECT COUNT(ID) AS COUNT FROM PLANNED_PROJECT_STAFF LEFT JOIN 
       PROJECT ON PLANNED_PROJECT_STAFF.PROJECT_ID = PROJECT.PROJECT_ID 
       WHERE PROJECT.${condition}
+      AND PROJECT.END_DATE >= '${date}'
       GROUP BY PROJECT.PROJECT_ID) as COUNT`
   ),
   OnBench: (condition) => (
@@ -27,8 +30,8 @@ module.exports = {
       ) AND STAFF.${condition}`
   ),
   StaffingGap: (condition) => (
-     /* Get all staff id, project start and end date details if they have */
-      `
+    /* Get all staff id, project start and end date details if they have */
+    `
       SELECT
         COUNT(CURRENT.STAFF_ID) AS TOTAL
       FROM 
@@ -52,4 +55,4 @@ module.exports = {
       GROUP BY PROJECT_STAFF.STAFF_ID HAVING ALLOCATION_TOTAL <> 100 ) as ALLOCATION_TOTAL
 `
   )
-}
+};

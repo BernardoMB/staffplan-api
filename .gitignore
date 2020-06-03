@@ -3,3 +3,5 @@ package-lock.json
 notes.txt
 log/*
 public/dist/staff-planner
+.DS_Store
+.idea/
