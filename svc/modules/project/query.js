@@ -25,8 +25,9 @@ module.exports = {
     INNER JOIN TIMELINE_TYPE
         ON TIMELINE_TYPE.TIMELINE_TYPE_ID = PROJECT.TIMELINE_TYPE_ID
       ${Condition}
-    `   
+    `
   ),
+  getQueryCount: (query) => (`SELECT COUNT(*) AS count FROM (${query}) AS Q`),
   getOpenRoles: (condition) => (
     `
     SELECT 
@@ -55,7 +56,7 @@ module.exports = {
     INNER JOIN OFFICE
       ON OFFICE.OFFICE_ID=PROJECT.OFFICE_ID
    ${condition}
-    ` 
+    `
   ),
   getProjectTeams: (condition) => (
     `
@@ -109,7 +110,7 @@ module.exports = {
     INNER JOIN PROJECT_STATUS
       ON PROJECT.PROJECT_STATUS_ID=PROJECT_STATUS.STATUS_ID
     ${condition}
-    ` 
+    `
   ),
   getProjectDetailById: (id) => (
     `

@@ -13,6 +13,17 @@ const getProjectList = async (req, res) => {
   }
 }
 
+const getProjectListCount = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const projectList = await db.execute(connection, SQL.getQueryCount(SQL.ProjectList(filters(req))));
+    util.successResponse(res, projectList[0]);
+  }
+  catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
 const getOpenRoles = async (req, res) => {
   try {
     const connection = await db.connection(req);
@@ -149,5 +160,6 @@ module.exports = {
   getProjectTeams,
   getProjectDetailById,
   insertProjectDetail,
-  updateProjectDetail
-}
+  updateProjectDetail,
+  getProjectListCount
+};
