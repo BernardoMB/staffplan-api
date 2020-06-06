@@ -10,11 +10,11 @@ const getProjectList = async (req, res) => {
   }
   catch (exception) {
     util.errorResponse(res, exception);
-  }  
+  }
 }
 
 const getOpenRoles = async (req, res) => {
-  try { 
+  try {
     const connection = await db.connection(req);
     const openRoles = await db.execute(connection, SQL.getOpenRoles(filters(req)));
     util.successResponse(res, openRoles);
@@ -78,7 +78,7 @@ const insertProjectDetail = async (req, res) => {
 
 const updateProjectDetail = async (req, res) => {
   try {
-    const projectDetails = req.body;    
+    const projectDetails = req.body;
     const connection = await db.connection(req);
     const result = await db.execute(connection, SQL.projectDetailsById(req.params.id));
     let detailsToUpdate = {};
@@ -102,8 +102,8 @@ const filters = req => {
   if (filter) {
     if (filter.status) {
       filterCondition = `${filterCondition} AND PROJECT_STATUS.STATUS_ID IN (${filter.status.join(',')})`;
-    }    
-    
+    }
+
     if (filter.startBetween && filter.endBetween) {
       filterCondition = `${filterCondition} AND PROJECT.START_DATE BETWEEN '${filter.startBetween}' AND '${filter.endBetween}'`;
     }
@@ -117,13 +117,13 @@ const filters = req => {
     }
 
     if (filter.startDate) {
-      filterCondition = `${filterCondition} AND PROJECT.START_DATE >= '${filter.startDate}'`;  
+      filterCondition = `${filterCondition} AND PROJECT.START_DATE >= '${filter.startDate}'`;
     }
-  
+
     if (filter.endDate) {
       filterCondition = `${filterCondition} AND PROJECT.END_DATE <= '${filter.endDate}'`;
-    }    
-  
+    }
+
     if (filter.office) {
       filterCondition = `${filterCondition} AND PROJECT.OFFICE_ID = ${filter.office}`;
     }
@@ -131,12 +131,16 @@ const filters = req => {
     if (filter.projectId) {
       filterCondition = `${filterCondition} AND PROJECT.PROJECT_ID = ${filter.projectId}`;
     }
+
+    if (filter.ProjectGroup) {
+      filterCondition = `${filterCondition} AND PROJECT.GROUP_ID = ${filter.ProjectGroup}`;
+    }
   }
   // List project based on user office access
   if (util.officeAccessRestricted(req.payload.ROLE)) {
     filterCondition = `${filterCondition} AND PROJECT.OFFICE_ID IN (SELECT OFFICE_ID FROM USER_ACCESS WHERE USER_ID = ${req.payload.ID})`;
   }
-  return (filterCondition); 
+  return (filterCondition);
 }
 
 module.exports = {
