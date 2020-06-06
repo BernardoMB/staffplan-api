@@ -5,6 +5,7 @@ const MODULE = 'project';
 module.exports = (app) => {
   // Get Project Grid
   app.post(`/${CONST.API}/${MODULE}/list`, authenticate.isAuthenticated, project.getProjectList);
+  app.post(`/${CONST.API}/${MODULE}/list-count`, authenticate.isAuthenticated, project.getProjectListCount);
   app.post(`/${CONST.API}/${MODULE}/openroles`, authenticate.isAuthenticated, project.getOpenRoles);
   app.post(`/${CONST.API}/${MODULE}/teams`, authenticate.isAuthenticated, project.getProjectTeams);
   // Project details CUR operations
