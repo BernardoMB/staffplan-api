@@ -20,10 +20,9 @@ const staffAssignments = async (req, res) => {
       }
     }
     util.successResponse(res, staffAssignments);
-  }
-  catch (exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
-  }  
+  }
 }
 
 const staffList = async (req, res) => {
@@ -31,10 +30,19 @@ const staffList = async (req, res) => {
     const connection = await db.connection(req);
     const staffList = await db.execute(connection, SQL.staffList(filters(req)));
     util.successResponse(res, staffList);
-  }
-  catch (exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
-  }  
+  }
+}
+
+const staffListCount = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const projectList = await db.execute(connection, SQL.getQueryCount(SQL.staffList(filters(req))));
+    util.successResponse(res, projectList[0]);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
 }
 
 const assignmentList = async (req, res) => {
@@ -42,10 +50,9 @@ const assignmentList = async (req, res) => {
     const connection = await db.connection(req);
     const staffAssignments = await db.execute(connection, SQL.assignmentList(filters(req)));
     util.successResponse(res, staffAssignments);
-  }
-  catch (exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
-  }  
+  }
 }
 
 const getStaffProjectList = async (req, res) => {
@@ -53,10 +60,9 @@ const getStaffProjectList = async (req, res) => {
     const connection = await db.connection(req);
     const ProjectList = await db.execute(connection, SQL.getStaffProjectList(req.params.id));
     util.successResponse(res, ProjectList);
-  }
-  catch (exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
-  }  
+  }
 }
 
 const insertStaff = async (req, res) => {
@@ -89,13 +95,13 @@ const insertStaff = async (req, res) => {
     const rowsAffected = await db.execute(connection, SQL.insertStaff(staffToCreate));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
-      util.errorResponse(res, exception);
+    util.errorResponse(res, exception);
   }
 }
 
 const updateStaff = async (req, res) => {
   try {
-    const staff = req.body;    
+    const staff = req.body;
     const connection = await db.connection(req);
     const result = await db.execute(connection, SQL.getStaffInfoByID(req.params.id));
     let detailsToUpdate = {};
@@ -105,9 +111,9 @@ const updateStaff = async (req, res) => {
     const staffToUpdate = Object.assign(detailsToUpdate, staff);
     const rowsAffected = await db.execute(connection, SQL.updateStaff(req.params.id, staffToUpdate));
     util.successResponse(res, rowsAffected);
-    } catch (exception) {
-        util.errorResponse(res, exception);
-    }
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
 }
 
 const getStaffCertification = async (req, res) => {
@@ -115,34 +121,33 @@ const getStaffCertification = async (req, res) => {
     const connection = await db.connection(req);
     const staffCertification = await db.execute(connection, SQL.getStaffCertificationById(req.params.id));
     util.successResponse(res, staffCertification);
-  }
-  catch (exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
   }
 }
 
 const insertStaffCertification = async (req, res) => {
-  try {      
-      const STAFF_ID = req.params.id;
-      const CERTIFICATION_ID = req.body.key;
-      const connection = await db.connection(req);
-      const rowsAffected = await db.execute(connection, SQL.insertStaffCertification(STAFF_ID, CERTIFICATION_ID));
-      util.successResponse(res, rowsAffected);
-    } catch (exception) {
-        util.errorResponse(res, exception);
-    }
+  try {
+    const STAFF_ID = req.params.id;
+    const CERTIFICATION_ID = req.body.key;
+    const connection = await db.connection(req);
+    const rowsAffected = await db.execute(connection, SQL.insertStaffCertification(STAFF_ID, CERTIFICATION_ID));
+    util.successResponse(res, rowsAffected);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
 }
 
 const deleteStaffCertification = async (req, res) => {
-  try {      
-      const STAFF_ID = req.params.id;
-      const CERTIFICATION_ID = req.params.key;
-      const connection = await db.connection(req);
-      const rowsAffected = await db.execute(connection, SQL.deleteStaffCertification(STAFF_ID, CERTIFICATION_ID));
-      util.successResponse(res, rowsAffected);
-    } catch (exception) {
-        util.errorResponse(res, exception);
-    }
+  try {
+    const STAFF_ID = req.params.id;
+    const CERTIFICATION_ID = req.params.key;
+    const connection = await db.connection(req);
+    const rowsAffected = await db.execute(connection, SQL.deleteStaffCertification(STAFF_ID, CERTIFICATION_ID));
+    util.successResponse(res, rowsAffected);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
 }
 
 const getStaffExperience = async (req, res) => {
@@ -150,40 +155,39 @@ const getStaffExperience = async (req, res) => {
     const connection = await db.connection(req);
     const staffExperience = await db.execute(connection, SQL.getstaffExperienceById(req.params.id));
     util.successResponse(res, staffExperience);
-  }
-  catch (exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
   }
 }
 
 const insertStaffExperience = async (req, res) => {
-  try {      
-      const ExperienceToCreate = {
+  try {
+    const ExperienceToCreate = {
       EXPERIENCE_ID: req.body.experienceId,
-      STAFF_ID: req.params.id, 
+      STAFF_ID: req.params.id,
       PROJECT_ID: req.body.projectId
-      };
-      const connection = await db.connection(req);    
-      const rowsAffected = await db.execute(connection, SQL.insertStaffExperience(ExperienceToCreate));
-      util.successResponse(res, rowsAffected);
-    } catch (exception) {
-        util.errorResponse(res, exception);
-    }
+    };
+    const connection = await db.connection(req);
+    const rowsAffected = await db.execute(connection, SQL.insertStaffExperience(ExperienceToCreate));
+    util.successResponse(res, rowsAffected);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
 }
 
 const removeStaffExperience = async (req, res) => {
-  try {      
-      const ExperienceToDelete = {
-        EXPERIENCE_ID: req.body.experienceId,
-        STAFF_ID: req.params.id, 
-        PROJECT_ID: req.body.projectId
-      };
-      const connection = await db.connection(req);
-      const rowsAffected = await db.execute(connection, SQL.removeStaffExperience(ExperienceToDelete));
-      util.successResponse(res, rowsAffected);
-    } catch (exception) {
-        util.errorResponse(res, exception);
-    }
+  try {
+    const ExperienceToDelete = {
+      EXPERIENCE_ID: req.body.experienceId,
+      STAFF_ID: req.params.id,
+      PROJECT_ID: req.body.projectId
+    };
+    const connection = await db.connection(req);
+    const rowsAffected = await db.execute(connection, SQL.removeStaffExperience(ExperienceToDelete));
+    util.successResponse(res, rowsAffected);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
 }
 
 const getStaffDetailsById = async (req, res) => {
@@ -196,10 +200,9 @@ const getStaffDetailsById = async (req, res) => {
       staffDetails.STAFF_PHOTO = util.getThumbnailUrl(staffDetails.STAFF_PHOTO);
     }
     util.successResponse(res, staffDetails);
-  }
-  catch (exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
-  }  
+  }
 }
 
 const staffSearch = async (req, res) => {
@@ -224,10 +227,9 @@ const staffSearch = async (req, res) => {
       });
     }
     util.successResponse(res, staffList);
-  }
-  catch (exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
-  }  
+  }
 }
 
 const staffAdvanceSearch = async (req, res) => {
@@ -251,8 +253,7 @@ const staffAdvanceSearch = async (req, res) => {
       });
     }
     util.successResponse(res, staffList);
-  }
-  catch (exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
   }
 }
@@ -287,7 +288,7 @@ const searchFilter = req => {
           condition = `${condition} AND STAFF.STAFF_ID IN ( ${SQL.staffAvailable(filter.startDate, filter.endDate)} )`;
         } else if (filter.availability === 'Gap') {
           condition = `${condition} AND STAFF.STAFF_ID IN ( ${SQL.staffGap(filter.startDate, filter.endDate)} )`;
-        }      
+        }
       }
     }
   }
@@ -305,15 +306,14 @@ const getStaffAllocation = async (req, res) => {
     if (staffProject && staffProject.length) {
       for (let i = 0; i < staffProject.length; i++) {
         const project = staffProject[i];
-        const calendar = await db.execute(connection,SQL.staffAllocationList(project.ID)); 
-        staffProject[i].calendar = calendar;        
+        const calendar = await db.execute(connection, SQL.staffAllocationList(project.ID));
+        staffProject[i].calendar = calendar;
       }
     }
     util.successResponse(res, staffProject);
-  }
-  catch (exception) {
+  } catch (exception) {
     util.errorResponse(res, exception);
-  }  
+  }
 }
 
 const uploadImage = async (buffer, fileName) => {
@@ -329,7 +329,7 @@ const uploadImage = async (buffer, fileName) => {
     Key: fileName,
     Body: buffer,
     ACL: 'public-read'
-   }).promise();
+  }).promise();
 }
 
 const insertStaffPhoto = async (req, res) => {
@@ -353,9 +353,8 @@ const insertStaffPhoto = async (req, res) => {
     const orginalUrl = await uploadImage(req.file.buffer, `${key}/${CONST.ORGINAL}.${CONST.IMGEXTN}`);
     const buffer = await sharp(req.file.buffer).resize(80, 80).toBuffer();
     const thumbnailUrl = await uploadImage(buffer, `${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`);
-    util.successResponse(res, { orginalUrl, thumbnailUrl, key });
-  }
-  catch (exception) {
+    util.successResponse(res, {orginalUrl, thumbnailUrl, key});
+  } catch (exception) {
     log.error(exception);
     util.errorResponse(res, exception);
   }
@@ -372,10 +371,9 @@ const getStaffPhoto = async (req, res) => {
       key = result[0].STAFF_PHOTO;
       util.successResponse(res, util.getThumbnailUrl(key));
     } else {
-      util.errorResponse(res, "Photo doesnot exists");  
+      util.errorResponse(res, "Photo doesnot exists");
     }
-  }
-  catch (exception) {
+  } catch (exception) {
     log.error(exception);
     util.errorResponse(res, exception);
   }
@@ -388,7 +386,7 @@ const filters = req => {
   if (req.params.id) {
     filterCondition = `${filterCondition} AND STAFF.STAFF_ID = ${req.params.id}`;
   }
-  if (filter) {    
+  if (filter) {
 
     if (filter.office) {
       filterCondition = `${filterCondition} AND STAFF.OFFICE_ID IN (${filter.office.join(',')})`;
@@ -409,11 +407,11 @@ const filters = req => {
     if (filter.group) {
       filterCondition = `${filterCondition} AND STAFF_GROUP_ID IN (${filter.group.join(',')})`;
     }
-    
+
     if (filter.staffId) {
       filterCondition = `${filterCondition} AND STAFF.STAFF_ID = ${filter.staffId}`;
     }
-  
+
     if (filter.alert) {
       if (filter.alert === 'Gap') {
         filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffListGap()})`;
@@ -428,7 +426,7 @@ const filters = req => {
   if (util.officeAccessRestricted(req.payload.ROLE)) {
     filterCondition = `${filterCondition} AND STAFF.OFFICE_ID IN (SELECT OFFICE_ID FROM USER_ACCESS WHERE USER_ID = ${req.payload.ID})`;
   }
-  return (filterCondition); 
+  return (filterCondition);
 }
 
 module.exports = {
@@ -449,5 +447,6 @@ module.exports = {
   staffAdvanceSearch,
   getStaffAllocation,
   insertStaffPhoto,
-  getStaffPhoto
+  getStaffPhoto,
+  staffListCount
 }
