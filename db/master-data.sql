@@ -18,6 +18,10 @@ INSERT INTO `COMPANY` (`ID`, `NAME`, `ADDRESS`, `PRIMARY_CONTACT`, `PRIMARY_CONT
 VALUES
 	(1,'StaffPlan','USA','Admin','admin@staffplan.io','888-555-9021','System Admin','2018-01-01 00:00:00','2018-01-01 00:00:00','minhdn1210@gmail.com','minhdn1210@gmail.com');
 
+	(1,Acme,USA,Admin,admin@staffplan.io,888-555-9021,System Admin,2018-01-01 00:00:00,2018-01-01 00:00:00,minhdn1210@gmail.com,minhdn1210@gmail.com)
+
+
+
 /*!40000 ALTER TABLE `COMPANY` ENABLE KEYS */;
 UNLOCK TABLES;
 
