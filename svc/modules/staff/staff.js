@@ -421,6 +421,10 @@ const filters = req => {
         filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffOnBench()})`;
       }
     }
+
+    if (filter.endDate && filter.startDate) {
+        filterCondition = `${filterCondition} AND STAFF.STAFF_ID IN ( ${SQL.staffAvailable(filter.startDate, filter.endDate)} )`;
+    }
   }
   // List staff based on user office access
   if (util.officeAccessRestricted(req.payload.ROLE)) {
