@@ -10,7 +10,7 @@ const subscription = require('./subscription');
 const fetchOffices = async (userId, role, connection) => {
   let offices;
   if (util.officeAccessRestricted(role)) {
-    offices = await db.execute(connection, SQL.office(userId));  
+    offices = await db.execute(connection, SQL.office(userId));
   } else {
     offices = await db.execute(connection, SQL.allOffice());
   }
@@ -34,8 +34,8 @@ const userPreferences = async (userId, connection) => {
 // Encrypt the given password string
 const encryptPassword = (password) => {
   const crypto = require('crypto');
-  const cipher = crypto.createCipher('aes192', config.AUTH.KEY);  
-  let encPassword = cipher.update(password, 'utf8', 'hex');  
+  const cipher = crypto.createCipher('aes192', config.AUTH.KEY);
+  let encPassword = cipher.update(password, 'utf8', 'hex');
   encPassword += cipher.final('hex');
   return encPassword;
 }
@@ -210,7 +210,7 @@ const reset = (req, res) => {
   }
 }
 
-// API to change user password information 
+// API to change user password information
 const changePassword = (req, res) => {
   try {
     const resetId = req.body.resetId;
