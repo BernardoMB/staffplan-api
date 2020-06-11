@@ -422,11 +422,8 @@ const filters = req => {
       }
     }
 
-    // Check Availability
-    if (filter.availability && filter.availability !== 'All') {
-      if (filter.availability === 'Available') {
+    if (filter.endDate && filter.startDate) {
         filterCondition = `${filterCondition} AND STAFF.STAFF_ID IN ( ${SQL.staffAvailable(filter.startDate, filter.endDate)} )`;
-      }
     }
   }
   // List staff based on user office access
