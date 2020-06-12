@@ -55,6 +55,17 @@ const assignmentList = async (req, res) => {
   }
 }
 
+
+const assignmentListCount = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const projectList = await db.execute(connection, SQL.getQueryCount(SQL.assignmentList(filters(req))));
+    util.successResponse(res, projectList[0]);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
 const getStaffProjectList = async (req, res) => {
   try {
     const connection = await db.connection(req);
@@ -353,7 +364,7 @@ const insertStaffPhoto = async (req, res) => {
     const orginalUrl = await uploadImage(req.file.buffer, `${key}/${CONST.ORGINAL}.${CONST.IMGEXTN}`);
     const buffer = await sharp(req.file.buffer).resize(80, 80).toBuffer();
     const thumbnailUrl = await uploadImage(buffer, `${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`);
-    util.successResponse(res, {orginalUrl, thumbnailUrl, key});
+    util.successResponse(res, { orginalUrl, thumbnailUrl, key });
   } catch (exception) {
     log.error(exception);
     util.errorResponse(res, exception);
@@ -423,7 +434,7 @@ const filters = req => {
     }
 
     if (filter.endDate && filter.startDate) {
-        filterCondition = `${filterCondition} AND STAFF.STAFF_ID IN ( ${SQL.staffAvailable(filter.startDate, filter.endDate)} )`;
+      filterCondition = `${filterCondition} AND STAFF.STAFF_ID IN ( ${SQL.staffAvailable(filter.startDate, filter.endDate)} )`;
     }
   }
   // List staff based on user office access
@@ -437,7 +448,9 @@ module.exports = {
   staffAssignments,
   getStaffProjectList,
   staffList,
+  staffListCount,
   assignmentList,
+  assignmentListCount,
   insertStaff,
   updateStaff,
   getStaffCertification,
@@ -451,6 +464,5 @@ module.exports = {
   staffAdvanceSearch,
   getStaffAllocation,
   insertStaffPhoto,
-  getStaffPhoto,
-  staffListCount
+  getStaffPhoto
 }
