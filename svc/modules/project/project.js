@@ -72,8 +72,9 @@ const getProjectTeamsCount = async (req, res) => {
     const connection = await db.connection(req);
     const projectTeamsList = await db.execute(
       connection,
-      SQL.getQueryCount(SQL.getProjectTeams(filters(req)))
+      SQL.getDistinctFieldCount(SQL.getProjectTeams(filters(req)), 'PROJECT_ID')
     );
+    console.log(projectTeamsList);
     util.successResponse(res, projectTeamsList[0]);
   } catch (exception) {
     util.errorResponse(res, exception);
@@ -202,6 +203,12 @@ const filters = (req) => {
 
     if (filter.ProjectGroup) {
       filterCondition = `${filterCondition} AND PROJECT.GROUP_ID = ${filter.ProjectGroup}`;
+    }
+
+    if (filter.OpenRoles) {
+      filterCondition = `${filterCondition} AND (SELECT COUNT(ID) FROM
+      PLANNED_PROJECT_STAFF WHERE
+        PLANNED_PROJECT_STAFF.PROJECT_ID = PROJECT.PROJECT_ID) > 0`;
     }
   }
   // List project based on user office access

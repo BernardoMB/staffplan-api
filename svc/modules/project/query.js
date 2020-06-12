@@ -1,5 +1,5 @@
 module.exports = {
-  ProjectList: (Condition) => (
+  ProjectList: (Condition) =>
     `SELECT 
       PROJECT.PROJECT_NAME, 
       PROJECT.PROJECT_ID,
@@ -25,10 +25,13 @@ module.exports = {
     INNER JOIN TIMELINE_TYPE
         ON TIMELINE_TYPE.TIMELINE_TYPE_ID = PROJECT.TIMELINE_TYPE_ID
       ${Condition}
-    `
-  ),
-  getQueryCount: (query) => (`SELECT COUNT(*) AS count FROM (${query}) AS Q`),
-  getOpenRoles: (condition) => (
+    `,
+  getQueryCount: (query) => `SELECT COUNT(*) AS count FROM (${query}) AS Q`,
+  getDistinctFieldCount: (query, distinctField) =>
+    `SELECT COUNT(DISTINCT(${distinctField})) AS count FROM (${query}) AS Q`,
+  getQueryCountGroupBy: (query, groupByValue) =>
+    `SELECT ${groupByValue}, COUNT(*) AS count FROM (${query}) AS Q GROUP BY ${groupByValue}`,
+  getOpenRoles: (condition) =>
     `
     SELECT 
       PROJECT.PROJECT_NAME,
@@ -56,9 +59,8 @@ module.exports = {
     INNER JOIN OFFICE
       ON OFFICE.OFFICE_ID=PROJECT.OFFICE_ID
    ${condition}
-    `
-  ),
-  getProjectTeams: (condition) => (
+    `,
+  getProjectTeams: (condition) =>
     `
     SELECT
       STAFF.FIRST_NAME,
@@ -110,9 +112,8 @@ module.exports = {
     INNER JOIN PROJECT_STATUS
       ON PROJECT.PROJECT_STATUS_ID=PROJECT_STATUS.STATUS_ID
     ${condition}
-    `
-  ),
-  getProjectDetailById: (id) => (
+    `,
+  getProjectDetailById: (id) =>
     `
     SELECT
       PROJECT.PROJECT_ID,
@@ -163,9 +164,8 @@ module.exports = {
       ON PROJECT.PROJECT_STATUS_ID=PROJECT_STATUS.STATUS_ID
     WHERE
       PROJECT.PROJECT_ID = ${id}
-    `
-  ),
-  projectDetailsById: (id) => (
+    `,
+  projectDetailsById: (id) =>
     `
     SELECT
       *
@@ -173,9 +173,8 @@ module.exports = {
       PROJECT 
     WHERE
       PROJECT.PROJECT_ID = ${id}
-    `
-  ),
-  insertProjectDetail: (project) => (
+    `,
+  insertProjectDetail: (project) =>
     `
     INSERT INTO PROJECT (
       PROJECT_NAME,
@@ -218,9 +217,8 @@ module.exports = {
       ${project.CUSTOMER_ID},
       ${project.CONTACT_ID}
     )
-    `
-  ),
-  updateProjectDetail: (project,id) => (
+    `,
+  updateProjectDetail: (project, id) =>
     `
     UPDATE PROJECT SET 
       PROJECT_NAME = '${project.PROJECT_NAME}',
@@ -244,33 +242,29 @@ module.exports = {
       CONTACT_ID = ${project.CONTACT_ID}
     WHERE
       PROJECT.PROJECT_ID = ${id}
-    `
-  ),
-  insertCustomer: (CUSTOMER_NAME) => (
+    `,
+  insertCustomer: (CUSTOMER_NAME) =>
     `
     INSERT INTO CUSTOMER (
       CUSTOMER_NAME
     ) VALUES (
       '${CUSTOMER_NAME}'
     )
-    `
-  ),
-  insertContact: (CONTACT_NAME) => (
+    `,
+  insertContact: (CONTACT_NAME) =>
     `
     INSERT INTO CONTACT (
       NAME
     ) VALUES (
       '${CONTACT_NAME}'
     )
-    `
-  ),
-  insertCustomerContact: (CUSTOMER_ID, CONTACT_ID) => (
+    `,
+  insertCustomerContact: (CUSTOMER_ID, CONTACT_ID) =>
     `
     INSERT INTO CUSTOMER_CONTACTS (CUSTOMER_ID, CONTACT_ID)
     VALUES (
       ${CUSTOMER_ID},
       ${CONTACT_ID}
     )
-    `
-  )
-}
+    `,
+};
