@@ -470,6 +470,19 @@ VALUES
 UNLOCK TABLES;
 
 
+LOCK TABLES `PROJECT_TYPE` WRITE;
+insert into TIMELINE_DATE (TIMELINE_NAME)
+values ('This Week');
+insert into TIMELINE_DATE (TIMELINE_NAME)
+values ('Upcoming Week');
+insert into TIMELINE_DATE (TIMELINE_NAME)
+values ('30 Days');
+insert into TIMELINE_DATE (TIMELINE_NAME)
+values ('60 Days');
+insert into TIMELINE_DATE (TIMELINE_NAME)
+values ('90 Days');
+UNLOCK TABLES;
+
 # Dump of table PROJECT_TYPE
 # ------------------------------------------------------------
 

@@ -32,7 +32,7 @@ module.exports = {
     LEFT JOIN CATEGORY
       ON PROJECT.CATEGORY_ID=CATEGORY.CATEGORY_ID
     WHERE STAFF.STAFF_ID = ${staffId}
-    `   
+    `
   ),
   staffList: (Condition) => (
     ` 
@@ -62,7 +62,7 @@ module.exports = {
         ON STAFF_GROUP.GROUP_ID = STAFF.STAFF_GROUP_ID
       ${Condition} 
     ORDER BY STAFF.FIRST_NAME
-    `   
+    `
   ),
   assignmentList: (Condition) => (
     `
@@ -102,7 +102,7 @@ module.exports = {
         ON PROJECT.PROJECT_STATUS_ID=PROJECT_STATUS.STATUS_ID
       ${Condition}
     ORDER BY STAFF.FIRST_NAME
-    `   
+    `
   ),
   getStaffProjectList: (id) => (
     `
@@ -339,7 +339,7 @@ module.exports = {
     INNER JOIN STAFF_GROUP
         ON STAFF_GROUP.GROUP_ID = STAFF.STAFF_GROUP_ID
     WHERE STAFF_ID = ${STAFF_ID}  
-    `   
+    `
   ),
   staffSearch: (Condition, OrderBy = 'ORDER BY STAFF.FIRST_NAME') => (
     ` 
@@ -360,7 +360,7 @@ module.exports = {
       OFFICE ON STAFF.OFFICE_ID = OFFICE.OFFICE_ID
     ${Condition} 
     ${OrderBy}
-    `   
+    `
   ),
   staffWithClient: (PROJECT_ID) => (
   `
@@ -474,4 +474,5 @@ module.exports = {
       UPDATE STAFF SET STAFF_PHOTO = '${photo}' WHERE STAFF_ID = ${staffId}
     `
   ),
+  getQueryCount: (query) => (`SELECT COUNT(*) AS count FROM (${query}) AS Q`)
 }
