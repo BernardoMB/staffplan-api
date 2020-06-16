@@ -28,7 +28,14 @@ const staffAssignments = async (req, res) => {
 const staffList = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const staffList = await db.execute(connection, SQL.staffList(filters(req)));
+    console.log(SQL.staffList(filters(req)))
+    let staffList = await db.execute(connection, SQL.staffList(filters(req)));
+    staffList = staffList.map((item) => {
+      return {
+        ...item,
+        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO)
+      }
+    });
     util.successResponse(res, staffList);
   } catch (exception) {
     util.errorResponse(res, exception);
