@@ -54,7 +54,8 @@ module.exports = {
     `
   ),
   staffList: (Condition) => (
-    ` SELECT STAFF.STAFF_ID,
+    `
+    SELECT STAFF.STAFF_ID,
        CAST(
                CASE
                    WHEN GAP.STAFF_ID IS NOT NULL THEN 'GAP'
@@ -99,6 +100,25 @@ GROUP BY STAFF.STAFF_ID,
          STAFF.STAFF_ROLE_ID, STAFF_ROLE.ROLE_NAME, STAFF.STAFF_STATUS_ID, STAFF_STATUS.STATUS_NAME, STAFF.OFFICE_ID,
          STAFF.STAFF_PHOTO, OFFICE.OFFICE_NAME, STAFF.STAFF_GROUP_ID, STAFF_GROUP.GROUP_NAME
 ORDER BY STAFF.FIRST_NAME;
+    `
+  ),
+  staffListCount: (Condition) => (
+    `
+    SELECT STAFF.STAFF_ID
+        FROM
+            STAFF
+        INNER JOIN STAFF_ROLE
+            ON STAFF_ROLE.ROLE_ID = STAFF.STAFF_ROLE_ID
+        INNER JOIN OFFICE
+            ON OFFICE.OFFICE_ID = STAFF.OFFICE_ID
+        INNER JOIN STAFF_STATUS
+            ON STAFF_STATUS.STATUS_ID = STAFF.STAFF_STATUS_ID
+        INNER JOIN STAFF_GROUP
+            ON STAFF_GROUP.GROUP_ID = STAFF.STAFF_GROUP_ID
+        LEFT OUTER JOIN PROJECT_STAFF
+                          ON STAFF.STAFF_ID = PROJECT_STAFF.STAFF_ID
+        ${Condition} 
+    GROUP BY STAFF.STAFF_ID
     `
   ),
   assignmentList: (Condition) => (

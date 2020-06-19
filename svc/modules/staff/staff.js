@@ -28,7 +28,6 @@ const staffAssignments = async (req, res) => {
 const staffList = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    console.log(SQL.staffList(filters(req)))
     let staffList = await db.execute(connection, SQL.staffList(filters(req)));
     staffList = staffList.map((item) => {
       return {
@@ -45,7 +44,7 @@ const staffList = async (req, res) => {
 const staffListCount = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const projectList = await db.execute(connection, SQL.getQueryCount(SQL.staffList(filters(req))));
+    const projectList = await db.execute(connection, SQL.getQueryCount(SQL.staffListCount(filters(req))));
     util.successResponse(res, projectList[0]);
   } catch (exception) {
     util.errorResponse(res, exception);
