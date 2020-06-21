@@ -1,6 +1,7 @@
 const db = require('../../common/connection');
 const SQL = require('./query');
 const util = require("../../common/util");
+const staffUtil = require('./util');
 const log = require('../../common/logger');
 const CONST = require('../../common/const');
 const config = require('../../common/config');
@@ -28,7 +29,8 @@ const staffAssignments = async (req, res) => {
 const staffList = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    let staffList = await db.execute(connection, SQL.staffList(filters(req)));
+    // console.log(SQL.staffList(staffUtil.filters(req)))
+    let staffList = await db.execute(connection, SQL.staffList(staffUtil.filters(req)));
     staffList = staffList.map((item) => {
       return {
         ...item,
@@ -44,8 +46,47 @@ const staffList = async (req, res) => {
 const staffListCount = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const projectList = await db.execute(connection, SQL.getQueryCount(SQL.staffListCount(filters(req))));
+    const projectList = await db.execute(
+      connection,
+      SQL.getQueryCount(SQL.staffListCount(staffUtil.filters(req)))
+    );
     util.successResponse(res, projectList[0]);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
+const availabilityByDate = async (req, res) => {
+  // todo: get date and filters
+  try {
+    const connection = await db.connection(req);
+    const filters = staffUtil.availabilityFilters(req);
+    console.log(filters);
+    console.log(req.body);
+
+    let startDate = 'CURDATE()';
+    let endDate = 'CURDATE()';
+    if (req.body.filter && req.body.filter.startDate) {
+      startDate = `DATE("${req.body.filter.startDate}")`;
+    }
+    if (req.body.filter && req.body.filter.endDate) {
+      endDate = `DATE("${req.body.filter.endDate}")`;
+    }
+
+    console.log(SQL.availabilityByDate(startDate, endDate, filters))
+    const result = await db.execute(connection, SQL.availabilityByDate(startDate, endDate, filters));
+    const hash = {};
+    result.forEach(e => {
+      if (!hash[e.WEEK]) {
+        hash[e.WEEK] = {}
+      }
+      if (!hash[e.WEEK][e.STAFF_ID]) {
+        hash[e.WEEK][e.STAFF_ID] = e.ALLOCATION
+      } else {
+        hash[e.WEEK][e.STAFF_ID] += e.ALLOCATION
+      }
+    });
+    util.successResponse(res, hash);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
@@ -54,7 +95,7 @@ const staffListCount = async (req, res) => {
 const assignmentList = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const staffAssignments = await db.execute(connection, SQL.assignmentList(filters(req)));
+    const staffAssignments = await db.execute(connection, SQL.assignmentList(staffUtil.filters(req)));
     util.successResponse(res, staffAssignments);
   } catch (exception) {
     util.errorResponse(res, exception);
@@ -65,7 +106,7 @@ const assignmentList = async (req, res) => {
 const assignmentListCount = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const projectList = await db.execute(connection, SQL.getQueryCount(SQL.assignmentList(filters(req))));
+    const projectList = await db.execute(connection, SQL.getQueryCount(SQL.assignmentList(staffUtil.filters(req))));
     util.successResponse(res, projectList[0]);
   } catch (exception) {
     util.errorResponse(res, exception);
@@ -252,7 +293,7 @@ const staffSearch = async (req, res) => {
 const staffAdvanceSearch = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const condition = searchFilter(req);
+    const condition = staffUtil.searchFilter(req);
     let orderBy = '';
     if (req.body.sortByRole) {
       orderBy = 'ORDER BY STAFF_ROLE.ROLE_NAME, STAFF.FIRST_NAME';
@@ -273,47 +314,6 @@ const staffAdvanceSearch = async (req, res) => {
   } catch (exception) {
     util.errorResponse(res, exception);
   }
-}
-
-const searchFilter = req => {
-  const filter = req.body.filter;
-  let condition = ' where 1 = 1 ';
-  if (filter) {
-    if (filter.staffId) {
-      condition = `${condition} AND STAFF.STAFF_ID = ${filter.staffId}`
-    } else {
-      // check office
-      if (filter.office) {
-        condition = `${condition} AND STAFF.OFFICE_ID = ${filter.office}`
-      }
-      // check Role
-      if (filter.roleId) {
-        condition = `${condition} AND STAFF.STAFF_ROLE_ID = ${filter.roleId}`
-      }
-      // check same role
-      if (filter.showAllRole !== null && filter.showAllRole !== undefined && !filter.showAllRole) {
-        condition = `${condition} AND STAFF_ROLE_ID IN (SELECT PROJECT_ROLE_ID FROM 
-          PLANNED_PROJECT_STAFF WHERE ID = ${filter.plannedProjectId})`;
-      }
-      // Check Same client
-      if (filter.showAllClient !== null && filter.showAllClient !== undefined && !filter.showAllClient) {
-        condition = `${condition} AND STAFF.STAFF_ID IN ( ${SQL.staffWithClient(filter.projectId)} )`;
-      }
-      // Check Availability
-      if (filter.availability && filter.availability !== 'All') {
-        if (filter.availability === 'Available') {
-          condition = `${condition} AND STAFF.STAFF_ID IN ( ${SQL.staffAvailable(filter.startDate, filter.endDate)} )`;
-        } else if (filter.availability === 'Gap') {
-          condition = `${condition} AND STAFF.STAFF_ID IN ( ${SQL.staffGap(filter.startDate, filter.endDate)} )`;
-        }
-      }
-    }
-  }
-  // List staff based on user office access
-  if (util.officeAccessRestricted(req.payload.ROLE)) {
-    condition = `${condition} AND STAFF.OFFICE_ID IN (SELECT OFFICE_ID FROM USER_ACCESS WHERE USER_ID = ${req.payload.ID})`;
-  }
-  return condition;
 }
 
 const getStaffAllocation = async (req, res) => {
@@ -396,60 +396,6 @@ const getStaffPhoto = async (req, res) => {
   }
 }
 
-
-const filters = req => {
-  const filter = req.body.filter;
-  let filterCondition = " where 1 = 1 ";
-  if (req.params.id) {
-    filterCondition = `${filterCondition} AND STAFF.STAFF_ID = ${req.params.id}`;
-  }
-  if (filter) {
-
-    if (filter.office) {
-      filterCondition = `${filterCondition} AND STAFF.OFFICE_ID IN (${filter.office.join(',')})`;
-    }
-
-    if (filter.role) {
-      filterCondition = `${filterCondition} AND STAFF.STAFF_ROLE_ID IN (${filter.role.join(',')})`;
-    }
-
-    if (filter.status) {
-      filterCondition = `${filterCondition} AND STAFF.STAFF_STATUS_ID IN (${filter.status.join(',')})`;
-    }
-
-    if (filter.staffStatus) {
-      filterCondition = `${filterCondition} AND STAFF.STAFF_STATUS_ID IN (${filter.staffStatus.join(',')})`;
-    }
-
-    if (filter.group) {
-      filterCondition = `${filterCondition} AND STAFF_GROUP_ID IN (${filter.group.join(',')})`;
-    }
-
-    if (filter.staffId) {
-      filterCondition = `${filterCondition} AND STAFF.STAFF_ID = ${filter.staffId}`;
-    }
-
-    if (filter.alert) {
-      if (filter.alert === 'Gap') {
-        filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffListGap()})`;
-      } else if (filter.alert === 'Alert') {
-        filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffAlert()})`;
-      } else if (filter.alert === 'Bench') {
-        filterCondition = `${filterCondition} AND STAFF.STAFF_ID in (${SQL.staffOnBench()})`;
-      }
-    }
-
-    if (filter.endDate && filter.startDate) {
-      filterCondition = `${filterCondition} AND STAFF.STAFF_ID IN ( ${SQL.staffAvailable(filter.startDate, filter.endDate)} )`;
-    }
-  }
-  // List staff based on user office access
-  if (util.officeAccessRestricted(req.payload.ROLE)) {
-    filterCondition = `${filterCondition} AND STAFF.OFFICE_ID IN (SELECT OFFICE_ID FROM USER_ACCESS WHERE USER_ID = ${req.payload.ID})`;
-  }
-  return (filterCondition);
-}
-
 module.exports = {
   staffAssignments,
   getStaffProjectList,
@@ -470,5 +416,6 @@ module.exports = {
   staffAdvanceSearch,
   getStaffAllocation,
   insertStaffPhoto,
-  getStaffPhoto
+  getStaffPhoto,
+  availabilityByDate
 }

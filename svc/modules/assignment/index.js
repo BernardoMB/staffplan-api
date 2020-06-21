@@ -13,5 +13,4 @@ module.exports = (app) => {
   app.post(`/${CONST.API}/${SUBMODULE}/update`, authenticate.isAuthenticated, assignment.updateAssignment);
   app.post(`/${CONST.API}/${SUBMODULE}/list`, authenticate.isAuthenticated, assignment.assignList);
   app.post(`/${CONST.API}/${SUBMODULE}/outlook`, authenticate.isAuthenticated, assignment.outlookList);
-  app.post(`/${CONST.API}/${SUBMODULE}/availability`, authenticate.isAuthenticated, assignment.getAvailabilityByDate);
 }

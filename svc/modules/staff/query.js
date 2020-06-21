@@ -1,3 +1,4 @@
+// todo: date params
 const getStaffAllocationNow = `
     SELECT PROJECT_STAFF.STAFF_ID, SUM(ALLOCATION) AS ALLOCATION
     FROM PROJECT_STAFF
@@ -119,6 +120,46 @@ ORDER BY STAFF.FIRST_NAME;
                           ON STAFF.STAFF_ID = PROJECT_STAFF.STAFF_ID
         ${Condition} 
     GROUP BY STAFF.STAFF_ID
+    `
+  ),
+  availabilityByDate: (startDate, endDate, filters) => (
+    `
+    SELECT CALENDAR.WEEK,
+       CALENDAR.YEAR,
+       PROJECT_STAFF.STAFF_ID,
+       STAFF_ALLOCATION.ALLOCATION,
+       CALENDAR.END_DATE,
+       CALENDAR.START_DATE,
+       PROJECT_STAFF.ID
+    FROM CALENDAR
+            LEFT JOIN STAFF_ALLOCATION
+                      ON CALENDAR.CALENDAR_ID = STAFF_ALLOCATION.CALENDAR_ID
+            LEFT OUTER JOIN PROJECT_STAFF
+                            ON PROJECT_STAFF.ID = STAFF_ALLOCATION.PROJECT_STAFF_ID
+    WHERE CALENDAR.START_DATE >= ${startDate}
+      AND CALENDAR.END_DATE <= date_add(${startDate}, interval 3 month)
+      AND PROJECT_STAFF.STAFF_ID IN (
+        SELECT ALLOC.STAFF_ID
+        FROM (
+                SELECT STAFF.STAFF_ID, SUM(ALLOCATION) AS SUM
+                FROM STAFF
+                          LEFT JOIN PROJECT_STAFF ON PROJECT_STAFF.STAFF_ID = STAFF.STAFF_ID
+                INNER JOIN STAFF_ROLE
+                            ON STAFF_ROLE.ROLE_ID = STAFF.STAFF_ROLE_ID
+                INNER JOIN OFFICE
+                            ON OFFICE.OFFICE_ID = STAFF.OFFICE_ID
+                INNER JOIN STAFF_STATUS
+                            ON STAFF_STATUS.STATUS_ID = STAFF.STAFF_STATUS_ID
+                INNER JOIN STAFF_GROUP
+                            ON STAFF_GROUP.GROUP_ID = STAFF.STAFF_GROUP_ID
+                WHERE PROJECT_STAFF.START_DATE < ${startDate}
+                  AND PROJECT_STAFF.END_DATE > ${endDate}
+                   ${filters} 
+                GROUP BY STAFF.STAFF_ID
+            ) AS ALLOC
+        WHERE ALLOC.SUM > 80
+    )
+    ORDER BY STAFF_ID, START_DATE;
     `
   ),
   assignmentList: (Condition) => (
