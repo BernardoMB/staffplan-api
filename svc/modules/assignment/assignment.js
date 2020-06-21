@@ -238,28 +238,6 @@ const outlookList = async (req, res) => {
   }
 }
 
-const getAvailabilityByDate = async (req, res) => {
-  // todo: get date and filters
-  try {
-    const connection = await db.connection(req);
-    const result = await db.execute(connection, SQL.getAvailabilityByDate());
-    const hash = {};
-    result.forEach(e => {
-      if (!hash[e.WEEK]) {
-        hash[e.WEEK] = {}
-      }
-      if (!hash[e.WEEK][e.STAFF_ID]) {
-        hash[e.WEEK][e.STAFF_ID] = e.ALLOCATION
-      } else {
-        hash[e.WEEK][e.STAFF_ID] += e.ALLOCATION
-      }
-    });
-    util.successResponse(res, hash);
-  } catch (exception) {
-    util.errorResponse(res, exception);
-  }
-}
-
 module.exports = {
   getProjectRole,
   insertProjectRole,
@@ -269,6 +247,5 @@ module.exports = {
   assignStaff,
   updateAssignment,
   assignList,
-  outlookList,
-  getAvailabilityByDate
+  outlookList
 }

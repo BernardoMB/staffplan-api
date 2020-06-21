@@ -192,37 +192,6 @@ module.exports = {
       AND ${condition}
     `
   ),
-  getAvailabilityByDate: () => (
-    `
-    SELECT CALENDAR.WEEK,
-       CALENDAR.YEAR,
-       PROJECT_STAFF.STAFF_ID,
-       STAFF_ALLOCATION.ALLOCATION,
-       CALENDAR.END_DATE,
-       CALENDAR.START_DATE,
-       PROJECT_STAFF.ID
-FROM CALENDAR
-         LEFT JOIN STAFF_ALLOCATION
-                   ON CALENDAR.CALENDAR_ID = STAFF_ALLOCATION.CALENDAR_ID
-         LEFT OUTER JOIN PROJECT_STAFF
-                         ON PROJECT_STAFF.ID = STAFF_ALLOCATION.PROJECT_STAFF_ID
-WHERE CALENDAR.START_DATE >= curdate()
-  AND CALENDAR.END_DATE <= date_add(curdate(), interval 3 month)
-  AND PROJECT_STAFF.STAFF_ID IN (
-    SELECT ALLOC.STAFF_ID
-    FROM (
-             SELECT STAFF.STAFF_ID, SUM(ALLOCATION) AS SUM
-             FROM STAFF
-                      LEFT JOIN PROJECT_STAFF ON PROJECT_STAFF.STAFF_ID = STAFF.STAFF_ID
-             WHERE PROJECT_STAFF.START_DATE < curdate()
-               AND PROJECT_STAFF.END_DATE > curdate()
-             GROUP BY STAFF.STAFF_ID
-         ) AS ALLOC
-    WHERE ALLOC.SUM > 80
-)
-ORDER BY STAFF_ID, START_DATE;
-    `
-  ),
   updateAllocation: (allocation, year, week, plannedStaffId) => (
     `
     UPDATE 
