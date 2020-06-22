@@ -19,7 +19,7 @@ const getProjectRole = async (req, res) => {
           // Check Staff have any other project allocation to show alert
           const allocation = await db.execute(connection,
             SQL.getAlert(role.ID, role.STAFF_ID, moment(role.START_DATE).format('YYYY-MM-DD'),
-            moment(role.END_DATE).format('YYYY-MM-DD'), role.ALLOCATION));
+              moment(role.END_DATE).format('YYYY-MM-DD'), role.ALLOCATION));
           // SET ALERT as true if total allocation is > 100%
           projectRoles[i].ALERT = (allocation[0].TOTAL > 100);
         }
@@ -27,15 +27,15 @@ const getProjectRole = async (req, res) => {
     }
     util.successResponse(res, projectRoles);
   }
-  catch(exception) {
+  catch (exception) {
     util.errorResponse(res, exception);
   }
 }
 
 const insertProjectRole = async (req, res) => {
-  try {      
-    const roleToCreate = {      
-      ALLOCATION: req.body.allocation,      
+  try {
+    const roleToCreate = {
+      ALLOCATION: req.body.allocation,
       PROJECT_ID: req.params.id,
       PROJECT_ROLE_ID: req.body.roleId,
       START_DATE: req.body.startDate,
@@ -51,10 +51,10 @@ const insertProjectRole = async (req, res) => {
 }
 
 const updateProjectRole = async (req, res) => {
-  try {      
+  try {
     const roleToCreate = {
-      ID: req.params.roleId,   
-      ALLOCATION: req.body.allocation,      
+      ID: req.params.roleId,
+      ALLOCATION: req.body.allocation,
       PROJECT_ID: req.params.id,
       PROJECT_ROLE_ID: req.body.roleId,
       START_DATE: req.body.startDate,
@@ -96,21 +96,21 @@ const bulkRoleUpdate = async (req, res) => {
 
 const deleteRole = async (req, res) => {
   try {
-      const projectId = req.params.id;
-      const id = req.body.roleId;
-      const connection = await db.connection(req);
-      let rowsAffected;
-      // Based on the assignment the table will be selected
-      if (req.body.staffId) {
-        rowsAffected = await db.execute(connection, SQL.deleteStaffAllocation(id));
-        rowsAffected = await db.execute(connection, SQL.deleteProjectStaff(projectId, id));
-      } else {
-        rowsAffected = await db.execute(connection, SQL.deleteProjectPlanned(projectId, id));
-      }
-      util.successResponse(res, rowsAffected);
-    } catch (exception) {
-      util.errorResponse(res, exception);
+    const projectId = req.params.id;
+    const id = req.body.roleId;
+    const connection = await db.connection(req);
+    let rowsAffected;
+    // Based on the assignment the table will be selected
+    if (req.body.staffId) {
+      rowsAffected = await db.execute(connection, SQL.deleteStaffAllocation(id));
+      rowsAffected = await db.execute(connection, SQL.deleteProjectStaff(projectId, id));
+    } else {
+      rowsAffected = await db.execute(connection, SQL.deleteProjectPlanned(projectId, id));
     }
+    util.successResponse(res, rowsAffected);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
 }
 
 const updateAssignment = async (req, res) => {
@@ -225,7 +225,7 @@ const outlookList = async (req, res) => {
   try {
     const startDate = req.body.startDate;
     const endDate = req.body.endDate;
-    
+
     let condition = '1 = 1';
     if (req.body.staffId && req.body.staffId.length) {
       condition = ` PROJECT_STAFF.STAFF_ID in (${req.body.staffId.join(',')})`;
