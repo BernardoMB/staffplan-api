@@ -106,7 +106,10 @@ const assignmentList = async (req, res) => {
 const assignmentListCount = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const projectList = await db.execute(connection, SQL.getQueryCount(SQL.assignmentList(staffUtil.filters(req))));
+    console.log(SQL.assignmentList(staffUtil.filters(req)))
+    const projectList = await db.execute(connection,
+      SQL.getQueryCount(SQL.assignmentListGrouped(staffUtil.filters(req)))
+    );
     util.successResponse(res, projectList[0]);
   } catch (exception) {
     util.errorResponse(res, exception);
