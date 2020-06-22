@@ -79,8 +79,7 @@ const isAuthenticated = async (req, res, next) => {
   // const connection = await db.connection(req);
   // await db.useDB(connection, req.payload.DB);
   // next();
-  try
-  {
+  try {
     const token = req.headers.sessionid;
     const tokenizer = require('./tokenization');
     if (tokenizer.validateToken(token)) {
@@ -103,6 +102,7 @@ const validateUser = (req, res) => {
   const userName = req.body.username;
   const hostname = req.body.hostname;
   subscription.getCompanyDB(userName, hostname, req).then(({ connection, dbName }) => {
+    console.log(dbName)
     db.useDB(connection, dbName).then(() => {
       const encPassword = encryptPassword(req.body.password);
       db.execute(connection, SQL.validate(userName, encPassword)).then(user => {
@@ -134,7 +134,7 @@ const forgot = (req, res) => {
           const resetId = uuidv4();
           const userId = user[0].USER_ID;
           log.info(`${userName} requested password reset`);
-          db.execute(connection, SQL.clearPasswordReset(userId)).then( () => {
+          db.execute(connection, SQL.clearPasswordReset(userId)).then(() => {
             db.execute(connection, SQL.passwordReset(userId, resetId)).then(result => {
               if (result) {
                 const tokenizer = require('./tokenization');
@@ -223,7 +223,7 @@ const changePassword = (req, res) => {
         //TODO: Validate the password strength
         db.execute(connection, SQL.updatePassword(userId, encryptPassword(password))).then(result => {
           if (result) {
-            db.execute(connection, SQL.clearPasswordReset(userId)).then( () => {
+            db.execute(connection, SQL.clearPasswordReset(userId)).then(() => {
               util.successResponse(res);
             })
           } else {

@@ -1,3 +1,23 @@
+// todo: date params
+const getStaffAllocationNow = `
+    SELECT PROJECT_STAFF.STAFF_ID, SUM(ALLOCATION) AS ALLOCATION
+    FROM PROJECT_STAFF
+    WHERE PROJECT_STAFF.END_DATE >= CURDATE()
+      AND PROJECT_STAFF.START_DATE <= CURDATE()
+    GROUP BY STAFF_ID
+    `;
+const getStaffGapNow = `
+    SELECT CURRENT.STAFF_ID
+      FROM PROJECT_STAFF CURRENT
+                INNER JOIN PROJECT_STAFF FUTURE
+                          ON CURRENT.STAFF_ID = FUTURE.STAFF_ID
+                              AND DATEDIFF(FUTURE.START_DATE, CURRENT.END_DATE) > 1
+                              AND CURRENT.ID <> FUTURE.ID
+                LEFT OUTER JOIN STAFF S on CURRENT.STAFF_ID = S.STAFF_ID
+      WHERE CURRENT.END_DATE > CURDATE()
+        AND FUTURE.END_DATE > CURDATE()
+    `;
+
 module.exports = {
   staffAssignments: (staffId) => (
     `
@@ -35,21 +55,29 @@ module.exports = {
     `
   ),
   staffList: (Condition) => (
-    ` 
-    SELECT
-      STAFF.STAFF_ID,
-      STAFF.FIRST_NAME,
-      STAFF.MIDDLE_INITIAL,
-      STAFF.LAST_NAME,
-      STAFF.PREFERRED_NAME,
-      STAFF.STAFF_ROLE_ID,
-      STAFF_ROLE.ROLE_NAME,
-      STAFF.STAFF_STATUS_ID,
-      STAFF_STATUS.STATUS_NAME,
-      STAFF.OFFICE_ID,
-      OFFICE.OFFICE_NAME,
-      STAFF.STAFF_GROUP_ID,
-      STAFF_GROUP.GROUP_NAME     
+    `
+    SELECT STAFF.STAFF_ID,
+       CAST(
+               CASE
+                   WHEN GAP.STAFF_ID IS NOT NULL THEN 'GAP'
+                   WHEN ALLOCATION.ALLOCATION < 80 THEN 'UNDER_ALLOCATED'
+                   WHEN ALLOCATION.ALLOCATION > 100 THEN 'OVER_ALLOCATED'
+                   WHEN ALLOCATION.ALLOCATION IS NULL THEN 'BENCH'
+                   ELSE 'NO_ALERT'
+                   END AS CHAR) AS ALLOCATION_STATUS,
+       STAFF.FIRST_NAME,
+       STAFF.MIDDLE_INITIAL,
+       STAFF.LAST_NAME,
+       STAFF.PREFERRED_NAME,
+       STAFF.STAFF_ROLE_ID,
+       STAFF_ROLE.ROLE_NAME,
+       STAFF.STAFF_STATUS_ID,
+       STAFF_STATUS.STATUS_NAME,
+       STAFF.OFFICE_ID,
+       STAFF.STAFF_PHOTO,
+       OFFICE.OFFICE_NAME,
+       STAFF.STAFF_GROUP_ID,
+       STAFF_GROUP.GROUP_NAME
     FROM 
         STAFF
     INNER JOIN STAFF_ROLE
@@ -60,8 +88,78 @@ module.exports = {
         ON STAFF_STATUS.STATUS_ID = STAFF.STAFF_STATUS_ID
     INNER JOIN STAFF_GROUP
         ON STAFF_GROUP.GROUP_ID = STAFF.STAFF_GROUP_ID
+    LEFT OUTER JOIN PROJECT_STAFF
+                      ON STAFF.STAFF_ID = PROJECT_STAFF.STAFF_ID
+    LEFT OUTER JOIN (${getStaffAllocationNow}) 
+         AS ALLOCATION ON ALLOCATION.STAFF_ID = STAFF.STAFF_ID 
+    LEFT OUTER JOIN (${getStaffGapNow}) AS GAP ON GAP.STAFF_ID = STAFF.STAFF_ID
       ${Condition} 
-    ORDER BY STAFF.FIRST_NAME
+GROUP BY STAFF.STAFF_ID,
+         STAFF.STAFF_ID, ALLOCATION_STATUS, GAP.STAFF_ID,
+         STAFF.FIRST_NAME, STAFF.MIDDLE_INITIAL, STAFF.LAST_NAME,
+         STAFF.PREFERRED_NAME,
+         STAFF.STAFF_ROLE_ID, STAFF_ROLE.ROLE_NAME, STAFF.STAFF_STATUS_ID, STAFF_STATUS.STATUS_NAME, STAFF.OFFICE_ID,
+         STAFF.STAFF_PHOTO, OFFICE.OFFICE_NAME, STAFF.STAFF_GROUP_ID, STAFF_GROUP.GROUP_NAME
+ORDER BY STAFF.FIRST_NAME;
+    `
+  ),
+  staffListCount: (Condition) => (
+    `
+    SELECT STAFF.STAFF_ID
+        FROM
+            STAFF
+        INNER JOIN STAFF_ROLE
+            ON STAFF_ROLE.ROLE_ID = STAFF.STAFF_ROLE_ID
+        INNER JOIN OFFICE
+            ON OFFICE.OFFICE_ID = STAFF.OFFICE_ID
+        INNER JOIN STAFF_STATUS
+            ON STAFF_STATUS.STATUS_ID = STAFF.STAFF_STATUS_ID
+        INNER JOIN STAFF_GROUP
+            ON STAFF_GROUP.GROUP_ID = STAFF.STAFF_GROUP_ID
+        LEFT OUTER JOIN PROJECT_STAFF
+                          ON STAFF.STAFF_ID = PROJECT_STAFF.STAFF_ID
+        ${Condition} 
+    GROUP BY STAFF.STAFF_ID
+    `
+  ),
+  availabilityByDate: (startDate, endDate, filters) => (
+    `
+    SELECT CALENDAR.WEEK,
+       CALENDAR.YEAR,
+       PROJECT_STAFF.STAFF_ID,
+       STAFF_ALLOCATION.ALLOCATION,
+       CALENDAR.END_DATE,
+       CALENDAR.START_DATE,
+       PROJECT_STAFF.ID
+    FROM CALENDAR
+            LEFT JOIN STAFF_ALLOCATION
+                      ON CALENDAR.CALENDAR_ID = STAFF_ALLOCATION.CALENDAR_ID
+            LEFT OUTER JOIN PROJECT_STAFF
+                            ON PROJECT_STAFF.ID = STAFF_ALLOCATION.PROJECT_STAFF_ID
+    WHERE CALENDAR.START_DATE >= ${startDate}
+      AND CALENDAR.END_DATE <= date_add(${startDate}, interval 3 month)
+      AND PROJECT_STAFF.STAFF_ID IN (
+        SELECT ALLOC.STAFF_ID
+        FROM (
+                SELECT STAFF.STAFF_ID, SUM(ALLOCATION) AS SUM
+                FROM STAFF
+                          LEFT JOIN PROJECT_STAFF ON PROJECT_STAFF.STAFF_ID = STAFF.STAFF_ID
+                INNER JOIN STAFF_ROLE
+                            ON STAFF_ROLE.ROLE_ID = STAFF.STAFF_ROLE_ID
+                INNER JOIN OFFICE
+                            ON OFFICE.OFFICE_ID = STAFF.OFFICE_ID
+                INNER JOIN STAFF_STATUS
+                            ON STAFF_STATUS.STATUS_ID = STAFF.STAFF_STATUS_ID
+                INNER JOIN STAFF_GROUP
+                            ON STAFF_GROUP.GROUP_ID = STAFF.STAFF_GROUP_ID
+                WHERE PROJECT_STAFF.START_DATE < ${startDate}
+                  AND PROJECT_STAFF.END_DATE > ${endDate}
+                   ${filters} 
+                GROUP BY STAFF.STAFF_ID
+            ) AS ALLOC
+        WHERE ALLOC.SUM > 80
+    )
+    ORDER BY STAFF_ID, START_DATE;
     `
   ),
   assignmentList: (Condition) => (
@@ -102,6 +200,26 @@ module.exports = {
         ON PROJECT.PROJECT_STATUS_ID=PROJECT_STATUS.STATUS_ID
       ${Condition}
     ORDER BY STAFF.FIRST_NAME
+    `
+  ),
+  assignmentListGrouped: (Condition) => (
+    `
+    SELECT        
+        STAFF.STAFF_ID  
+    FROM 
+        STAFF 
+    LEFT JOIN PROJECT_STAFF
+        ON STAFF.STAFF_ID = PROJECT_STAFF.STAFF_ID
+    INNER JOIN STAFF_ROLE
+        ON PROJECT_STAFF.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID
+    INNER JOIN PROJECT
+        ON PROJECT.PROJECT_ID=PROJECT_STAFF.PROJECT_ID
+    INNER JOIN OFFICE
+        ON OFFICE.OFFICE_ID=PROJECT.OFFICE_ID
+    INNER JOIN PROJECT_STATUS
+        ON PROJECT.PROJECT_STATUS_ID=PROJECT_STATUS.STATUS_ID
+      ${Condition}
+    GROUP BY STAFF.STAFF_ID
     `
   ),
   getStaffProjectList: (id) => (
@@ -363,7 +481,7 @@ module.exports = {
     `
   ),
   staffWithClient: (PROJECT_ID) => (
-  `
+    `
   SELECT
     STAFF_ID
   FROM PROJECT_STAFF 
@@ -474,5 +592,6 @@ module.exports = {
       UPDATE STAFF SET STAFF_PHOTO = '${photo}' WHERE STAFF_ID = ${staffId}
     `
   ),
-  getQueryCount: (query) => (`SELECT COUNT(*) AS count FROM (${query}) AS Q`)
+  getQueryCount: (query) => (`SELECT COUNT(*) AS count FROM (${query}) AS Q`),
+  getStaffAllocationNow: getStaffAllocationNow,
 }
