@@ -1,4 +1,4 @@
-const environment = require('../env.local.json');
+const environment = require('../env.json');
 
 const encryption = {
   KEY: 'StaffPlanner',
