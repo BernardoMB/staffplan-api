@@ -61,9 +61,6 @@ const availabilityByDate = async (req, res) => {
   try {
     const connection = await db.connection(req);
     const filters = staffUtil.availabilityFilters(req);
-    console.log(filters);
-    console.log(req.body);
-
     let startDate = 'CURDATE()';
     let endDate = 'CURDATE()';
     if (req.body.filter && req.body.filter.startDate) {
