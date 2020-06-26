@@ -20,6 +20,11 @@ module.exports = (app) => {
     project.getWorkloadList
   );
   app.post(
+    `/${CONST.API}/${MODULE}/workload-count`,
+    authenticate.isAuthenticated,
+    project.getWorkloadListCount
+  );
+  app.post(
     `/${CONST.API}/${MODULE}/openroles`,
     authenticate.isAuthenticated,
     project.getOpenRoles

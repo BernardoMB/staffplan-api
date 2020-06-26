@@ -32,13 +32,26 @@ const getWorkloadList = async (req, res) => {
   try {
     const connection = await db.connection(req);
     const workloadList = await db.execute(
-      connection, SQL.getWorkloadList()
+      connection, SQL.getWorkloadList(filters(req), req.body.startDate)
     )
     util.successResponse(res, workloadList)
   } catch (exception) {
     util.errorResponse(res, exception);
   }
 }
+
+const getWorkloadListCount = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const openRolesList = await db.execute(
+      connection,
+      SQL.getQueryCount(SQL.getWorkloadListCount(filters(req), req.body.startDate))
+    );
+    util.successResponse(res, openRolesList[0]);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+};
 
 const getOpenRoles = async (req, res) => {
   try {
@@ -86,7 +99,6 @@ const getProjectTeamsCount = async (req, res) => {
       connection,
       SQL.getDistinctFieldCount(SQL.getProjectTeams(filters(req)), 'PROJECT_ID')
     );
-    console.log(projectTeamsList);
     util.successResponse(res, projectTeamsList[0]);
   } catch (exception) {
     util.errorResponse(res, exception);
@@ -184,6 +196,14 @@ const filters = (req) => {
       )})`;
     }
 
+    if (filter.role) {
+      filterCondition = `${filterCondition} AND STAFF.STAFF_ROLE_ID IN (${filter.role.join(',')})`;
+    }
+
+    if (filter.group) {
+      filterCondition = `${filterCondition} AND STAFF.STAFF_GROUP_ID IN (${filter.group.join(',')})`;
+    }
+
     if (filter.startBetween && filter.endBetween) {
       filterCondition = `${filterCondition} AND PROJECT.START_DATE BETWEEN '${filter.startBetween}' AND '${filter.endBetween}'`;
     }
@@ -202,7 +222,6 @@ const filters = (req) => {
 
     if (filter.endDate) {
       filterCondition = `${filterCondition} AND PROJECT.END_DATE >= '${filter.endDate}'`;
-      console.log(filterCondition);
     }
 
     if (filter.office) {
@@ -240,5 +259,6 @@ module.exports = {
   getProjectListCount,
   getOpenRolesListCount,
   getProjectTeamsCount,
-  getWorkloadList
+  getWorkloadList,
+  getWorkloadListCount
 };
