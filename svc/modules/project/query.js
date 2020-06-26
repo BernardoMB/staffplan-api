@@ -32,7 +32,7 @@ module.exports = {
   getQueryCountGroupBy: (query, groupByValue) =>
     `SELECT ${groupByValue}, COUNT(*) AS count FROM (${query}) AS Q GROUP BY ${groupByValue}`,
   getOpenRoles: (condition) =>
-    `
+    ` 
     SELECT 
       PROJECT.PROJECT_NAME,
       PROJECT.PROJECT_ID,
@@ -60,7 +60,7 @@ module.exports = {
       ON OFFICE.OFFICE_ID=PROJECT.OFFICE_ID
    ${condition}
     `,
-  getWorkloadList: (condition, startDate) =>
+  getWorkloadList: (condition, startDate, endDate) =>
     `
     SELECT
         CALENDAR.WEEK,
@@ -79,11 +79,11 @@ module.exports = {
          LEFT OUTER JOIN STAFF ON PS.STAFF_ID = STAFF.STAFF_ID
          LEFT OUTER JOIN STAFF_ROLE SR on PS.PROJECT_ROLE_ID = SR.ROLE_ID
     ${condition}
-    AND CALENDAR.START_DATE >= SUBDATE('${startDate}', dayofweek('${startDate}') - 1)
-    AND CALENDAR.END_DATE <= DATE('${startDate}' + INTERVAL 6 MONTH)
+    AND CALENDAR.START_DATE >= '${startDate}'
+    AND CALENDAR.END_DATE <= '${endDate}'
     ORDER BY CALENDAR.CALENDAR_ID, ROLE_NAME
     `,
-  getWorkloadListCount: (condition, startDate) =>
+  getWorkloadListCount: (condition, startDate, endDate) =>
     ` 
     SELECT STAFF.STAFF_ID
     FROM CALENDAR
@@ -92,8 +92,8 @@ module.exports = {
             LEFT OUTER JOIN STAFF ON PS.STAFF_ID = STAFF.STAFF_ID
             LEFT OUTER JOIN PROJECT ON PS.PROJECT_ID = PROJECT.PROJECT_ID
     ${condition}
-    AND CALENDAR.START_DATE >= SUBDATE('${startDate}', dayofweek('${startDate}') - 1)
-    AND CALENDAR.END_DATE <= DATE('${startDate}' + INTERVAL 6 MONTH)
+    AND CALENDAR.START_DATE >= '${startDate}'
+    AND CALENDAR.END_DATE <= '${endDate}'
     GROUP BY PROJECT.PROJECT_ID
     `,
   getProjectTeams: (condition) =>
