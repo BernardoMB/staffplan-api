@@ -32,7 +32,7 @@ const getWorkloadList = async (req, res) => {
   try {
     const connection = await db.connection(req);
     const workloadList = await db.execute(
-      connection, SQL.getWorkloadList(filters(req), req.body.startDate)
+      connection, SQL.getWorkloadList(filters(req), req.body.startDate, req.body.endDate)
     )
     util.successResponse(res, workloadList)
   } catch (exception) {
@@ -45,7 +45,7 @@ const getWorkloadListCount = async (req, res) => {
     const connection = await db.connection(req);
     const openRolesList = await db.execute(
       connection,
-      SQL.getQueryCount(SQL.getWorkloadListCount(filters(req), req.body.startDate))
+      SQL.getQueryCount(SQL.getWorkloadListCount(filters(req), req.body.startDate, req.body.endDate))
     );
     util.successResponse(res, openRolesList[0]);
   } catch (exception) {
