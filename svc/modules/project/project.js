@@ -31,9 +31,15 @@ const getProjectListCount = async (req, res) => {
 const getWorkloadList = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const workloadList = await db.execute(
+    let workloadList = await db.execute(
       connection, SQL.getWorkloadList(filters(req), req.body.startDate, req.body.endDate)
     )
+    workloadList = workloadList.map((item) => {
+      return {
+        ...item,
+        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO)
+      }
+    });
     util.successResponse(res, workloadList)
   } catch (exception) {
     util.errorResponse(res, exception);
