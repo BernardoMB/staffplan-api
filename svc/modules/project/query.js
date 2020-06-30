@@ -69,6 +69,11 @@ module.exports = {
         SA.ALLOCATION,
         STATUS_ID,
         STATUS_NAME,
+        STAFF.STAFF_ID,
+        STAFF.FIRST_NAME,
+        STAFF.LAST_NAME,
+        STAFF.PREFERRED_NAME,
+        STAFF.STAFF_PHOTO,
         ROLE_ID,
         ROLE_NAME
     FROM CALENDAR
