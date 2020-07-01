@@ -74,6 +74,8 @@ module.exports = {
         STAFF.LAST_NAME,
         STAFF.PREFERRED_NAME,
         STAFF.STAFF_PHOTO,
+        PROJECT.PROJECT_ID,
+        PROJECT.PROJECT_NAME,
         ROLE_ID,
         ROLE_NAME
     FROM CALENDAR
