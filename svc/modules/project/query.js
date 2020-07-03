@@ -90,23 +90,27 @@ module.exports = {
     AND CALENDAR.END_DATE <= '${endDate}'
     ORDER BY CALENDAR.CALENDAR_ID, ROLE_NAME
     `,
-  getWorkloadBench: () =>
+  getWorkloadBench: (condition) =>
     `
     SELECT STAFF_ID, FIRST_NAME, LAST_NAME, PREFERRED_NAME, ROLE_ID, ROLE_NAME, STAFF_PHOTO
     FROM STAFF
-    INNER JOIN STAFF_ROLE SR on STAFF.STAFF_ROLE_ID = SR.ROLE_ID
+            INNER JOIN STAFF_ROLE on STAFF.STAFF_ROLE_ID = STAFF_ROLE.ROLE_ID
     WHERE STAFF_ID NOT IN (
-        SELECT STAFF_ID
-        FROM PROJECT_STAFF)
+      SELECT STAFF_ID
+      FROM PROJECT_STAFF)
     AND STAFF_STATUS_ID = 1
+    ${condition}
     `
   ,
-  getWorkloadUnassigned: () =>
+  getWorkloadUnassigned: (condition, startDate, endDate) =>
     `
     SELECT ID, PPS.START_DATE, PPS.END_DATE, ALLOCATION, ROLE_ID, ROLE_NAME, PPS.PROJECT_ID
     FROM PLANNED_PROJECT_STAFF PPS
-      INNER JOIN STAFF_ROLE SR on PPS.PROJECT_ROLE_ID = SR.ROLE_ID
-      LEFT OUTER JOIN PROJECT on PPS.PROJECT_ID = PROJECT.PROJECT_ID
+         INNER JOIN STAFF_ROLE on PPS.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID
+         LEFT OUTER JOIN PROJECT on PPS.PROJECT_ID = PROJECT.PROJECT_ID
+         where PPS.START_DATE <= '${startDate}'
+         AND PPS.END_DATE >= '${endDate}'
+         ${condition}
     `
   ,
   getWorkloadListCount: (condition, startDate, endDate) =>

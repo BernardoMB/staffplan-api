@@ -49,8 +49,19 @@ const getWorkloadList = async (req, res) => {
 const getWorkloadBench = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    // TODO: office, and estatus filters
-    let workLoadBench = await db.execute(connection, SQL.getWorkloadBench())
+
+    const filter = req.body.filter;
+    let condition = ''
+    if (filter) {
+      if (filter.role) {
+        condition += ` AND STAFF_ROLE.ROLE_ID IN (${filter.role.join(',')})`;
+      }
+      if (filter.office) {
+        condition += ` AND STAFF.OFFICE_ID = ${filter.office}`;
+      }
+    }
+
+    let workLoadBench = await db.execute(connection, SQL.getWorkloadBench(condition))
     workLoadBench = workLoadBench.map((item) => {
       return {
         ...item,
@@ -66,8 +77,22 @@ const getWorkloadBench = async (req, res) => {
 const getWorkloadUnassigned = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    // TODO: office, and estatus filters
-    let workloadUnassigned = await db.execute(connection, SQL.getWorkloadUnassigned())
+    const filter = req.body.filter;
+    let condition = ''
+    if (filter) {
+      if (filter.role) {
+        condition += ` AND STAFF_ROLE.ROLE_ID IN (${filter.role.join(',')})`;
+      }
+      if (filter.office) {
+        condition += ` AND PROJECT.OFFICE_ID = ${filter.office}`;
+      }
+      if (filter.group) {
+        condition += ` AND PROJECT.GROUP_ID = ${filter.office}`;
+      }
+    }
+    let workloadUnassigned = await db.execute(connection,
+      SQL.getWorkloadUnassigned(condition, req.body.startDate, req.body.endDate)
+    )
     util.successResponse(res, workloadUnassigned)
   } catch (exception) {
     util.errorResponse(res, exception);
