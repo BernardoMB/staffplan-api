@@ -46,6 +46,34 @@ const getWorkloadList = async (req, res) => {
   }
 }
 
+const getWorkloadBench = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    // TODO: office, and estatus filters
+    let workLoadBench = await db.execute(connection, SQL.getWorkloadBench())
+    workLoadBench = workLoadBench.map((item) => {
+      return {
+        ...item,
+        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO)
+      }
+    });
+    util.successResponse(res, workLoadBench)
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+};
+
+const getWorkloadUnassigned = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    // TODO: office, and estatus filters
+    let workloadUnassigned = await db.execute(connection, SQL.getWorkloadUnassigned())
+    util.successResponse(res, workloadUnassigned)
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+};
+
 const getWorkloadListCount = async (req, res) => {
   try {
     const connection = await db.connection(req);
@@ -266,5 +294,7 @@ module.exports = {
   getOpenRolesListCount,
   getProjectTeamsCount,
   getWorkloadList,
-  getWorkloadListCount
+  getWorkloadListCount,
+  getWorkloadBench,
+  getWorkloadUnassigned
 };
