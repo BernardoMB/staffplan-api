@@ -109,8 +109,8 @@ module.exports = {
          INNER JOIN STAFF_ROLE on PPS.PROJECT_ROLE_ID = STAFF_ROLE.ROLE_ID
          LEFT OUTER JOIN PROJECT on PPS.PROJECT_ID = PROJECT.PROJECT_ID
          WHERE 1 = 1
-         AND (PPS.START_DATE >= '${startDate}' AND PPS.START_DATE <= '${endDate}')
-         OR (PPS.END_DATE >= '${endDate}' OR PPS.END_DATE > '${startDate}')
+         AND ((PPS.START_DATE >= '${startDate}' AND PPS.START_DATE <= '${endDate}')
+         OR (PPS.END_DATE >= '${endDate}' OR PPS.END_DATE > '${startDate}'))
          ${condition}
     `
   ,
@@ -123,8 +123,9 @@ module.exports = {
             LEFT OUTER JOIN STAFF ON PS.STAFF_ID = STAFF.STAFF_ID
             LEFT OUTER JOIN PROJECT ON PS.PROJECT_ID = PROJECT.PROJECT_ID
     ${condition}
-    AND CALENDAR.START_DATE >= '${startDate}'
-    AND CALENDAR.END_DATE <= '${endDate}'
+    AND ((CALENDAR.START_DATE >= '${startDate}' AND CALENDAR.START_DATE <= '${endDate}')
+         OR (CALENDAR.END_DATE >= '${endDate}' OR CALENDAR.END_DATE > '${startDate}'))
+    AND STAFF.STAFF_ID IS NOT NULL
     GROUP BY PROJECT.PROJECT_ID
     `,
   getProjectTeams: (condition) =>
