@@ -31,9 +31,25 @@ const getProjectListCount = async (req, res) => {
 const getWorkloadList = async (req, res) => {
   try {
     const connection = await db.connection(req);
+
+    const filter = req.body.filter;
+    let condition = ' where 1 = 1 '
+    if (filter) {
+      if (filter.role) {
+        condition += ` AND PROJECT_ROLE_ID IN (${filter.role.join(',')})`;
+      }
+      if (filter.group) {
+        condition = `${condition} AND STAFF.STAFF_GROUP_ID IN (${filter.group.join(',')})`;
+      }
+      if (filter.office) {
+        condition = `${condition} AND PROJECT.OFFICE_ID = ${filter.office}`;
+      }
+    }
+
     let workloadList = await db.execute(
-      connection, SQL.getWorkloadList(filters(req), req.body.startDate, req.body.endDate)
+      connection, SQL.getWorkloadList(condition, req.body.startDate, req.body.endDate)
     )
+    console.log(SQL.getWorkloadList(condition, req.body.startDate, req.body.endDate))
     workloadList = workloadList.map((item) => {
       return {
         ...item,
@@ -61,9 +77,8 @@ const getWorkloadBench = async (req, res) => {
       }
     }
 
-    console.log(SQL.getWorkloadBench(condition))
-
-    let workLoadBench = await db.execute(connection, SQL.getWorkloadBench(condition))
+    let workLoadBench = await db.execute(connection,
+      SQL.getWorkloadBench(condition, req.body.startDate, req.body.endDate))
     workLoadBench = workLoadBench.map((item) => {
       return {
         ...item,
@@ -89,10 +104,10 @@ const getWorkloadUnassigned = async (req, res) => {
         condition += ` AND PROJECT.OFFICE_ID = ${filter.office}`;
       }
       if (filter.group) {
-        condition += ` AND PROJECT.GROUP_ID = ${filter.office}`;
+        condition += ` AND PROJECT.GROUP_ID IN (${filter.group})`;
       }
     }
-    console.log(SQL.getWorkloadUnassigned(condition, req.body.startDate, req.body.endDate))
+
     let workloadUnassigned = await db.execute(connection,
       SQL.getWorkloadUnassigned(condition, req.body.startDate, req.body.endDate)
     )
@@ -104,15 +119,41 @@ const getWorkloadUnassigned = async (req, res) => {
 
 const getWorkloadListCount = async (req, res) => {
   try {
+    const filter = req.body.filter;
+    let condition = ''
+    if (filter) {
+      if (filter.role) {
+        condition += ` AND PROJECT_ROLE_ID IN (${filter.role.join(',')})`;
+      }
+      if (filter.office) {
+        condition += ` AND OFFICE_ID = ${filter.office}`;
+      }
+      if (filter.group) {
+        condition += ` AND GROUP_ID IN (${filter.group.join(',')})`;
+      }
+    }
+    let condition2 = ''
+    if (filter) {
+      if (filter.role) {
+        condition2 += ` AND STAFF_ROLE.ROLE_ID IN (${filter.role.join(',')})`;
+      }
+      if (filter.office) {
+        condition2 += ` AND STAFF.OFFICE_ID = ${filter.office}`;
+      }
+    }
     const connection = await db.connection(req);
-    console.log(req.body.filter)
-    console.log(filters(req))
-    console.log(SQL.getWorkloadListCount(filters(req), req.body.startDate, req.body.endDate))
+    console.log(SQL.getQueryCount(SQL.getWorkloadBench(condition2, req.body.startDate, req.body.endDate)))
+    let workLoadBenchCount = await db.execute(
+      connection,
+      SQL.getQueryCount(SQL.getWorkloadBench(condition2, req.body.startDate, req.body.endDate))
+    )
     const openRolesList = await db.execute(
       connection,
-      SQL.getQueryCount(SQL.getWorkloadListCount(filters(req), req.body.startDate, req.body.endDate))
-    );
-    util.successResponse(res, openRolesList[0]);
+      SQL.getQueryCount(SQL.getWorkloadListCount(condition, req.body.startDate, req.body.endDate))
+    )
+    console.log(SQL.getQueryCount(SQL.getWorkloadListCount(condition, req.body.startDate, req.body.endDate)))
+    const result = { count: openRolesList[0].count + workLoadBenchCount[0].count }
+    util.successResponse(res, result);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
