@@ -122,6 +122,32 @@ ORDER BY STAFF.FIRST_NAME;
     GROUP BY STAFF.STAFF_ID
     `
   ),
+  getStaffWorkloadList: () =>
+    `
+    SELECT S.STAFF_ID,
+        S.FIRST_NAME,
+        S.LAST_NAME,
+        STAFF_PHOTO,
+        S.PREFERRED_NAME,
+        O.OFFICE_NAME,
+        O.OFFICE_STATE,
+        ROLE_NAME,
+        ROLE_ID,
+        PS.START_DATE,
+        PS.END_DATE,
+        PROJECT_NAME,
+        P.PROJECT_ID,
+        ALLOCATION,
+        PROJECT_STATUS_ID
+    FROM STAFF S
+            LEFT JOIN PROJECT_STAFF PS on S.STAFF_ID = PS.STAFF_ID
+            LEFT OUTER JOIN PROJECT P on PS.PROJECT_ID = P.PROJECT_ID
+            INNER JOIN OFFICE O on S.OFFICE_ID = O.OFFICE_ID
+            INNER JOIN STAFF_ROLE SR on S.STAFF_ROLE_ID = SR.ROLE_ID
+    WHERE PROJECT_STATUS_ID = 3
+      OR PROJECT_STATUS_ID = 10
+      ORDER BY S.STAFF_ID
+  `,
   availabilityByDate: (startDate, endDate, filters) => (
     `
     SELECT CALENDAR.WEEK,

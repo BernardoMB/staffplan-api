@@ -99,7 +99,6 @@ const assignmentList = async (req, res) => {
   }
 }
 
-
 const assignmentListCount = async (req, res) => {
   try {
     const connection = await db.connection(req);
@@ -108,6 +107,22 @@ const assignmentListCount = async (req, res) => {
       SQL.getQueryCount(SQL.assignmentListGrouped(staffUtil.filters(req)))
     );
     util.successResponse(res, projectList[0]);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
+const getStaffWorkloadList = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    let workloadList = await db.execute(connection, SQL.getStaffWorkloadList());
+    workloadList = workloadList.map((item) => {
+      return {
+        ...item,
+        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO)
+      }
+    });
+    util.successResponse(res, workloadList);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
@@ -417,5 +432,6 @@ module.exports = {
   getStaffAllocation,
   insertStaffPhoto,
   getStaffPhoto,
-  availabilityByDate
+  availabilityByDate,
+  getStaffWorkloadList
 }
