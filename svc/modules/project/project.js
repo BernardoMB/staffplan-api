@@ -45,11 +45,9 @@ const getWorkloadList = async (req, res) => {
         condition = `${condition} AND PROJECT.OFFICE_ID = ${filter.office}`;
       }
     }
-
     let workloadList = await db.execute(
       connection, SQL.getWorkloadList(condition, req.body.startDate, req.body.endDate)
     )
-    console.log(SQL.getWorkloadList(condition, req.body.startDate, req.body.endDate))
     workloadList = workloadList.map((item) => {
       return {
         ...item,
@@ -142,7 +140,6 @@ const getWorkloadListCount = async (req, res) => {
       }
     }
     const connection = await db.connection(req);
-    console.log(SQL.getQueryCount(SQL.getWorkloadBench(condition2, req.body.startDate, req.body.endDate)))
     let workLoadBenchCount = await db.execute(
       connection,
       SQL.getQueryCount(SQL.getWorkloadBench(condition2, req.body.startDate, req.body.endDate))
@@ -151,7 +148,6 @@ const getWorkloadListCount = async (req, res) => {
       connection,
       SQL.getQueryCount(SQL.getWorkloadListCount(condition, req.body.startDate, req.body.endDate))
     )
-    console.log(SQL.getQueryCount(SQL.getWorkloadListCount(condition, req.body.startDate, req.body.endDate)))
     const result = { count: openRolesList[0].count + workLoadBenchCount[0].count }
     util.successResponse(res, result);
   } catch (exception) {
