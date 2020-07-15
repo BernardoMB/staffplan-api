@@ -70,7 +70,6 @@ const availabilityByDate = async (req, res) => {
       endDate = `DATE("${req.body.filter.endDate}")`;
     }
 
-    console.log(SQL.availabilityByDate(startDate, endDate, filters))
     const result = await db.execute(connection, SQL.availabilityByDate(startDate, endDate, filters));
     const hash = {};
     result.forEach(e => {
@@ -103,7 +102,6 @@ const assignmentList = async (req, res) => {
 const assignmentListCount = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    console.log(SQL.assignmentList(staffUtil.filters(req)))
     const projectList = await db.execute(connection,
       SQL.getQueryCount(SQL.assignmentListGrouped(staffUtil.filters(req)))
     );
