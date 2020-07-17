@@ -25,6 +25,7 @@ module.exports = (app) => {
   app.post(`/${CONST.API}/${MODULE}/assignmentlist`, authenticate.isAuthenticated, staff.assignmentList);
   app.post(`/${CONST.API}/${MODULE}/assignmentlist-count`, authenticate.isAuthenticated, staff.assignmentListCount);
   app.post(`/${CONST.API}/${MODULE}/workload`, authenticate.isAuthenticated, staff.getStaffWorkloadList);
+  app.post(`/${CONST.API}/${MODULE}/workload-count`, authenticate.isAuthenticated, staff.getStaffWorkloadListCount);
 
   app.put(`/${CONST.API}/${MODULE}/info`, authenticate.isAuthenticated, staff.insertStaff);
   app.post(`/${CONST.API}/${MODULE}/:id/info`, authenticate.isAuthenticated, staff.updateStaff);

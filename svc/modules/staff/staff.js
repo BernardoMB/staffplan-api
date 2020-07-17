@@ -102,7 +102,6 @@ const assignmentList = async (req, res) => {
 const assignmentListCount = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    console.log(SQL.assignmentList(staffUtil.filters(req)))
     const projectList = await db.execute(connection,
       SQL.getQueryCount(SQL.assignmentListGrouped(staffUtil.filters(req)))
     );
@@ -115,7 +114,9 @@ const assignmentListCount = async (req, res) => {
 const getStaffWorkloadList = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    let workloadList = await db.execute(connection, SQL.getStaffWorkloadList());
+    console.log(SQL.getStaffWorkloadList(staffUtil.filters(req), req.body.startDate, req.body.endDate))
+    let workloadList = await db.execute(connection,
+      SQL.getStaffWorkloadList(staffUtil.filters(req), req.body.startDate, req.body.endDate));
     workloadList = workloadList.map((item) => {
       return {
         ...item,
@@ -123,6 +124,22 @@ const getStaffWorkloadList = async (req, res) => {
       }
     });
     util.successResponse(res, workloadList);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
+const getStaffWorkloadListCount = async (req, res) => {
+  try {
+    console.log(SQL.getStaffWorkloadListCount(staffUtil.filters(req), req.body.startDate, req.body.endDate))
+    const connection = await db.connection(req);
+    const workloadList = await db.execute(
+      connection,
+      SQL.getQueryCount(
+        SQL.getStaffWorkloadListCount(staffUtil.filters(req), req.body.startDate, req.body.endDate)
+      )
+    );
+    util.successResponse(res, workloadList[0]);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
@@ -433,5 +450,6 @@ module.exports = {
   insertStaffPhoto,
   getStaffPhoto,
   availabilityByDate,
-  getStaffWorkloadList
+  getStaffWorkloadList,
+  getStaffWorkloadListCount
 }
