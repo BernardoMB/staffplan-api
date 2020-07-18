@@ -146,8 +146,8 @@ ORDER BY STAFF.FIRST_NAME;
             INNER JOIN STAFF_ROLE SR on STAFF.STAFF_ROLE_ID = SR.ROLE_ID
       ${condition}
       AND (PROJECT_STATUS_ID = 3 OR PROJECT_STATUS_ID = 10)
-      AND ((PS.START_DATE >= '${startDate}' AND PS.START_DATE <= '${endDate}')
-         OR (PS.END_DATE >= '${endDate}' OR PS.END_DATE > '${startDate}'))
+      AND (PS.END_DATE >= '${startDate}')
+      AND (PS.START_DATE < '${endDate}')
     ORDER BY STAFF.STAFF_ID
   `,
   getStaffWorkloadListCount: (condition, startDate, endDate) =>
@@ -160,8 +160,8 @@ ORDER BY STAFF.FIRST_NAME;
             INNER JOIN STAFF_ROLE SR on STAFF.STAFF_ROLE_ID = SR.ROLE_ID
       ${condition}
       AND (PROJECT_STATUS_ID = 3 OR PROJECT_STATUS_ID = 10)
-      AND ((PS.START_DATE >= '${startDate}' AND PS.START_DATE <= '${endDate}')
-         OR (PS.END_DATE >= '${endDate}' OR PS.END_DATE > '${startDate}'))
+      AND (PS.END_DATE >= '${startDate}')
+      AND (PS.START_DATE < '${endDate}')
       GROUP by PS.STAFF_ID
   `,
   availabilityByDate: (startDate, endDate, filters) => (
