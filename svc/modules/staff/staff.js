@@ -29,7 +29,6 @@ const staffAssignments = async (req, res) => {
 const staffList = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    // console.log(SQL.staffList(staffUtil.filters(req)))
     let staffList = await db.execute(connection, SQL.staffList(staffUtil.filters(req)));
     staffList = staffList.map((item) => {
       return {
@@ -69,8 +68,6 @@ const availabilityByDate = async (req, res) => {
     if (req.body.filter && req.body.filter.endDate) {
       endDate = `DATE("${req.body.filter.endDate}")`;
     }
-
-    console.log(SQL.availabilityByDate(startDate, endDate, filters))
     const result = await db.execute(connection, SQL.availabilityByDate(startDate, endDate, filters));
     const hash = {};
     result.forEach(e => {
@@ -114,7 +111,6 @@ const assignmentListCount = async (req, res) => {
 const getStaffWorkloadList = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    console.log(SQL.getStaffWorkloadList(staffUtil.filters(req), req.body.startDate, req.body.endDate))
     let workloadList = await db.execute(connection,
       SQL.getStaffWorkloadList(staffUtil.filters(req), req.body.startDate, req.body.endDate));
     workloadList = workloadList.map((item) => {
@@ -131,7 +127,6 @@ const getStaffWorkloadList = async (req, res) => {
 
 const getStaffWorkloadListCount = async (req, res) => {
   try {
-    console.log(SQL.getStaffWorkloadListCount(staffUtil.filters(req), req.body.startDate, req.body.endDate))
     const connection = await db.connection(req);
     const workloadList = await db.execute(
       connection,
