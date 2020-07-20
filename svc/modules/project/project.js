@@ -61,8 +61,6 @@ const getWorkloadBench = async (req, res) => {
       }
     }
 
-    console.log(SQL.getWorkloadBench(condition))
-
     let workLoadBench = await db.execute(connection, SQL.getWorkloadBench(condition))
     workLoadBench = workLoadBench.map((item) => {
       return {
@@ -92,7 +90,7 @@ const getWorkloadUnassigned = async (req, res) => {
         condition += ` AND PROJECT.GROUP_ID = ${filter.office}`;
       }
     }
-    console.log(SQL.getWorkloadUnassigned(condition, req.body.startDate, req.body.endDate))
+
     let workloadUnassigned = await db.execute(connection,
       SQL.getWorkloadUnassigned(condition, req.body.startDate, req.body.endDate)
     )
@@ -105,9 +103,6 @@ const getWorkloadUnassigned = async (req, res) => {
 const getWorkloadListCount = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    console.log(req.body.filter)
-    console.log(filters(req))
-    console.log(SQL.getWorkloadListCount(filters(req), req.body.startDate, req.body.endDate))
     const openRolesList = await db.execute(
       connection,
       SQL.getQueryCount(SQL.getWorkloadListCount(filters(req), req.body.startDate, req.body.endDate))
