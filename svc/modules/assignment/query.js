@@ -1,9 +1,31 @@
+const getStaffGapNow = `
+    SELECT CURRENT.STAFF_ID
+      FROM PROJECT_STAFF CURRENT
+                INNER JOIN PROJECT_STAFF FUTURE
+                          ON CURRENT.STAFF_ID = FUTURE.STAFF_ID
+                              AND DATEDIFF(FUTURE.START_DATE, CURRENT.END_DATE) > 1
+                              AND CURRENT.ID <> FUTURE.ID
+                LEFT OUTER JOIN STAFF S on CURRENT.STAFF_ID = S.STAFF_ID
+      WHERE CURRENT.END_DATE > CURDATE()
+        AND FUTURE.END_DATE > CURDATE()
+    `;
+
 module.exports = {
-  getProjectTeams: (condition) => (
+  getProjectTeams: (condition) =>
     `
     SELECT
+    CAST(
+      CASE
+          WHEN GAP.STAFF_ID IS NOT NULL THEN 'GAP'
+          WHEN ALLOCATION < 80 THEN 'UNDER_ALLOCATED'
+          WHEN ALLOCATION > 100 THEN 'OVER_ALLOCATED'
+          WHEN ALLOCATION IS NULL THEN 'BENCH'
+          ELSE 'NO_ALERT'
+          END AS CHAR) AS ALLOCATION_STATUS,
       PROJECT_TEAM.ID,
       STAFF.STAFF_ID,
+      STAFF.OFFICE_ID,
+      OFFICE.OFFICE_NAME,
       STAFF.FIRST_NAME,
       STAFF.MIDDLE_INITIAL,
       STAFF.LAST_NAME,
@@ -14,6 +36,8 @@ module.exports = {
       PROJECT_TEAM.START_DATE,
       PROJECT_TEAM.END_DATE,
       PROJECT_TEAM.ALLOCATION,
+      STAFF.STAFF_STATUS_ID,
+      STAFF_STATUS.STATUS_NAME,
       PROJECT_TEAM.RESUME_SUBMITTED      
     FROM
     (
@@ -43,13 +67,17 @@ module.exports = {
     ) PROJECT_TEAM
     INNER JOIN STAFF_ROLE
 		  ON PROJECT_TEAM.PROJECT_ROLE_ID=STAFF_ROLE.ROLE_ID
-	  LEFT JOIN STAFF
+      LEFT JOIN STAFF
       ON PROJECT_TEAM.STAFF_ID=STAFF.STAFF_ID
+    LEFT OUTER JOIN (${getStaffGapNow}) AS GAP ON GAP.STAFF_ID = STAFF.STAFF_ID
+    LEFT OUTER JOIN STAFF_STATUS
+        ON (STAFF.STAFF_STATUS_ID IS NOT NULL AND STAFF_STATUS.STATUS_ID = STAFF.STAFF_STATUS_ID)
+    LEFT OUTER JOIN OFFICE 
+      ON  (STAFF.OFFICE_ID IS NOT NULL AND OFFICE.OFFICE_ID = STAFF.OFFICE_ID)
     WHERE
       ${condition}
-    `
-  ),
-  insertProjectRole: (role) => (
+    `,
+  insertProjectRole: (role) =>
     `
     INSERT INTO PLANNED_PROJECT_STAFF (
       START_DATE,
@@ -66,9 +94,8 @@ module.exports = {
       ${role.PROJECT_ID},
       '${role.RESUME_SUBMITTED}'
     )
-    `
-  ),
-  updateProjectRole: (role) => (
+    `,
+  updateProjectRole: (role) =>
     `
     UPDATE PLANNED_PROJECT_STAFF SET 
       START_DATE = '${role.START_DATE}',
@@ -78,9 +105,8 @@ module.exports = {
       PROJECT_ID = ${role.PROJECT_ID},
       RESUME_SUBMITTED = '${role.RESUME_SUBMITTED}'
     WHERE ID = ${role.ID}
-    `
-  ),
-  bulkRoleUpdate: (tableName, startDate, endDate, projectId, ids) => (
+    `,
+  bulkRoleUpdate: (tableName, startDate, endDate, projectId, ids) =>
     `
     UPDATE ${tableName} SET
       START_DATE = '${startDate}',
@@ -88,31 +114,27 @@ module.exports = {
     WHERE
       PROJECT_ID = ${projectId} AND
       ID IN (${ids.join(',')})
-    `
-  ),
-  deleteProjectPlanned: (projectId, id) => (
+    `,
+  deleteProjectPlanned: (projectId, id) =>
     `
     DELETE FROM PLANNED_PROJECT_STAFF 
     WHERE
       PROJECT_ID = ${projectId} AND
       ID = ${id}    
-    `
-  ),
-  deleteStaffAllocation: (id) => (
+    `,
+  deleteStaffAllocation: (id) =>
     `
     DELETE FROM STAFF_ALLOCATION 
     WHERE PROJECT_STAFF_ID = ${id}    
-    `
-  ),
-  deleteProjectStaff: (projectId, id) => (
+    `,
+  deleteProjectStaff: (projectId, id) =>
     `
     DELETE FROM PROJECT_STAFF 
     WHERE
       PROJECT_ID = ${projectId} AND
       ID = ${id}    
-    `
-  ),
-  getAlert: (id, staffId, startDate, endDate, allocation) => (
+    `,
+  getAlert: (id, staffId, startDate, endDate, allocation) =>
     `
     SELECT 
       COALESCE(SUM(PROJECT_STAFF.ALLOCATION), 0) + ${allocation} TOTAL
@@ -126,19 +148,16 @@ module.exports = {
       AND PROJECT_STAFF.STAFF_ID = ${staffId}
       AND PROJECT_STAFF.START_DATE < '${endDate}'
       AND PROJECT_STAFF.END_DATE > '${startDate}'
-    `
-  ),
-  getAssignmentDetails: (plannedId) => (
-    `SELECT * FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`
-  ),
-  insertProjectStaff: (staffId, plannedId) => (
+    `,
+  getAssignmentDetails: (plannedId) =>
+    `SELECT * FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
+  insertProjectStaff: (staffId, plannedId) =>
     `
     INSERT INTO PROJECT_STAFF (STAFF_ID, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID)
     Select ${staffId}, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID 
     FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}
-    `
-  ),
-  insertStaffAllocation: (plannedStaffId) => (
+    `,
+  insertStaffAllocation: (plannedStaffId) =>
     `
       INSERT INTO STAFF_ALLOCATION
         (CALENDAR_ID, PROJECT_STAFF_ID, ALLOCATION)
@@ -147,12 +166,10 @@ module.exports = {
         PROJECT_STAFF ON PROJECT_STAFF.ID = ${plannedStaffId} 
           WHERE CALENDAR.START_DATE >= DATE_ADD(PROJECT_STAFF.START_DATE, INTERVAL(1 - DAYOFWEEK(PROJECT_STAFF.START_DATE)) DAY)
           AND CALENDAR.END_DATE <= DATE_ADD(PROJECT_STAFF.END_DATE, INTERVAL(7 - DAYOFWEEK(PROJECT_STAFF.END_DATE)) DAY)
-    `
-  ),
-  removeProjectPlan: (plannedId) => (
-    `DELETE FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`
-  ),
-  assignmentList: (plannedId, condition) => (
+    `,
+  removeProjectPlan: (plannedId) =>
+    `DELETE FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
+  assignmentList: (plannedId, condition) =>
     `
     SELECT
       CALENDAR.WEEK,
@@ -171,9 +188,8 @@ module.exports = {
       CALENDAR.START_DATE >= PLANNED_PROJECT_STAFF.START_DATE
       AND CALENDAR.END_DATE <= PLANNED_PROJECT_STAFF.END_DATE
       AND ${condition}
-    `
-  ),
-  outlookList: (startDate, endDate, condition) => (
+    `,
+  outlookList: (startDate, endDate, condition) =>
     `
     SELECT
       CALENDAR.WEEK,
@@ -190,9 +206,8 @@ module.exports = {
       CALENDAR.START_DATE >= '${startDate}'
       AND CALENDAR.END_DATE <= '${endDate}'
       AND ${condition}
-    `
-  ),
-  updateAllocation: (allocation, year, week, plannedStaffId) => (
+    `,
+  updateAllocation: (allocation, year, week, plannedStaffId) =>
     `
     UPDATE 
       STAFF_ALLOCATION
@@ -201,6 +216,5 @@ module.exports = {
     WHERE
       PROJECT_STAFF_ID = ${plannedStaffId}
       AND CALENDAR_ID = (SELECT CALENDAR_ID FROM CALENDAR WHERE YEAR = ${year} AND WEEK = ${week})
-    `
-  )
-}
+    `,
+};
