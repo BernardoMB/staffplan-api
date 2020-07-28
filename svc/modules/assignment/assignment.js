@@ -62,7 +62,6 @@ const updateProjectRole = async (req, res) => {
       RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0
     };
     const connection = await db.connection(req);
-    console.log(SQL.updateProjectRole(roleToCreate));
     const rowsAffected = await db.execute(connection, SQL.updateProjectRole(roleToCreate));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
