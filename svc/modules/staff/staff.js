@@ -125,6 +125,23 @@ const getStaffWorkloadList = async (req, res) => {
   }
 }
 
+const getStaffWorkload = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    let workloadList = await db.execute(connection,
+      SQL.getStaffWorkload(req.body.id, req.body.startDate, req.body.endDate));
+    workloadList = workloadList.map((item) => {
+      return {
+        ...item,
+        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO)
+      }
+    });
+    util.successResponse(res, workloadList);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+}
+
 const getStaffWorkloadListCount = async (req, res) => {
   try {
     const connection = await db.connection(req);
@@ -446,5 +463,6 @@ module.exports = {
   getStaffPhoto,
   availabilityByDate,
   getStaffWorkloadList,
+  getStaffWorkload,
   getStaffWorkloadListCount
 }
