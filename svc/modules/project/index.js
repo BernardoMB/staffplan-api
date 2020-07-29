@@ -17,11 +17,6 @@ module.exports = (app) => {
   app.post(
     `/${CONST.API}/${MODULE}/workload`,
     authenticate.isAuthenticated,
-    project.getWorkload
-  );
-  app.post(
-    `/${CONST.API}/${MODULE}/workload-list`,
-    authenticate.isAuthenticated,
     project.getWorkloadList
   );
   app.post(
