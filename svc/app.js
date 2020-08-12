@@ -14,7 +14,7 @@ app.use(cookieParser());
 
 // Create connection to master DB
 const mysql = require('mysql');
-const connection  = require('express-myconnection');
+const connection = require('express-myconnection');
 const config = require('./common/config');
 app.use(connection(mysql, config.DB, 'request'));
 
@@ -31,5 +31,5 @@ const log = require('./common/logger');
 // Host http server
 app.set('port', process.env.PORT || 80);
 http.createServer(app).listen(app.get('port'), function () {
-  log.info(`Express server listening on port ${app.get('port')}`);  
+  log.info(`Express server listening on port ${app.get('port')}`);
 });
