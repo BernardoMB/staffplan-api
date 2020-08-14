@@ -6,6 +6,7 @@ const SUBMODULE = 'assignment';
 module.exports = (app) => {
   app.get(`/${CONST.API}/${MODULE}/:id/role`, authenticate.isAuthenticated, assignment.getProjectRole);
   app.put(`/${CONST.API}/${MODULE}/:id/role`, authenticate.isAuthenticated, assignment.insertProjectRole);
+  app.post(`/${CONST.API}/${MODULE}/:id/role`, authenticate.isAuthenticated, assignment.getProjectRoleCalendar);
   app.post(`/${CONST.API}/${MODULE}/:id/role/:roleId`, authenticate.isAuthenticated, assignment.updateProjectRole);
   app.post(`/${CONST.API}/${MODULE}/:id/bulkroleupdate`, authenticate.isAuthenticated, assignment.bulkRoleUpdate);
   app.post(`/${CONST.API}/${MODULE}/:id/deleterole`, authenticate.isAuthenticated, assignment.deleteRole);
