@@ -39,6 +39,44 @@ const getProjectRole = async (req, res) => {
   }
 };
 
+const getProjectRoleCalendar = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    let condition = `PROJECT_TEAM.PROJECT_ID = ${req.params.id} `;
+    if (req.query && req.query.active === 'true') {
+      condition = `${condition} AND  PROJECT_TEAM.END_DATE >= CURDATE()`;
+    }
+    const projectRoles = await db.execute(
+      connection,
+      SQL.getProjectTeamsCalendar(condition, req.body.startDate, req.body.endDate)
+    );
+    if (projectRoles && projectRoles.length) {
+      for (let i = 0; i < projectRoles.length; i++) {
+        const role = projectRoles[i];
+        // Check role as assigned
+        if (role.STAFF_ID) {
+          // Check Staff have any other project allocation to show alert
+          const allocation = await db.execute(
+            connection,
+            SQL.getAlert(
+              role.PROJECT_STAFF_ID,
+              role.STAFF_ID,
+              moment(role.START_DATE).format('YYYY-MM-DD'),
+              moment(role.END_DATE).format('YYYY-MM-DD'),
+              role.ALLOCATION
+            )
+          );
+          // SET ALERT as true if total allocation is > 100%
+          projectRoles[i].ALERT = allocation[0].TOTAL > 100;
+        }
+      }
+    }
+    util.successResponse(res, projectRoles);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+};
+
 const insertProjectRole = async (req, res) => {
   try {
     const roleToCreate = {
@@ -69,7 +107,6 @@ const updateProjectRole = async (req, res) => {
       RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0,
     };
     const connection = await db.connection(req);
-    console.log(SQL.updateProjectRole(roleToCreate));
     const rowsAffected = await db.execute(connection, SQL.updateProjectRole(roleToCreate));
     util.successResponse(res, rowsAffected);
   } catch (exception) {
@@ -267,4 +304,5 @@ module.exports = {
   updateAssignment,
   assignList,
   outlookList,
+  getProjectRoleCalendar,
 };
