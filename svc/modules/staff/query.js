@@ -150,6 +150,33 @@ ORDER BY STAFF.FIRST_NAME;
       AND (PS.START_DATE < '${endDate}')
     ORDER BY STAFF.STAFF_ID
   `,
+  getStaffWorkload: (id, startDate, endDate) =>
+    `
+    SELECT STAFF.STAFF_ID,
+        STAFF.FIRST_NAME,
+        STAFF.LAST_NAME,
+        STAFF_PHOTO,
+        STAFF.PREFERRED_NAME,
+        O.OFFICE_NAME,
+        O.OFFICE_STATE,
+        ROLE_NAME,
+        ROLE_ID,
+        PS.START_DATE,
+        PS.END_DATE,
+        PROJECT_NAME,
+        P.PROJECT_ID,
+        ALLOCATION,
+        PROJECT_STATUS_ID
+    FROM STAFF
+            LEFT JOIN PROJECT_STAFF PS on STAFF.STAFF_ID = PS.STAFF_ID
+            LEFT OUTER JOIN PROJECT P on PS.PROJECT_ID = P.PROJECT_ID
+            INNER JOIN OFFICE O on STAFF.OFFICE_ID = O.OFFICE_ID
+            INNER JOIN STAFF_ROLE SR on STAFF.STAFF_ROLE_ID = SR.ROLE_ID
+      WHERE STAFF.STAFF_ID = ${id}
+      AND (PROJECT_STATUS_ID = 3 OR PROJECT_STATUS_ID = 10)
+      AND (PS.END_DATE >= '${startDate}')
+      AND (PS.START_DATE < '${endDate}')
+  `,
   getStaffWorkloadListCount: (condition, startDate, endDate) =>
     `
     SELECT 1

@@ -90,18 +90,20 @@ module.exports = {
     AND CALENDAR.END_DATE <= '${endDate}'
     ORDER BY CALENDAR.CALENDAR_ID, ROLE_NAME
     `,
-  getWorkloadBench: (condition) =>
+  getWorkloadBench: (condition, startDate, endDate) =>
     `
     SELECT STAFF_ID, FIRST_NAME, LAST_NAME, PREFERRED_NAME, ROLE_ID, ROLE_NAME, STAFF_PHOTO
     FROM STAFF
             INNER JOIN STAFF_ROLE on STAFF.STAFF_ROLE_ID = STAFF_ROLE.ROLE_ID
     WHERE STAFF_ID NOT IN (
       SELECT STAFF_ID
-      FROM PROJECT_STAFF)
+      FROM PROJECT_STAFF
+       where  ((START_DATE >= '${startDate}' AND START_DATE <= '${endDate}')
+         OR (END_DATE >= '${endDate}' OR END_DATE > '${startDate}'))
+      )
     AND STAFF_STATUS_ID = 1
     ${condition}
-    `
-  ,
+    `,
   getWorkloadUnassigned: (condition, startDate, endDate) =>
     `
     SELECT ID, PPS.START_DATE, PPS.END_DATE, ALLOCATION, ROLE_ID, ROLE_NAME, PPS.PROJECT_ID, PROJECT_NAME
@@ -112,22 +114,38 @@ module.exports = {
          AND ((PPS.START_DATE >= '${startDate}' AND PPS.START_DATE <= '${endDate}')
          OR (PPS.END_DATE >= '${endDate}' OR PPS.END_DATE > '${startDate}'))
          ${condition}
-    `
-  ,
-  getWorkloadListCount: (condition, startDate, endDate) =>
-    ` 
-    SELECT STAFF.STAFF_ID
-    FROM CALENDAR
-            LEFT JOIN STAFF_ALLOCATION SA ON CALENDAR.CALENDAR_ID = SA.CALENDAR_ID
-            LEFT OUTER JOIN PROJECT_STAFF PS ON SA.PROJECT_STAFF_ID = PS.ID
-            LEFT OUTER JOIN STAFF ON PS.STAFF_ID = STAFF.STAFF_ID
-            LEFT OUTER JOIN PROJECT ON PS.PROJECT_ID = PROJECT.PROJECT_ID
-    ${condition}
-    AND ((CALENDAR.START_DATE >= '${startDate}' AND CALENDAR.START_DATE <= '${endDate}')
-         OR (CALENDAR.END_DATE >= '${endDate}' OR CALENDAR.END_DATE > '${startDate}'))
-    AND STAFF.STAFF_ID IS NOT NULL
-    GROUP BY PROJECT.PROJECT_ID
     `,
+  getWorkloadListCount: (condition, startDate, endDate) =>
+    `
+  select ID
+  from (
+         SELECT ID,
+                PROJECT_ID,
+                STAFF_ID,
+                PROJECT_ROLE_ID,
+                START_DATE,
+                END_DATE,
+                ALLOCATION,
+                RESUME_SUBMITTED
+         FROM PROJECT_STAFF
+         UNION ALL
+         SELECT ID,
+                PROJECT_ID,
+                NULL,
+                PROJECT_ROLE_ID,
+                START_DATE,
+                END_DATE,
+                ALLOCATION,
+                RESUME_SUBMITTED
+         FROM PLANNED_PROJECT_STAFF
+     ) as res
+         left join PROJECT on res.PROJECT_ID = PROJECT.PROJECT_ID
+  where 1 = 1
+${condition}
+  AND ((res.START_DATE >= '${startDate}' AND res.START_DATE <= '${endDate}')
+    OR (res.END_DATE >= '${endDate}' OR res.END_DATE > '${startDate}'))
+    GROUP by res.PROJECT_ID
+  `,
   getProjectTeams: (condition) =>
     `
     SELECT
