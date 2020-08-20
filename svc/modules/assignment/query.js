@@ -153,9 +153,10 @@ module.exports = {
   getAssignmentDetails: (plannedId) =>
     `SELECT * FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
   insertProjectStaff: (staffId, plannedId) =>
+    // todo: change project_staff_id.staff_id from null to id 
     `
-    INSERT INTO PROJECT_STAFF (STAFF_ID, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID)
-    Select ${staffId}, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID 
+    INSERT INTO PROJECT_STAFF (STAFF_ID, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID, PLANNED_STAFF_ID)
+    Select ${staffId}, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID, ${plannedId}
     FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}
     `,
   insertStaffAllocation: (plannedStaffId) =>
@@ -170,6 +171,10 @@ module.exports = {
     `,
   removeProjectPlan: (plannedId) =>
     `DELETE FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
+  updateProjectStaff: (projectStaffId, staffId) =>
+    `UPDATE PROJECT_STAFF
+      set STAFF_ID = ${staffId}
+      where PROJECT_STAFF.ID = ${projectStaffId}`,
   assignmentList: (plannedId, condition) =>
     `
     SELECT
