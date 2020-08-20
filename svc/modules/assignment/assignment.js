@@ -32,7 +32,6 @@ const getProjectRole = async (req, res) => {
   }
 }
 
-
 /**
  * Creates a new unassigned/open role for a particular project 
  * on planned_project_staff and project_staff with a staff_id of null
@@ -102,14 +101,19 @@ const bulkRoleUpdate = async (req, res) => {
     const assignedIds = req.body.roleIds.filter(item => item.staffId);
     const plannedIds = req.body.roleIds.filter(item => !item.staffId);
     const connection = await db.connection(req);
+    // staff is assigned to project_staff
     if (assignedIds && assignedIds.length) {
       await db.execute(connection, SQL.bulkRoleUpdate(
         'PROJECT_STAFF', startDate, endDate, projectId, assignedIds.map(item => item.id)
       ));
     }
+    // open role is assigned to project_staff
     if (plannedIds && plannedIds.length) {
       await db.execute(connection, SQL.bulkRoleUpdate(
         'PLANNED_PROJECT_STAFF', startDate, endDate, projectId, plannedIds.map(item => item.id)
+      ));
+      await db.execute(connection, SQL.bulkRoleUpdate(
+        'PROJECT_STAFF', startDate, endDate, projectId, plannedIds.map(item => item.id)
       ));
     }
     util.successResponse(res, true);
@@ -193,16 +197,15 @@ const getWeeknoInMonth = (selectedDate, year) => {
 }
 
 const assignStaff = async (req, res) => {
-  // todo: update planned_id reference to null on planned_staff,
-  // get planned_staff_id from planned_staff table
   try {
     const plannedId = req.body.plannedId
-    const projectStaffId = req.body.projectStaffId;
     const staffId = req.body.staffId;
     const connection = await db.connection(req);
-    // set staff_id in project_staff
-    await db.execute(connection, SQL.updateProjectStaff(projectStaffId, staffId))
-    // Remove the data from planned project staff
+    // set staff_id in project_staff, set planned_staff_id to null
+    console.log(SQL.updateProjectStaff(plannedId, staffId))
+    await db.execute(connection, SQL.updateProjectStaff(plannedId, staffId))
+    // delete row in planned_project_staff
+    console.log(SQL.removeProjectPlan(plannedId))
     await db.execute(connection, SQL.removeProjectPlan(plannedId))
     util.successResponse(res)
   } catch (exception) {

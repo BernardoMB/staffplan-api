@@ -171,10 +171,11 @@ module.exports = {
     `,
   removeProjectPlan: (plannedId) =>
     `DELETE FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
-  updateProjectStaff: (projectStaffId, staffId) =>
+  updateProjectStaff: (plannedId, staffId) =>
     `UPDATE PROJECT_STAFF
-      set STAFF_ID = ${staffId}
-      where PROJECT_STAFF.ID = ${projectStaffId}`,
+      set STAFF_ID = ${staffId},
+       PLANNED_STAFF_ID = NULL
+      where PROJECT_STAFF.PLANNED_STAFF_ID = ${plannedId}`,
   assignmentList: (plannedId, condition) =>
     `
     SELECT
