@@ -10,7 +10,7 @@ const getProjectRole = async (req, res) => {
     if (req.query && req.query.active === 'true') {
       condition = `${condition} AND  PROJECT_TEAM.END_DATE >= CURDATE()`;
     }
-    const projectRoles = await db.execute(connection, SQL.getProjectTeams(condition));
+    let projectRoles = await db.execute(connection, SQL.getProjectTeams(condition));
     if (projectRoles && projectRoles.length) {
       for (let i = 0; i < projectRoles.length; i++) {
         const role = projectRoles[i];
@@ -33,6 +33,12 @@ const getProjectRole = async (req, res) => {
         }
       }
     }
+    projectRoles = projectRoles.map((item) => {
+      return {
+        ...item,
+        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO),
+      };
+    });
     util.successResponse(res, projectRoles);
   } catch (exception) {
     util.errorResponse(res, exception);
