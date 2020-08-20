@@ -111,6 +111,7 @@ const assignmentListCount = async (req, res) => {
 const getStaffWorkloadList = async (req, res) => {
   try {
     const connection = await db.connection(req);
+    console.log(SQL.getStaffWorkloadList(staffUtil.filters(req), req.body.startDate, req.body.endDate))
     let workloadList = await db.execute(connection,
       SQL.getStaffWorkloadList(staffUtil.filters(req), req.body.startDate, req.body.endDate));
     workloadList = workloadList.map((item) => {
