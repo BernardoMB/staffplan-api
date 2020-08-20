@@ -29,6 +29,7 @@ module.exports = {
       STAFF.FIRST_NAME,
       STAFF.MIDDLE_INITIAL,
       STAFF.LAST_NAME,
+      STAFF.STAFF_PHOTO,
       STAFF.PREFERRED_NAME,
       STAFF.STAFF_PHOTO,
       STAFF_ROLE.ROLE_ID,
@@ -199,8 +200,7 @@ from CALENDAR
       AND PROJECT_STAFF.START_DATE < '${endDate}'
       AND PROJECT_STAFF.END_DATE > '${startDate}'
     `,
-  getAssignmentDetails: (plannedId) =>
-    `SELECT * FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
+  getAssignmentDetails: (plannedId) => `SELECT * FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
   insertProjectStaff: (staffId, plannedId) =>
     `
     INSERT INTO PROJECT_STAFF (STAFF_ID, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID)
@@ -217,14 +217,14 @@ from CALENDAR
           WHERE CALENDAR.START_DATE >= DATE_ADD(PROJECT_STAFF.START_DATE, INTERVAL(1 - DAYOFWEEK(PROJECT_STAFF.START_DATE)) DAY)
           AND CALENDAR.END_DATE <= DATE_ADD(PROJECT_STAFF.END_DATE, INTERVAL(7 - DAYOFWEEK(PROJECT_STAFF.END_DATE)) DAY)
     `,
-  removeProjectPlan: (plannedId) =>
-    `DELETE FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
+  removeProjectPlan: (plannedId) => `DELETE FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
   assignmentList: (plannedId, condition) =>
     `
     SELECT
       CALENDAR.WEEK,
       CALENDAR.YEAR,
       PROJECT_STAFF.STAFF_ID,
+      PROJECT_STAFF.STAFF_PHOTO,
       STAFF_ALLOCATION.ALLOCATION
     FROM
       CALENDAR
