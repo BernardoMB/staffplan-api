@@ -1,25 +1,17 @@
 import 'mocha';
 import mysql = require('promise-mysql');
 import axios from 'axios';
-import SQL = require('../modules/assignment/query');
 import chaiHttp = require('chai-http');
 import chai = require('chai');
 import assignment = require('../modules/assignment/assignment');
-const expect = require('chai').expect;
+import { config } from './config';
+const expect = chai.expect;
 chai.use(chaiHttp);
 const BASE_URL = 'http://localhost:4300/api';
-const config = {
-    "host": "rds.coqokg7f9b0o.us-west-1.rds.amazonaws.com",
-    "user": "staff_root",
-    "password": "6HTpVVZeC",
-    "port": 3306,
-    "database": "dev_internal",
-    "name": "acme-demo",
-}
 
 describe('Assignment Module', () => {
-    describe('Insert Project Role', () => {
-        it('should create a new open role', async (done) => {
+    describe('Insert Project Role', function () {
+        it('should insert into PLANNED_PROJECT_STAFF', async function () {
             try {
                 const connection = await mysql.createConnection(config);
                 const q1 = await connection.query('SELECT * FROM PLANNED_PROJECT_STAFF')
@@ -43,24 +35,51 @@ describe('Assignment Module', () => {
                     body,
                     { headers: { sessionid: token } }
                 )
-
                 const q2 = await connection.query('SELECT * FROM PLANNED_PROJECT_STAFF')
-
-                if (q2.length > q1.length) {
-                    const inserted = q2[q2.length - 1];
-                    const q3 = await connection.query(`SELECT * FROM PROJECT_STAFF WHERE PLANNED_STAFF_ID = ${inserted.ID}`)
-
-                    if (q3.length) {
-                        const q4 = await connection.query(
-                            `select * from STAFF_ALLOCATION where PROJECT_STAFF_ID = ${inserted.ID}`
-                        )
-                        console.log(inserted)
-                    }
-                }
+                expect(q2.length).to.be.greaterThan(q1.length)
             } catch (err) {
                 console.log('error', err)
-            } finally {
-                done()
+            }
+        });
+
+        it('should insert into PROJECT_STAFF', async function () {
+            try {
+                const connection = await mysql.createConnection(config);
+                const q2 = await connection.query('SELECT * FROM PLANNED_PROJECT_STAFF')
+                const inserted = q2[q2.length - 1];
+                const q3 = await connection.query(`SELECT * FROM PROJECT_STAFF WHERE PLANNED_STAFF_ID = ${inserted.ID}`)
+                expect(q3).to.have.length.above(0)
+            } catch (err) {
+                console.log(err)
+            }
+        })
+
+        it('should insert into STAFF_ALLOCATION', async function () {
+            try {
+                const connection = await mysql.createConnection(config);
+                const q2 = await connection.query('SELECT * FROM PROJECT_STAFF')
+                const inserted = q2[q2.length - 1];
+                const q4 = await connection.query(`select * from STAFF_ALLOCATION where PROJECT_STAFF_ID = ${inserted.ID}`)
+                expect(q4).to.have.length.above(0)
+            } catch (err) {
+                console.log(err)
+            }
+        })
+
+        after(async function () {
+            try {
+                const connection = await mysql.createConnection(config);
+                const q1 = await connection.query('SELECT * FROM PLANNED_PROJECT_STAFF')
+                const plannedId = q1[q1.length - 1];
+                const q2 = await connection.query(`SELECT * FROM PROJECT_STAFF WHERE PLANNED_STAFF_ID = ${plannedId.ID}`)
+                const projectStaffId = q2[q2.length - 1];
+                await connection.query(`SET FOREIGN_KEY_CHECKS=0;`);
+                await connection.query(`delete from PLANNED_PROJECT_STAFF where ID = ${plannedId.ID};`);
+                await connection.query(`delete from PROJECT_STAFF where PLANNED_STAFF_ID = ${plannedId.ID};`);
+                await connection.query(`delete from STAFF_ALLOCATION where PROJECT_STAFF_ID = ${projectStaffId.ID};`);
+                await connection.query(`SET FOREIGN_KEY_CHECKS=1;`);
+            } catch (err) {
+                console.log(err)
             }
         });
     });
