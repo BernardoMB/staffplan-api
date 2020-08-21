@@ -45,10 +45,10 @@ describe('Assignment Module', () => {
         it('should insert into PROJECT_STAFF', async function () {
             try {
                 const connection = await mysql.createConnection(config);
-                const q2 = await connection.query('SELECT * FROM PLANNED_PROJECT_STAFF')
-                const inserted = q2[q2.length - 1];
-                const q3 = await connection.query(`SELECT * FROM PROJECT_STAFF WHERE PLANNED_STAFF_ID = ${inserted.ID}`)
-                expect(q3).to.have.length.above(0)
+                const q1 = await connection.query('SELECT * FROM PLANNED_PROJECT_STAFF')
+                const inserted = q1[q1.length - 1];
+                const q2 = await connection.query(`SELECT * FROM PROJECT_STAFF WHERE PLANNED_STAFF_ID = ${inserted.ID}`)
+                expect(q2).to.have.length.above(0)
             } catch (err) {
                 console.log(err)
             }
@@ -57,10 +57,10 @@ describe('Assignment Module', () => {
         it('should insert into STAFF_ALLOCATION', async function () {
             try {
                 const connection = await mysql.createConnection(config);
-                const q2 = await connection.query('SELECT * FROM PROJECT_STAFF')
-                const inserted = q2[q2.length - 1];
-                const q4 = await connection.query(`select * from STAFF_ALLOCATION where PROJECT_STAFF_ID = ${inserted.ID}`)
-                expect(q4).to.have.length.above(0)
+                const q1 = await connection.query('SELECT * FROM PROJECT_STAFF')
+                const inserted = q1[q1.length - 1];
+                const q2 = await connection.query(`select * from STAFF_ALLOCATION where PROJECT_STAFF_ID = ${inserted.ID}`)
+                expect(q2).to.have.length.above(0)
             } catch (err) {
                 console.log(err)
             }
