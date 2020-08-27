@@ -10,7 +10,7 @@ const getProjectRole = async (req, res) => {
     if (req.query && req.query.active === 'true') {
       condition = `${condition} AND  PROJECT_STAFF.END_DATE >= CURDATE()`
     }
-    const projectRoles = await db.execute(connection, SQL.getProjectTeams(condition));
+    let projectRoles = await db.execute(connection, SQL.getProjectTeams(condition));
     if (projectRoles && projectRoles.length) {
       for (let i = 0; i < projectRoles.length; i++) {
         const role = projectRoles[i];
@@ -25,6 +25,12 @@ const getProjectRole = async (req, res) => {
         }
       }
     }
+    projectRoles = projectRoles.map((item) => {
+      return {
+        ...item,
+        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO),
+      };
+    });
     util.successResponse(res, projectRoles);
   }
   catch (exception) {
@@ -35,11 +41,11 @@ const getProjectRole = async (req, res) => {
 const getProjectRoleCalendar = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    let condition = `PROJECT_TEAM.PROJECT_ID = ${req.params.id} `;
+    let condition = `PROJECT_STAFF.PROJECT_ID = ${req.params.id} `;
     if (req.query && req.query.active === 'true') {
-      condition = `${condition} AND  PROJECT_TEAM.END_DATE >= CURDATE()`;
+      condition = `${condition} AND  PROJECT_STAFF.END_DATE >= CURDATE()`;
     }
-    const projectRoles = await db.execute(
+    let projectRoles = await db.execute(
       connection,
       SQL.getProjectTeamsCalendar(condition, req.body.startDate, req.body.endDate)
     );
@@ -64,12 +70,17 @@ const getProjectRoleCalendar = async (req, res) => {
         }
       }
     }
+    projectRoles = projectRoles.map((item) => {
+      return {
+        ...item,
+        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO),
+      };
+    });
     util.successResponse(res, projectRoles);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
 };
-
 
 /**
  * Creates a new unassigned/open role for a particular project 
