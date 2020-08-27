@@ -10,7 +10,7 @@ chai.use(chaiHttp);
 const BASE_URL = 'http://localhost:4300/api';
 
 describe('Assignment Module', () => {
-    describe('Insert Project Role', function () {
+    describe.skip('Insert Project Role', function () {
         it('should insert into PLANNED_PROJECT_STAFF', async function () {
             try {
                 const connection = await mysql.createConnection(config);

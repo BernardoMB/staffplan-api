@@ -96,7 +96,29 @@ module.exports = {
       '${role.RESUME_SUBMITTED}'
     )
     `,
-  updateProjectRole: (role) =>
+  updateRolePlannedProject: (role) =>
+    `
+    UPDATE PLANNED_PROJECT_STAFF SET 
+      START_DATE = '${role.START_DATE}',
+      END_DATE = '${role.END_DATE}',
+      ALLOCATION = ${role.ALLOCATION},
+      PROJECT_ROLE_ID  = ${role.PROJECT_ROLE_ID}, 
+      PROJECT_ID = ${role.PROJECT_ID},
+      RESUME_SUBMITTED = '${role.RESUME_SUBMITTED}'
+    WHERE ID = ${role.ID}
+    `,
+  updateRoleProjectStaff: (role) =>
+    `
+    UPDATE PROJECT_STAFF SET 
+      START_DATE = '${role.START_DATE}',
+      END_DATE = '${role.END_DATE}',
+      ALLOCATION = ${role.ALLOCATION},
+      PROJECT_ROLE_ID  = ${role.PROJECT_ROLE_ID}, 
+      PROJECT_ID = ${role.PROJECT_ID},
+      RESUME_SUBMITTED = '${role.RESUME_SUBMITTED}'
+    WHERE PLANNED_STAFF_ID = ${role.ID}
+    `,
+  updateRoleStaffAllocation: (role) =>
     `
     UPDATE PLANNED_PROJECT_STAFF SET 
       START_DATE = '${role.START_DATE}',
@@ -224,4 +246,20 @@ module.exports = {
       PROJECT_STAFF_ID = ${plannedStaffId}
       AND CALENDAR_ID = (SELECT CALENDAR_ID FROM CALENDAR WHERE YEAR = ${year} AND WEEK = ${week})
     `,
+  deleteStaffAllocationByPlannedStaffId: (plannedStaffId) => `
+    delete STAFF_ALLOCATION
+    from STAFF_ALLOCATION
+    left join PROJECT_STAFF on PROJECT_STAFF.PLANNED_STAFF_ID
+    where PROJECT_STAFF.PLANNED_STAFF_ID = ${plannedStaffId}
+    `,
+  insertStaffAllocationByPlannedStaffId: (plannedStaffId) => `
+  INSERT INTO STAFF_ALLOCATION
+      (CALENDAR_ID, PROJECT_STAFF_ID, ALLOCATION)
+    SELECT CALENDAR.CALENDAR_ID, PROJECT_STAFF.ID, PROJECT_STAFF.ALLOCATION
+    FROM CALENDAR
+            LEFT JOIN
+        PROJECT_STAFF ON PROJECT_STAFF.PLANNED_STAFF_ID = ${plannedStaffId}
+    WHERE CALENDAR.START_DATE >= DATE_ADD(PROJECT_STAFF.START_DATE, INTERVAL (1 - DAYOFWEEK(PROJECT_STAFF.START_DATE)) DAY)
+    AND CALENDAR.END_DATE <= DATE_ADD(PROJECT_STAFF.END_DATE, INTERVAL (7 - DAYOFWEEK(PROJECT_STAFF.END_DATE)) DAY)
+  `
 };
