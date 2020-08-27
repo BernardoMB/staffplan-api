@@ -6,9 +6,9 @@ var moment = require('moment');
 const getProjectRole = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    let condition = `PROJECT_TEAM.PROJECT_ID = ${req.params.id} `;
+    let condition = `PROJECT_STAFF.PROJECT_ID = ${req.params.id} `;
     if (req.query && req.query.active === 'true') {
-      condition = `${condition} AND  PROJECT_TEAM.END_DATE >= CURDATE()`
+      condition = `${condition} AND  PROJECT_STAFF.END_DATE >= CURDATE()`
     }
     const projectRoles = await db.execute(connection, SQL.getProjectTeams(condition));
     if (projectRoles && projectRoles.length) {
@@ -216,57 +216,24 @@ const getWeeknoInMonth = (selectedDate, year) => {
   return dates;
 }
 
+/**
+ * Assigns a staff ID to an unassigned/open role.
+ * Updates table staff_id with a staff ID for that role
+ * and deletes role from planned_project_staff
+ */
 const assignStaff = async (req, res) => {
   try {
     const plannedId = req.body.plannedId
     const staffId = req.body.staffId;
     const connection = await db.connection(req);
     // set staff_id in project_staff, set planned_staff_id to null
-    console.log(SQL.updateProjectStaff(plannedId, staffId))
     await db.execute(connection, SQL.updateProjectStaff(plannedId, staffId))
     // delete row in planned_project_staff
-    console.log(SQL.removeProjectPlan(plannedId))
     await db.execute(connection, SQL.removeProjectPlan(plannedId))
     util.successResponse(res)
   } catch (exception) {
     util.errorResponse(res, exception);
   }
-  // try {
-  //   const plannedId = req.body.plannedId;
-  //   const staffId = req.body.staffId;
-  //   const connection = await db.connection(req);
-  //   connection.beginTransaction((err) => {
-  //     if (err) {
-  //       util.errorResponse(res, err);
-  //     } else {
-  //       // Insert into project staff
-  //       db.execute(connection, SQL.insertProjectStaff(staffId, plannedId)).then(
-  //         rowsAffected => {
-  //           const plannedStaffId = rowsAffected.insertId;
-  //           // Insert into Staff Allocation
-  //           db.execute(connection, SQL.insertStaffAllocation(plannedStaffId)).then(
-  //             inserted => {
-  //               // Remove the data from planned project staff
-  //               db.execute(connection, SQL.removeProjectPlan(plannedId)).then(
-  //                 () => {
-  //                   connection.commit((error) => {
-  //                     if (error) {
-  //                       util.errorResponse(res, error)
-  //                     } else {
-  //                       util.successResponse(res, inserted)
-  //                     }
-  //                   });
-  //                 }
-  //               )
-  //             }
-  //           );
-  //         }
-  //       )
-  //     }
-  //   });
-  // } catch (exception) {
-  //   util.errorResponse(res, exception);
-  // }
 }
 
 const assignList = async (req, res) => {
