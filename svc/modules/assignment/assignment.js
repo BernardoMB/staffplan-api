@@ -96,9 +96,9 @@ const updateProjectRole = async (req, res) => {
     // update table PROJECT_STAFF
     await db.execute(connection, SQL.updateRoleProjectStaff(roleToCreate));
     // delete previous STAFF ALLOCATION
-    await db.execute(connection, SQL.deleteStaffAllocationByPlannedStaffId(req.params.roleId));
+    await db.execute(connection, SQL.deleteUnassignedStaffAllocation(req.params.roleId));
     // insert new STAFF ALLOCATION
-    await db.execute(connection, SQL.insertStaffAllocationByPlannedStaffId(req.params.roleId));
+    await db.execute(connection, SQL.insertUnassignedStaffAllocation(req.params.roleId));
     util.successResponse(res);
   } catch (exception) {
     util.errorResponse(res, exception);
@@ -134,21 +134,29 @@ const bulkRoleUpdate = async (req, res) => {
   }
 }
 
+/**
+ * Deletes assigned and unassigned roles
+ */
 const deleteRole = async (req, res) => {
   try {
     const projectId = req.params.id;
-    const id = req.body.roleId;
+    const roleId = req.body.roleId;
+    const isAssigned = !!req.body.staffId
+
     const connection = await db.connection(req);
-    let rowsAffected;
-    rowsAffected = await db.execute(connection, SQL.deleteStaffAllocation(id));
-    rowsAffected = await db.execute(connection, SQL.deleteProjectStaff(projectId, id));
-    // if (req.body.staffId) {
-    //   rowsAffected = await db.execute(connection, SQL.deleteStaffAllocation(id));
-    //   rowsAffected = await db.execute(connection, SQL.deleteProjectStaff(projectId, id));
-    // } else {
-    //   rowsAffected = await db.execute(connection, SQL.deleteProjectPlanned(projectId, id));
-    // }
-    util.successResponse(res, rowsAffected);
+
+    // assigned role
+    if (isAssigned) {
+      await db.execute(connection, SQL.deleteStaffAllocation(roleId));
+      await db.execute(connection, SQL.deleteProjectStaff(projectId, roleId));
+    }
+    // unassigned role
+    else {
+      await db.execute(connection, SQL.deleteUnassignedStaffAllocation(roleId));
+      await db.execute(connection, SQL.deleteUnassignedProjectStaff(roleId));
+      await db.execute(connection, SQL.removeProjectPlan(roleId));
+    }
+    util.successResponse(res);
   } catch (exception) {
     util.errorResponse(res, exception);
   }

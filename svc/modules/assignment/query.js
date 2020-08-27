@@ -157,6 +157,11 @@ module.exports = {
       PROJECT_ID = ${projectId} AND
       ID = ${id}    
     `,
+  deleteUnassignedProjectStaff: (id) =>
+    `
+    DELETE FROM PROJECT_STAFF 
+    WHERE PLANNED_STAFF_ID = ${id}
+    `,
   getAlert: (id, staffId, startDate, endDate, allocation) =>
     `
     SELECT 
@@ -246,13 +251,13 @@ module.exports = {
       PROJECT_STAFF_ID = ${plannedStaffId}
       AND CALENDAR_ID = (SELECT CALENDAR_ID FROM CALENDAR WHERE YEAR = ${year} AND WEEK = ${week})
     `,
-  deleteStaffAllocationByPlannedStaffId: (plannedStaffId) => `
+  deleteUnassignedStaffAllocation: (plannedStaffId) => `
     delete STAFF_ALLOCATION
     from STAFF_ALLOCATION
     left join PROJECT_STAFF on PROJECT_STAFF.PLANNED_STAFF_ID
     where PROJECT_STAFF.PLANNED_STAFF_ID = ${plannedStaffId}
     `,
-  insertStaffAllocationByPlannedStaffId: (plannedStaffId) => `
+  insertUnassignedStaffAllocation: (plannedStaffId) => `
   INSERT INTO STAFF_ALLOCATION
       (CALENDAR_ID, PROJECT_STAFF_ID, ALLOCATION)
     SELECT CALENDAR.CALENDAR_ID, PROJECT_STAFF.ID, PROJECT_STAFF.ALLOCATION
