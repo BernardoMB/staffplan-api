@@ -81,6 +81,7 @@ const insertProjectRole = async (req, res) => {
  */
 const updateProjectRole = async (req, res) => {
   try {
+    const isAssigned = !!req.body.staffId
     const roleToCreate = {
       ID: req.params.roleId,
       ALLOCATION: req.body.allocation,
@@ -91,14 +92,26 @@ const updateProjectRole = async (req, res) => {
       RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0
     };
     const connection = await db.connection(req);
-    // update table PLANNED_PROJECT_STAFF
-    await db.execute(connection, SQL.updateRolePlannedProject(roleToCreate));
-    // update table PROJECT_STAFF
-    await db.execute(connection, SQL.updateRoleProjectStaff(roleToCreate));
-    // delete previous STAFF ALLOCATION
-    await db.execute(connection, SQL.deleteUnassignedStaffAllocation(req.params.roleId));
-    // insert new STAFF ALLOCATION
-    await db.execute(connection, SQL.insertUnassignedStaffAllocation(req.params.roleId));
+
+    console.log(isAssigned)
+
+    if (isAssigned) {
+      // update table PROJECT_STAFF
+      await db.execute(connection, SQL.updateRoleAssignedProjectStaff(roleToCreate));
+      // delete previous STAFF ALLOCATION
+      await db.execute(connection, SQL.deleteStaffAllocation(req.params.roleId));
+      // insert new STAFF ALLOCATION
+      await db.execute(connection, SQL.insertStaffAllocation(req.params.roleId));
+    } else {
+      // update table PLANNED_PROJECT_STAFF
+      await db.execute(connection, SQL.updateRolePlannedProject(roleToCreate));
+      // update table PROJECT_STAFF
+      await db.execute(connection, SQL.updateRoleProjectStaff(roleToCreate));
+      // delete previous STAFF ALLOCATION
+      await db.execute(connection, SQL.deleteUnassignedStaffAllocation(req.params.roleId));
+      // insert new STAFF ALLOCATION
+      await db.execute(connection, SQL.insertUnassignedStaffAllocation(req.params.roleId));
+    }
     util.successResponse(res);
   } catch (exception) {
     util.errorResponse(res, exception);
