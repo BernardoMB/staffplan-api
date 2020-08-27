@@ -1,6 +1,6 @@
 const db = require('../../common/connection');
 const SQL = require('./query');
-const util = require("../../common/util");
+const util = require('../../common/util');
 var moment = require('moment');
 
 const getProjectRole = async (req, res) => {
@@ -31,6 +31,45 @@ const getProjectRole = async (req, res) => {
     util.errorResponse(res, exception);
   }
 }
+
+const getProjectRoleCalendar = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    let condition = `PROJECT_TEAM.PROJECT_ID = ${req.params.id} `;
+    if (req.query && req.query.active === 'true') {
+      condition = `${condition} AND  PROJECT_TEAM.END_DATE >= CURDATE()`;
+    }
+    const projectRoles = await db.execute(
+      connection,
+      SQL.getProjectTeamsCalendar(condition, req.body.startDate, req.body.endDate)
+    );
+    if (projectRoles && projectRoles.length) {
+      for (let i = 0; i < projectRoles.length; i++) {
+        const role = projectRoles[i];
+        // Check role as assigned
+        if (role.STAFF_ID) {
+          // Check Staff have any other project allocation to show alert
+          const allocation = await db.execute(
+            connection,
+            SQL.getAlert(
+              role.PROJECT_STAFF_ID,
+              role.STAFF_ID,
+              moment(role.START_DATE).format('YYYY-MM-DD'),
+              moment(role.END_DATE).format('YYYY-MM-DD'),
+              role.ALLOCATION
+            )
+          );
+          // SET ALERT as true if total allocation is > 100%
+          projectRoles[i].ALERT = allocation[0].TOTAL > 100;
+        }
+      }
+    }
+    util.successResponse(res, projectRoles);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+};
+
 
 /**
  * Creates a new unassigned/open role for a particular project 
@@ -72,7 +111,7 @@ const insertProjectRole = async (req, res) => {
     console.log(exception)
     util.errorResponse(res, exception);
   }
-}
+};
 
 /**
  * Updates an existing unassigned open role
@@ -89,7 +128,7 @@ const updateProjectRole = async (req, res) => {
       PROJECT_ROLE_ID: req.body.roleId,
       START_DATE: req.body.startDate,
       END_DATE: req.body.endDate,
-      RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0
+      RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0,
     };
     const connection = await db.connection(req);
 
@@ -114,21 +153,28 @@ const updateProjectRole = async (req, res) => {
   } catch (exception) {
     util.errorResponse(res, exception);
   }
-}
+};
 
 const bulkRoleUpdate = async (req, res) => {
   try {
     const projectId = req.params.id;
     const startDate = req.body.startDate;
     const endDate = req.body.endDate;
-    const assignedIds = req.body.roleIds.filter(item => item.staffId);
-    const plannedIds = req.body.roleIds.filter(item => !item.staffId);
+    const assignedIds = req.body.roleIds.filter((item) => item.staffId);
+    const plannedIds = req.body.roleIds.filter((item) => !item.staffId);
     const connection = await db.connection(req);
     // staff is assigned to project_staff
     if (assignedIds && assignedIds.length) {
-      await db.execute(connection, SQL.bulkRoleUpdate(
-        'PROJECT_STAFF', startDate, endDate, projectId, assignedIds.map(item => item.id)
-      ));
+      await db.execute(
+        connection,
+        SQL.bulkRoleUpdate(
+          'PROJECT_STAFF',
+          startDate,
+          endDate,
+          projectId,
+          assignedIds.map((item) => item.id)
+        )
+      );
     }
     // open role is assigned to project_staff
     if (plannedIds && plannedIds.length) {
@@ -143,7 +189,7 @@ const bulkRoleUpdate = async (req, res) => {
   } catch (exception) {
     util.errorResponse(res, exception);
   }
-}
+};
 
 /**
  * Deletes assigned and unassigned roles
@@ -171,7 +217,7 @@ const deleteRole = async (req, res) => {
   } catch (exception) {
     util.errorResponse(res, exception);
   }
-}
+};
 
 const updateAssignment = async (req, res) => {
   try {
@@ -181,33 +227,29 @@ const updateAssignment = async (req, res) => {
       for (let i = 0; i < assignments.length; i++) {
         const assignment = assignments[i];
         if (assignment.selectedView === 'Week') {
-          await db.execute(connection, SQL.updateAllocation(
-            assignment.allocation,
-            assignment.year,
-            assignment.week,
-            assignment.plannedStaffId
-          ));
+          await db.execute(
+            connection,
+            SQL.updateAllocation(assignment.allocation, assignment.year, assignment.week, assignment.plannedStaffId)
+          );
         } else {
           // Get List of weeks in that month
           // update for all
           const weeks = getWeeknoInMonth(assignment.date, assignment.year);
           for (let j = 0; j < weeks.length; j++) {
             const week = weeks[j];
-            await db.execute(connection, SQL.updateAllocation(
-              assignment.allocation,
-              week.year,
-              week.week,
-              assignment.plannedStaffId
-            ));
+            await db.execute(
+              connection,
+              SQL.updateAllocation(assignment.allocation, week.year, week.week, assignment.plannedStaffId)
+            );
           }
         }
       }
     }
-    util.successResponse(res, {})
+    util.successResponse(res, {});
   } catch (exception) {
     util.errorResponse(res, exception);
   }
-}
+};
 
 const getWeeknoInMonth = (selectedDate, year) => {
   const firstDay = moment(selectedDate).startOf('month');
@@ -220,12 +262,15 @@ const getWeeknoInMonth = (selectedDate, year) => {
     const startDate = date.startOf('week').format('YYYY-MM-DD');
     const endDate = date.endOf('week').format('YYYY-MM-DD');
     dates.push({
-      year, week, startDate, endDate
+      year,
+      week,
+      startDate,
+      endDate,
     });
     date = date.add(7);
   }
   return dates;
-}
+};
 
 /**
  * Assigns a staff ID to an unassigned/open role.
@@ -245,7 +290,7 @@ const assignStaff = async (req, res) => {
   } catch (exception) {
     util.errorResponse(res, exception);
   }
-}
+};
 
 const assignList = async (req, res) => {
   try {
@@ -255,12 +300,17 @@ const assignList = async (req, res) => {
       condition = ` PROJECT_STAFF.STAFF_ID in (${req.body.staffId.join(',')})`;
     }
     const connection = await db.connection(req);
-    const result = await db.execute(connection, SQL.assignmentList(plannedId, condition));
+    const result = (await db.execute(connection, SQL.assignmentList(plannedId, condition))).map((item) => {
+      return {
+        ...item,
+        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO),
+      };
+    });
     util.successResponse(res, result);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
-}
+};
 
 const outlookList = async (req, res) => {
   try {
@@ -277,7 +327,7 @@ const outlookList = async (req, res) => {
   } catch (exception) {
     util.errorResponse(res, exception);
   }
-}
+};
 
 module.exports = {
   getProjectRole,
@@ -288,5 +338,6 @@ module.exports = {
   assignStaff,
   updateAssignment,
   assignList,
-  outlookList
-}
+  outlookList,
+  getProjectRoleCalendar,
+};
