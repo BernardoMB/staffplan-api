@@ -45,6 +45,7 @@ const getProjectRoleCalendar = async (req, res) => {
     if (req.query && req.query.active === 'true') {
       condition = `${condition} AND  PROJECT_STAFF.END_DATE >= CURDATE()`;
     }
+    console.log(SQL.getProjectTeamsCalendar(condition, req.body.startDate, req.body.endDate))
     let projectRoles = await db.execute(
       connection,
       SQL.getProjectTeamsCalendar(condition, req.body.startDate, req.body.endDate)
@@ -141,7 +142,13 @@ const updateProjectRole = async (req, res) => {
       END_DATE: req.body.endDate,
       RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0,
     };
+
     const connection = await db.connection(req);
+
+    if (!req.params.roleId) throw new Error('No staff ID provided')
+
+    console.log(roleToCreate)
+    console.log(isAssigned)
 
     if (isAssigned) {
       // update table PROJECT_STAFF
@@ -311,17 +318,13 @@ const assignList = async (req, res) => {
       condition = ` PROJECT_STAFF.STAFF_ID in (${req.body.staffId.join(',')})`;
     }
     const connection = await db.connection(req);
-    const result = (await db.execute(connection, SQL.assignmentList(plannedId, condition))).map((item) => {
-      return {
-        ...item,
-        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO),
-      };
-    });
+    console.log(SQL.assignmentList(plannedId, condition))
+    const result = await db.execute(connection, SQL.assignmentList(plannedId, condition));
     util.successResponse(res, result);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
-};
+}
 
 const outlookList = async (req, res) => {
   try {
