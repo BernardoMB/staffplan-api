@@ -74,6 +74,11 @@ const insertProjectRole = async (req, res) => {
   }
 }
 
+/**
+ * Updates an existing unassigned open role
+ * it updates PLANNED_PROJECT_STAFF, PROJECT_STAFF
+ * and deletes and reenters the data STAFF_ALLOCATION
+ */
 const updateProjectRole = async (req, res) => {
   try {
     const roleToCreate = {
@@ -86,8 +91,15 @@ const updateProjectRole = async (req, res) => {
       RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0
     };
     const connection = await db.connection(req);
-    const rowsAffected = await db.execute(connection, SQL.updateProjectRole(roleToCreate));
-    util.successResponse(res, rowsAffected);
+    // update table PLANNED_PROJECT_STAFF
+    await db.execute(connection, SQL.updateRolePlannedProject(roleToCreate));
+    // update table PROJECT_STAFF
+    await db.execute(connection, SQL.updateRoleProjectStaff(roleToCreate));
+    // delete previous STAFF ALLOCATION
+    await db.execute(connection, SQL.deleteStaffAllocationByPlannedStaffId(req.params.roleId));
+    // insert new STAFF ALLOCATION
+    await db.execute(connection, SQL.insertStaffAllocationByPlannedStaffId(req.params.roleId));
+    util.successResponse(res);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
