@@ -93,8 +93,6 @@ const updateProjectRole = async (req, res) => {
     };
     const connection = await db.connection(req);
 
-    console.log(isAssigned)
-
     if (isAssigned) {
       // update table PROJECT_STAFF
       await db.execute(connection, SQL.updateRoleAssignedProjectStaff(roleToCreate));
