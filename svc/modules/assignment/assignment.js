@@ -145,7 +145,9 @@ const updateProjectRole = async (req, res) => {
 
     const connection = await db.connection(req);
 
-    if (!req.params.roleId) throw new Error('No staff ID provided')
+    if (!req.params.roleId) {
+      throw new Error('Missing role ID')
+    }
 
     console.log(roleToCreate)
     console.log(isAssigned)
@@ -219,6 +221,10 @@ const deleteRole = async (req, res) => {
     const isAssigned = !!req.body.staffId
 
     const connection = await db.connection(req);
+
+    if (!roleId) {
+      throw new Error('Missing role ID')
+    }
 
     // assigned role
     if (isAssigned) {
@@ -300,6 +306,11 @@ const assignStaff = async (req, res) => {
     const plannedId = req.body.plannedId
     const staffId = req.body.staffId;
     const connection = await db.connection(req);
+
+    if (!plannedId || !staffId) {
+      throw new Error('Missing planned and staff ID')
+    }
+
     // set staff_id in project_staff, set planned_staff_id to null
     await db.execute(connection, SQL.updateProjectStaff(plannedId, staffId))
     // delete row in planned_project_staff
