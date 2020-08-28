@@ -124,7 +124,7 @@ from CALENDAR
       START_DATE = '${role.START_DATE}',
       END_DATE = '${role.END_DATE}',
       ALLOCATION = ${role.ALLOCATION},
-      PROJECT_ROLE_ID  = ${role.PROJECT_ROLE_ID}, 
+      PROJECT_ROLE_ID  = ${role.PROJECT_ROLE_ID} 
     WHERE ID = ${role.ID}
     `,
   updateRoleProjectStaff: (role) =>
@@ -133,7 +133,7 @@ from CALENDAR
       START_DATE = '${role.START_DATE}',
       END_DATE = '${role.END_DATE}',
       ALLOCATION = ${role.ALLOCATION},
-      PROJECT_ROLE_ID  = ${role.PROJECT_ROLE_ID}, 
+      PROJECT_ROLE_ID  = ${role.PROJECT_ROLE_ID} 
     WHERE PLANNED_STAFF_ID = ${role.ID}
     `,
   updateRoleAssignedProjectStaff: (role) =>
@@ -208,7 +208,7 @@ from CALENDAR
     `,
   getAssignmentDetails: (plannedId) => `SELECT * FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
   insertProjectStaff: (staffId, plannedId) =>
-    // todo: change project_staff_id.staff_id from null to id 
+    // todo: change project_staff_id.staff_id from null to id
     `
     INSERT INTO PROJECT_STAFF (STAFF_ID, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID, PLANNED_STAFF_ID)
     Select ${staffId}, START_DATE, END_DATE, ALLOCATION, PROJECT_ROLE_ID, CONFIRMED, PROJECT_ID, ${plannedId}
@@ -224,8 +224,7 @@ from CALENDAR
           WHERE CALENDAR.START_DATE >= DATE_ADD(PROJECT_STAFF.START_DATE, INTERVAL(1 - DAYOFWEEK(PROJECT_STAFF.START_DATE)) DAY)
           AND CALENDAR.END_DATE <= DATE_ADD(PROJECT_STAFF.END_DATE, INTERVAL(7 - DAYOFWEEK(PROJECT_STAFF.END_DATE)) DAY)
     `,
-  removeProjectPlan: (plannedId) =>
-    `DELETE FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
+  removeProjectPlan: (plannedId) => `DELETE FROM PLANNED_PROJECT_STAFF WHERE ID = ${plannedId}`,
   updateProjectStaff: (plannedId, staffId) =>
     `UPDATE PROJECT_STAFF
       set STAFF_ID = ${staffId},
@@ -280,10 +279,10 @@ from CALENDAR
       AND CALENDAR_ID = (SELECT CALENDAR_ID FROM CALENDAR WHERE YEAR = ${year} AND WEEK = ${week})
     `,
   deleteUnassignedStaffAllocation: (plannedStaffId) => `
-    delete STAFF_ALLOCATION
-    from STAFF_ALLOCATION
-    left join PROJECT_STAFF on PROJECT_STAFF.PLANNED_STAFF_ID
-    where PROJECT_STAFF.PLANNED_STAFF_ID = ${plannedStaffId}
+  delete STAFF_ALLOCATION
+  from PROJECT_STAFF
+  left join STAFF_ALLOCATION on PROJECT_STAFF.ID = STAFF_ALLOCATION.PROJECT_STAFF_ID
+  where PROJECT_STAFF.PLANNED_STAFF_ID = ${plannedStaffId}
     `,
   insertUnassignedStaffAllocation: (plannedStaffId) => `
   INSERT INTO STAFF_ALLOCATION
@@ -294,5 +293,5 @@ from CALENDAR
         PROJECT_STAFF ON PROJECT_STAFF.PLANNED_STAFF_ID = ${plannedStaffId}
     WHERE CALENDAR.START_DATE >= DATE_ADD(PROJECT_STAFF.START_DATE, INTERVAL (1 - DAYOFWEEK(PROJECT_STAFF.START_DATE)) DAY)
     AND CALENDAR.END_DATE <= DATE_ADD(PROJECT_STAFF.END_DATE, INTERVAL (7 - DAYOFWEEK(PROJECT_STAFF.END_DATE)) DAY)
-  `
+  `,
 };
