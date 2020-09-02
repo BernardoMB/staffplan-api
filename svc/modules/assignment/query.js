@@ -267,4 +267,9 @@ from CALENDAR
       PROJECT_STAFF_ID = ${plannedStaffId}
       AND CALENDAR_ID = (SELECT CALENDAR_ID FROM CALENDAR WHERE YEAR = ${year} AND WEEK = ${week})
     `,
+  updateStaffAllocation: (allocation, ids) => `
+    UPDATE STAFF_ALLOCATION
+    SET ALLOCATION = ${allocation}
+    WHERE STAFF_ALLOCATION.ID IN (${ids.toString()})
+    `
 };
