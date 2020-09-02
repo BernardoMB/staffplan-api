@@ -1,3 +1,5 @@
+const constants = require('../../common/const');
+
 const getStaffGapNow = `
     SELECT CURRENT.STAFF_ID
       FROM PROJECT_STAFF CURRENT
@@ -16,8 +18,8 @@ module.exports = {
     SELECT CAST(
                CASE
                    WHEN GAP.STAFF_ID IS NOT NULL THEN 'GAP'
-                   WHEN ALLOCATION < 80 THEN 'UNDER_ALLOCATED'
-                   WHEN ALLOCATION > 100 THEN 'OVER_ALLOCATED'
+                   WHEN ALLOCATION < ${constants.MIN_FTE_ALLOCATION} THEN 'UNDER_ALLOCATED'
+                   WHEN ALLOCATION > ${constants.MAX_FTE_ALLOCATION} THEN 'OVER_ALLOCATED'
                    WHEN ALLOCATION IS NULL THEN 'BENCH'
                    ELSE 'NO_ALERT'
                    END AS CHAR) AS ALLOCATION_STATUS,
@@ -60,8 +62,8 @@ module.exports = {
     select CAST(
                CASE
                    WHEN GAP.STAFF_ID IS NOT NULL THEN 'GAP'
-                   WHEN SA.ALLOCATION < 80 THEN 'UNDER_ALLOCATED'
-                   WHEN SA.ALLOCATION > 100 THEN 'OVER_ALLOCATED'
+                   WHEN SA.ALLOCATION < ${constants.MIN_FTE_ALLOCATION} THEN 'UNDER_ALLOCATED'
+                   WHEN SA.ALLOCATION > ${constants.MAX_FTE_ALLOCATION} THEN 'OVER_ALLOCATED'
                    WHEN SA.ALLOCATION IS NULL THEN 'BENCH'
                    ELSE 'NO_ALERT'
                    END AS CHAR)      AS ALLOCATION_STATUS,
