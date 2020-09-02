@@ -1,3 +1,4 @@
+const constants = require('../../common/const');
 // todo: date params
 const getStaffAllocationNow = `
     SELECT PROJECT_STAFF.STAFF_ID, SUM(ALLOCATION) AS ALLOCATION
@@ -60,8 +61,8 @@ module.exports = {
        CAST(
                CASE
                    WHEN GAP.STAFF_ID IS NOT NULL THEN 'GAP'
-                   WHEN ALLOCATION.ALLOCATION < 80 THEN 'UNDER_ALLOCATED'
-                   WHEN ALLOCATION.ALLOCATION > 100 THEN 'OVER_ALLOCATED'
+                   WHEN ALLOCATION.ALLOCATION < ${constants.MIN_FTE_ALLOCATION} THEN 'UNDER_ALLOCATED'
+                   WHEN ALLOCATION.ALLOCATION > ${constants.MAX_FTE_ALLOCATION} THEN 'OVER_ALLOCATED'
                    WHEN ALLOCATION.ALLOCATION IS NULL THEN 'BENCH'
                    ELSE 'NO_ALERT'
                    END AS CHAR) AS ALLOCATION_STATUS,
@@ -236,7 +237,7 @@ ORDER BY STAFF.FIRST_NAME;
                    ${filters} 
                 GROUP BY STAFF.STAFF_ID
             ) AS ALLOC
-        WHERE ALLOC.SUM > 80
+        WHERE ALLOC.SUM > ${constants.MIN_FTE_ALLOCATION}
     )
     ORDER BY STAFF_ID, START_DATE;
     `
