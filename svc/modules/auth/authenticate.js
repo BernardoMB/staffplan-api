@@ -60,7 +60,8 @@ const getUserDetails = (user, connection, res, dbName) => {
     ZIP: user.ZIP,
     ROLE: user.ROLE,
     ROLE_NAME: user.ROLE_NAME,
-    PHOTO_URL: user.PHOTO_URL ? util.getThumbnailUrl(user.PHOTO_URL) : null
+    PHOTO_URL: user.PHOTO_URL ? util.getThumbnailUrl(user.PHOTO_URL) : null,
+    companyName: user.companyName
   };
   userObj.token = response.token;
   res.cookie('auth', response.token);
@@ -102,12 +103,12 @@ const isAuthenticated = async (req, res, next) => {
 const validateUser = (req, res) => {
   const userName = req.body.username;
   const hostname = req.body.hostname;
-  subscription.getCompanyDB(userName, hostname, req).then(({ connection, dbName }) => {
-    console.log(dbName)
+  subscription.getCompanyDB(userName, hostname, req).then(({ connection, dbName, companyName }) => {
     db.useDB(connection, dbName).then(() => {
       const encPassword = encryptPassword(req.body.password);
       db.execute(connection, SQL.validate(userName, encPassword)).then(user => {
         if (user && user.length) {
+          user[0].companyName = companyName;
           getUserDetails(user[0], connection, res, dbName);
         } else {
           log.info('Authentication Failed');
