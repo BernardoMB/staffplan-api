@@ -57,7 +57,6 @@ const insertUser = async (req, res) => {
       STATE: '',
       COUNTRY: 'USA',
       ZIP: '',
-      COMPANY: '',
     };
     const userInfo = req.body;
     const userToCreate = Object.assign(userDefault, util.cleanObject(userInfo));

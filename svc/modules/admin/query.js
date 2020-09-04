@@ -17,7 +17,6 @@ module.exports = {
       STATE,
       COUNTRY,
       ZIP,
-      COMPANY
     ) VALUES (
       ${user.ROLE_ID},
       '${user.FIRST_NAME}',
@@ -29,7 +28,6 @@ module.exports = {
       '${user.STATE}',
       '${user.COUNTRY}',
       '${user.ZIP}',
-      '${user.COMPANY}'
     )  
     `
   ),
@@ -46,7 +44,6 @@ module.exports = {
       STATE,
       ZIP,
       ACTIVE,
-      COMPANY
     FROM 
       USERS 
     WHERE
@@ -68,7 +65,6 @@ module.exports = {
       CITY,
       STATE,
       ZIP,
-      COMPANY,
       if(ACTIVE, 'Yes', 'No') AS 'ACTIVE'
     FROM
       USERS
@@ -89,7 +85,6 @@ module.exports = {
       CITY = '${user.CITY}',
       STATE = '${user.STATE}',
       ZIP = '${user.ZIP}',
-      COMPANY = '${user.COMPANY}'
     WHERE
       USERS.USER_ID = ${id}
     `
