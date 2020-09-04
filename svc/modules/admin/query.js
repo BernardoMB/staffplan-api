@@ -114,6 +114,16 @@ module.exports = {
     `
      DELETE FROM USER_ACCESS WHERE USER_ID = ${userId} AND OFFICE_ID = ${officeId}
     `
-  )
+  ),
+  getUserPhoto: (userId) => (
+    `
+      SELECT PHOTO_URL FROM USERS WHERE USER_ID = ${userId}
+    `
+  ),
+  insertUserPhoto: (userId, photo) => (
+    `
+      UPDATE USERS SET PHOTO_URL = '${photo}' WHERE USER_ID = ${userId}
+    `
+  ),
 };
 
