@@ -59,7 +59,8 @@ const getUserDetails = (user, connection, res, dbName) => {
     COUNTRY: user.COUNTRY,
     ZIP: user.ZIP,
     ROLE: user.ROLE,
-    ROLE_NAME: user.ROLE_NAME
+    ROLE_NAME: user.ROLE_NAME,
+    PHOTO_URL: user.PHOTO_URL ? util.getThumbnailUrl(user.PHOTO_URL) : null
   };
   userObj.token = response.token;
   res.cookie('auth', response.token);
