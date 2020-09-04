@@ -56,7 +56,8 @@ const insertUser = async (req, res) => {
       CITY: '',
       STATE: '',
       COUNTRY: 'USA',
-      ZIP: ''
+      ZIP: '',
+      COMPANY: '',
     };
     const userInfo = req.body;
     const userToCreate = Object.assign(userDefault, util.cleanObject(userInfo));
@@ -239,9 +240,7 @@ const getAdminPhoto = async (req, res) => {
     // Get Staff ID and check is staff already have photo key
     const userId = req.params.id;
     let key = '';
-    console.log(SQL.getUserPhoto(userId))
     const result = await db.execute(connection, SQL.getUserPhoto(userId));
-    console.log(result)
     if (result && result.length > 0 && result[0].PHOTO_URL) {
       key = result[0].PHOTO_URL;
       util.successResponse(res, util.getThumbnailUrl(key));
