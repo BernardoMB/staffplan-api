@@ -16,7 +16,7 @@ module.exports = {
       CITY,
       STATE,
       COUNTRY,
-      ZIP,
+      ZIP
     ) VALUES (
       ${user.ROLE_ID},
       '${user.FIRST_NAME}',
@@ -27,7 +27,7 @@ module.exports = {
       '${user.CITY}',
       '${user.STATE}',
       '${user.COUNTRY}',
-      '${user.ZIP}',
+      '${user.ZIP}'
     )  
     `
   ),
@@ -43,7 +43,7 @@ module.exports = {
       CITY,
       STATE,
       ZIP,
-      ACTIVE,
+      ACTIVE
     FROM 
       USERS 
     WHERE
@@ -65,7 +65,8 @@ module.exports = {
       CITY,
       STATE,
       ZIP,
-      if(ACTIVE, 'Yes', 'No') AS 'ACTIVE'
+      if(ACTIVE, 'Yes', 'No') AS 'ACTIVE',
+      PHOTO_URL
     FROM
       USERS
     INNER JOIN
@@ -84,7 +85,7 @@ module.exports = {
       ADDRESS = '${user.ADDRESS}',
       CITY = '${user.CITY}',
       STATE = '${user.STATE}',
-      ZIP = '${user.ZIP}',
+      ZIP = '${user.ZIP}'
     WHERE
       USERS.USER_ID = ${id}
     `
