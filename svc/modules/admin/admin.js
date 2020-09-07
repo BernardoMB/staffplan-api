@@ -89,7 +89,13 @@ const getUser = async (req, res) => {
   try {
     if (util.isAdmin(req.payload.ROLE)) {
       const connection = await db.connection(req);
-      const result = await db.execute(connection, SQL.getUsers());
+      let result = await db.execute(connection, SQL.getUsers());
+      result = result.map((item) => {
+        return {
+          ...item,
+          PHOTO_URL: util.getThumbnailUrl(item.PHOTO_URL)
+        }
+      });
       util.successResponse(res, result);
     } else {
       util.errorResponse(res, 'User Access Restricted');
