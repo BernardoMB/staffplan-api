@@ -39,17 +39,33 @@ const getDashboardDetails = async (req, res) => {
     const connection = await db.connection(req);
     const officeId = req.params.officeId;
     const date = req.params.date;
+    const projectStatus = req.params.projectStatus;
+
+    console.log(projectStatus)
+    console.log(projectStatus === 0)
+
     let condition = '';
     condition = (officeId === 'all') ? '1 = 1' : `OFFICE_ID = '${officeId}'`;
 
+    let projectStatusQuery = 'AND PROJECT_STATUS.STATUS_ID in ';
+
+    if (projectStatus == 0) {
+      projectStatusQuery += '(1, 2, 3)'
+    } else if (projectStatus == 1) {
+      projectStatusQuery += '(1)'
+    } else if (projectStatus == 2) {
+      projectStatusQuery += '(3)'
+    }
+
+    console.log(projectStatusQuery)
+
     if (!condition || !date) return;
 
-    const InProgressProjectCount = await db.execute(connection, SQL.InProgress(condition, date));
-    const ProposalProjectCount = await db.execute(connection, SQL.Proposal(condition, date));
-    const UnassignedRoleCount = await db.execute(connection, SQL.UnassignedRole(condition, date));
+    // const InProgressProjectCount = await db.execute(connection, SQL.InProgress(condition, date));
+    // const ProposalProjectCount = await db.execute(connection, SQL.Proposal(condition, date));
+    console.log(SQL.UnassignedRole(condition, date, projectStatusQuery))
+    const UnassignedRoleCount = await db.execute(connection, SQL.UnassignedRole(condition, date, projectStatusQuery));
     let OnBench = await db.execute(connection, SQL.OnBench(condition));
-    //const StaffAssignments = await db.execute(connection, SQL.StaffingGap(condition));
-    //const StaffingGap = calculateGap(StaffAssignments);
     OnBench = getValue(OnBench);
     const result = await db.execute(connection, SQL.StaffingGap(condition));
 
@@ -57,8 +73,8 @@ const getDashboardDetails = async (req, res) => {
     const OverUnderAllocation = await db.execute(connection, SQL.OverUnderAllocation(condition));
 
     util.successResponse(res, {
-      InProgressProjectCount: getValue(InProgressProjectCount),
-      ProposalProjectCount: getValue(ProposalProjectCount),
+      // InProgressProjectCount: getValue(InProgressProjectCount),
+      // ProposalProjectCount: getValue(ProposalProjectCount),
       UnassignedRoleCount: getValue(UnassignedRoleCount),
       OnBench: OnBench,
       StaffingGap: StaffingGap,
