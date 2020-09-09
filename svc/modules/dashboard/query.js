@@ -1,26 +1,26 @@
 const CONST = require('../../common/const');
 
 module.exports = {
-  InProgress: (condition, date) => (
-    `SELECT COUNT(PROJECT_ID) AS TOTAL FROM PROJECT 
-      WHERE PROJECT_STATUS_ID = 
-        (SELECT STATUS_ID FROM PROJECT_STATUS WHERE STATUS_NAME = '${CONST.INPROGRESS}')
-      AND PROJECT.${condition}
-      AND END_DATE >= '${date}'`
-  ),
-  Proposal: (condition, date) => (
-    `SELECT COUNT(PROJECT_ID) AS TOTAL FROM PROJECT 
-      WHERE PROJECT_STATUS_ID = 
-        (SELECT STATUS_ID FROM PROJECT_STATUS WHERE STATUS_NAME = '${CONST.PROPOSAL}')
-      AND PROJECT.${condition}
-      AND END_DATE >= '${date}'`
-  ),
-  UnassignedRole: (condition, date) => (
+  // InProgress: (condition, date, projectStatusQuery) => (
+  //   `SELECT COUNT(PROJECT_ID) AS TOTAL FROM PROJECT 
+  //     LEFT JOIN PROJECT_STATUS on PROJECT.PROJECT_STATUS_ID = STATUS_ID
+  //     AND PROJECT.${condition}
+  //     AND END_DATE >= '${date}'`
+  // ),
+  // Proposal: (condition, date, projectStatusQuery) => (
+  //   `SELECT COUNT(PROJECT_ID) AS TOTAL FROM PROJECT 
+  //    LEFT JOIN PROJECT_STATUS on PROJECT.PROJECT_STATUS_ID = STATUS_ID
+  //     AND PROJECT.${condition}
+  //     AND END_DATE >= '${date}'`
+  // ),
+  UnassignedRole: (condition, date, projectStatusQuery) => (
     `SELECT SUM(COUNT) AS TOTAL FROM 
-      (SELECT COUNT(ID) AS COUNT FROM PLANNED_PROJECT_STAFF LEFT JOIN 
-      PROJECT ON PLANNED_PROJECT_STAFF.PROJECT_ID = PROJECT.PROJECT_ID 
+      (SELECT COUNT(ID) AS COUNT FROM PLANNED_PROJECT_STAFF 
+       LEFT JOIN PROJECT ON PLANNED_PROJECT_STAFF.PROJECT_ID = PROJECT.PROJECT_ID
+       LEFT JOIN PROJECT_STATUS on PROJECT.PROJECT_STATUS_ID = STATUS_ID
       WHERE PROJECT.${condition}
       AND PROJECT.END_DATE >= '${date}'
+      ${projectStatusQuery}
       GROUP BY PROJECT.PROJECT_ID) as COUNT`
   ),
   OnBench: (condition) => (
