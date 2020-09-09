@@ -6,9 +6,9 @@ var moment = require('moment');
 const getProjectRole = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    let condition = `PROJECT_TEAM.PROJECT_ID = ${req.params.id} `;
+    let condition = `PROJECT_STAFF.PROJECT_ID = ${req.params.id} `;
     if (req.query && req.query.active === 'true') {
-      condition = `${condition} AND  PROJECT_TEAM.END_DATE >= CURDATE()`;
+      condition = `${condition} AND  PROJECT_STAFF.END_DATE >= CURDATE()`;
     }
     let projectRoles = await db.execute(connection, SQL.getProjectTeams(condition));
     if (projectRoles && projectRoles.length) {
@@ -29,7 +29,6 @@ const getProjectRole = async (req, res) => {
           );
           // SET ALERT as true if total allocation is > 100%
           projectRoles[i].ALERT = allocation[0].TOTAL > 100;
-          projectRoles[i].STAFF_PHOTO = util.getThumbnailUrl(projectRoles[i].STAFF_PHOTO);
         }
       }
     }
@@ -48,11 +47,11 @@ const getProjectRole = async (req, res) => {
 const getProjectRoleCalendar = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    let condition = `PROJECT_TEAM.PROJECT_ID = ${req.params.id} `;
+    let condition = `PROJECT_STAFF.PROJECT_ID = ${req.params.id} `;
     if (req.query && req.query.active === 'true') {
-      condition = `${condition} AND  PROJECT_TEAM.END_DATE >= CURDATE()`;
+      condition = `${condition} AND  PROJECT_STAFF.END_DATE >= CURDATE()`;
     }
-    const projectRoles = await db.execute(
+    let projectRoles = await db.execute(
       connection,
       SQL.getProjectTeamsCalendar(condition, req.body.startDate, req.body.endDate)
     );
@@ -77,32 +76,68 @@ const getProjectRoleCalendar = async (req, res) => {
         }
       }
     }
+    projectRoles = projectRoles.map((item) => {
+      return {
+        ...item,
+        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO),
+      };
+    });
     util.successResponse(res, projectRoles);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
 };
 
+/**
+ * Creates a new unassigned/open role for a particular project
+ * on planned_project_staff and project_staff with a staff_id of null
+ * and on project_staff for all weeks with given allocation
+ */
 const insertProjectRole = async (req, res) => {
+  const roleToCreate = {
+    ALLOCATION: req.body.allocation,
+    PROJECT_ID: req.params.id,
+    PROJECT_ROLE_ID: req.body.roleId,
+    START_DATE: req.body.startDate,
+    END_DATE: req.body.endDate,
+    RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0,
+  };
+
   try {
-    const roleToCreate = {
-      ALLOCATION: req.body.allocation,
-      PROJECT_ID: req.params.id,
-      PROJECT_ROLE_ID: req.body.roleId,
-      START_DATE: req.body.startDate,
-      END_DATE: req.body.endDate,
-      RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0,
-    };
     const connection = await db.connection(req);
-    const rowsAffected = await db.execute(connection, SQL.insertProjectRole(roleToCreate));
-    util.successResponse(res, rowsAffected);
+    connection.beginTransaction(async (err) => {
+      if (err) {
+        util.errorResponse(res, err);
+      } else {
+        // insert role in planned_project_staff
+        const plannedId = await db.execute(connection, SQL.insertProjectRole(roleToCreate));
+        // instert role in project_staff with null staff_id
+        const projectStaffId = await db.execute(connection, SQL.insertProjectStaff(null, plannedId.insertId));
+        // insert allocation accordingly
+        await db.execute(connection, SQL.insertStaffAllocation(projectStaffId.insertId));
+        connection.commit((error) => {
+          if (error) {
+            util.errorResponse(res, error);
+          } else {
+            util.successResponse(res);
+          }
+        });
+      }
+    });
   } catch (exception) {
+    console.log(exception);
     util.errorResponse(res, exception);
   }
 };
 
+/**
+ * Updates an existing unassigned open role
+ * it updates PLANNED_PROJECT_STAFF, PROJECT_STAFF
+ * and deletes and reenters the data STAFF_ALLOCATION
+ */
 const updateProjectRole = async (req, res) => {
   try {
+    const isAssigned = !!req.body.staffId;
     const roleToCreate = {
       ID: req.params.roleId,
       ALLOCATION: req.body.allocation,
@@ -112,9 +147,30 @@ const updateProjectRole = async (req, res) => {
       END_DATE: req.body.endDate,
       RESUME_SUBMITTED: req.body.resumeSubmitted ? 1 : 0,
     };
+
     const connection = await db.connection(req);
-    const rowsAffected = await db.execute(connection, SQL.updateProjectRole(roleToCreate));
-    util.successResponse(res, rowsAffected);
+
+    if (!req.params.roleId) {
+      throw new Error('Missing role ID');
+    }
+    if (isAssigned) {
+      // update table PROJECT_STAFF
+      await db.execute(connection, SQL.updateRoleAssignedProjectStaff(roleToCreate));
+      // delete previous STAFF ALLOCATION
+      await db.execute(connection, SQL.deleteStaffAllocation(req.params.roleId));
+      // insert new STAFF ALLOCATION
+      await db.execute(connection, SQL.insertStaffAllocation(req.params.roleId));
+    } else {
+      // update table PLANNED_PROJECT_STAFF
+      await db.execute(connection, SQL.updateRolePlannedProject(roleToCreate));
+      // update table PROJECT_STAFF
+      await db.execute(connection, SQL.updateRoleProjectStaff(roleToCreate));
+      // delete previous STAFF ALLOCATION
+      await db.execute(connection, SQL.deleteUnassignedStaffAllocation(req.params.roleId));
+      // insert new STAFF ALLOCATION
+      await db.execute(connection, SQL.insertUnassignedStaffAllocation(req.params.roleId));
+    }
+    util.successResponse(res);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
@@ -128,6 +184,7 @@ const bulkRoleUpdate = async (req, res) => {
     const assignedIds = req.body.roleIds.filter((item) => item.staffId);
     const plannedIds = req.body.roleIds.filter((item) => !item.staffId);
     const connection = await db.connection(req);
+    // staff is assigned to project_staff
     if (assignedIds && assignedIds.length) {
       await db.execute(
         connection,
@@ -140,11 +197,22 @@ const bulkRoleUpdate = async (req, res) => {
         )
       );
     }
+    // open role is assigned to project_staff
     if (plannedIds && plannedIds.length) {
       await db.execute(
         connection,
         SQL.bulkRoleUpdate(
           'PLANNED_PROJECT_STAFF',
+          startDate,
+          endDate,
+          projectId,
+          plannedIds.map((item) => item.id)
+        )
+      );
+      await db.execute(
+        connection,
+        SQL.bulkRoleUpdate(
+          'PROJECT_STAFF',
           startDate,
           endDate,
           projectId,
@@ -158,20 +226,33 @@ const bulkRoleUpdate = async (req, res) => {
   }
 };
 
+/**
+ * Deletes assigned and unassigned roles
+ */
 const deleteRole = async (req, res) => {
   try {
     const projectId = req.params.id;
-    const id = req.body.roleId;
+    const roleId = req.body.roleId;
+    const isAssigned = !!req.body.staffId;
+
     const connection = await db.connection(req);
-    let rowsAffected;
-    // Based on the assignment the table will be selected
-    if (req.body.staffId) {
-      rowsAffected = await db.execute(connection, SQL.deleteStaffAllocation(id));
-      rowsAffected = await db.execute(connection, SQL.deleteProjectStaff(projectId, id));
-    } else {
-      rowsAffected = await db.execute(connection, SQL.deleteProjectPlanned(projectId, id));
+
+    if (!roleId) {
+      throw new Error('Missing role ID');
     }
-    util.successResponse(res, rowsAffected);
+
+    // assigned role
+    if (isAssigned) {
+      await db.execute(connection, SQL.deleteStaffAllocation(roleId));
+      await db.execute(connection, SQL.deleteProjectStaff(projectId, roleId));
+    }
+    // unassigned role
+    else {
+      await db.execute(connection, SQL.deleteUnassignedStaffAllocation(roleId));
+      await db.execute(connection, SQL.deleteUnassignedProjectStaff(roleId));
+      await db.execute(connection, SQL.removeProjectPlan(roleId));
+    }
+    util.successResponse(res);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
@@ -230,34 +311,26 @@ const getWeeknoInMonth = (selectedDate, year) => {
   return dates;
 };
 
+/**
+ * Assigns a staff ID to an unassigned/open role.
+ * Updates table staff_id with a staff ID for that role
+ * and deletes role from planned_project_staff
+ */
 const assignStaff = async (req, res) => {
   try {
     const plannedId = req.body.plannedId;
     const staffId = req.body.staffId;
     const connection = await db.connection(req);
-    connection.beginTransaction((err) => {
-      if (err) {
-        util.errorResponse(res, err);
-      } else {
-        // Insert into project staff
-        db.execute(connection, SQL.insertProjectStaff(staffId, plannedId)).then((rowsAffected) => {
-          const plannedStaffId = rowsAffected.insertId;
-          // Insert into Staff Allocation
-          db.execute(connection, SQL.insertStaffAllocation(plannedStaffId)).then((inserted) => {
-            // Remove the data from planned project staff
-            db.execute(connection, SQL.removeProjectPlan(plannedId)).then(() => {
-              connection.commit((error) => {
-                if (error) {
-                  util.errorResponse(res, error);
-                } else {
-                  util.successResponse(res, inserted);
-                }
-              });
-            });
-          });
-        });
-      }
-    });
+
+    if (!plannedId || !staffId) {
+      throw new Error('Missing planned and staff ID');
+    }
+
+    // set staff_id in project_staff, set planned_staff_id to null
+    await db.execute(connection, SQL.updateProjectStaff(plannedId, staffId));
+    // delete row in planned_project_staff
+    await db.execute(connection, SQL.removeProjectPlan(plannedId));
+    util.successResponse(res);
   } catch (exception) {
     util.errorResponse(res, exception);
   }
@@ -271,12 +344,7 @@ const assignList = async (req, res) => {
       condition = ` PROJECT_STAFF.STAFF_ID in (${req.body.staffId.join(',')})`;
     }
     const connection = await db.connection(req);
-    const result = (await db.execute(connection, SQL.assignmentList(plannedId, condition))).map((item) => {
-      return {
-        ...item,
-        STAFF_PHOTO: util.getThumbnailUrl(item.STAFF_PHOTO),
-      };
-    });
+    const result = await db.execute(connection, SQL.assignmentList(plannedId, condition));
     util.successResponse(res, result);
   } catch (exception) {
     util.errorResponse(res, exception);
