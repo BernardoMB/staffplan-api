@@ -6,3 +6,4 @@ public/dist/staff-planner
 .DS_Store
 .idea/
 svc/env.local.json
+.env
