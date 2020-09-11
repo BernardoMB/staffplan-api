@@ -5,4 +5,6 @@ const MODULE = 'dashboard';
 module.exports = (app) => {
   app.get(`/${CONST.API}/${MODULE}/details/:officeId/:date/:projectStatus`,
     authenticate.isAuthenticated, dashboard.getDashboardDetails);
+  app.post(`/${CONST.API}/${MODULE}/graph`,
+    authenticate.isAuthenticated, dashboard.getGraphData);
 }

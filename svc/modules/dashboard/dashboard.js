@@ -41,43 +41,32 @@ const getDashboardDetails = async (req, res) => {
     const date = req.params.date;
     const projectStatus = req.params.projectStatus;
 
-    console.log(projectStatus)
-    console.log(projectStatus === 0)
-
     let condition = '';
     condition = (officeId === 'all') ? '1 = 1' : `OFFICE_ID = '${officeId}'`;
 
     let projectStatusQuery = 'AND PROJECT_STATUS.STATUS_ID in ';
 
     if (projectStatus == 0) {
-      projectStatusQuery += '(1, 2, 3)'
+      projectStatusQuery += '(3, 2)'
+      // potencial
     } else if (projectStatus == 1) {
-      projectStatusQuery += '(1)'
+      projectStatusQuery += '(2)'
+      // in-progress
     } else if (projectStatus == 2) {
       projectStatusQuery += '(3)'
     }
 
-    console.log(projectStatusQuery)
-
     if (!condition || !date) return;
 
-    // const InProgressProjectCount = await db.execute(connection, SQL.InProgress(condition, date));
-    // const ProposalProjectCount = await db.execute(connection, SQL.Proposal(condition, date));
-    console.log(SQL.UnassignedRole(condition, date, projectStatusQuery))
     const UnassignedRoleCount = await db.execute(connection, SQL.UnassignedRole(condition, date, projectStatusQuery));
-    let OnBench = await db.execute(connection, SQL.OnBench(condition));
-    OnBench = getValue(OnBench);
-    const result = await db.execute(connection, SQL.StaffingGap(condition));
-
-    const StaffingGap = getValue(result);
+    const OnBench = await db.execute(connection, SQL.OnBench(condition));
+    const StaffingGap = await db.execute(connection, SQL.StaffingGap(condition));
     const OverUnderAllocation = await db.execute(connection, SQL.OverUnderAllocation(condition));
 
     util.successResponse(res, {
-      // InProgressProjectCount: getValue(InProgressProjectCount),
-      // ProposalProjectCount: getValue(ProposalProjectCount),
       UnassignedRoleCount: getValue(UnassignedRoleCount),
-      OnBench: OnBench,
-      StaffingGap: StaffingGap,
+      OnBench: getValue(OnBench),
+      StaffingGap: getValue(StaffingGap),
       OverUnderAllocation: getValue(OverUnderAllocation)
     });
   } catch (exception) {
@@ -85,6 +74,53 @@ const getDashboardDetails = async (req, res) => {
   }
 };
 
+const getGraphData = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    const officeId = req.body.officeId;
+    const date = req.body.date;
+
+    // TOTAL, ROLE_NAME
+    const bench = await db.execute(connection, SQL.BenchRoles(date))
+    const gap = await db.execute(connection, SQL.GapRoles(date, officeId))
+    // ALLOCATION_STATUS STAFF_ID ROLE_NAME
+    const allocHash = {
+      'OVER_ALLOCATED': {},
+      'UNDER_ALLOCATED': {},
+    };
+
+    const allocation = await db.execute(connection, SQL.AllocationRoles(date, officeId))
+    allocation.forEach(e => {
+      if (!allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME]) {
+        allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME] = 0
+      }
+      e.ALLOCATION_STATUS === 'OVER_ALLOCATED'
+        ? allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME]++
+        : allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME]--
+    })
+
+    const over = [];
+    const under = [];
+
+    Object.keys(allocHash.OVER_ALLOCATED).forEach(k =>
+      over.push({ TOTAL: allocHash.OVER_ALLOCATED[k], ROLE_NAME: k })
+    )
+    Object.keys(allocHash.UNDER_ALLOCATED).forEach(k =>
+      under.push({ TOTAL: allocHash.UNDER_ALLOCATED[k], ROLE_NAME: k })
+    )
+
+    util.successResponse(res, {
+      bench,
+      gap,
+      over,
+      under
+    })
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+};
+
 module.exports = {
-  getDashboardDetails
+  getDashboardDetails,
+  getGraphData
 };
