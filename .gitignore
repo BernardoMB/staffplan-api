@@ -7,3 +7,5 @@ public/dist/staff-planner
 .idea/
 svc/env.local.json
 .env
+svc/test/config.ts
+*/config.ts
