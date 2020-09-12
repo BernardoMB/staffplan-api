@@ -37,12 +37,17 @@ const getValue = (rows => {
 const getDashboardDetails = async (req, res) => {
   try {
     const connection = await db.connection(req);
-    const officeId = req.params.officeId;
-    const date = req.params.date;
-    const projectStatus = req.params.projectStatus;
+    const officeId = req.body.officeId;
+    const date = req.body.date;
+    const projectStatus = req.body.projectStatus;
+    const projectGroup = req.body.projectGroup;
 
     let condition = '';
     condition = (officeId === 'all') ? '1 = 1' : `OFFICE_ID = '${officeId}'`;
+    let roleCondition = '';
+    if (projectGroup !== 'All') {
+      roleCondition += `  AND PROJECT.GROUP_ID = ${projectGroup} `;
+    }
 
     let projectStatusQuery = 'AND PROJECT_STATUS.STATUS_ID in ';
 
@@ -58,10 +63,11 @@ const getDashboardDetails = async (req, res) => {
 
     if (!condition || !date) return;
 
-    const UnassignedRoleCount = await db.execute(connection, SQL.UnassignedRole(condition, date, projectStatusQuery));
+    const UnassignedRoleCount = await db.execute(connection,
+      SQL.UnassignedRole(condition, date, projectStatusQuery, roleCondition));
     const OnBench = await db.execute(connection, SQL.OnBench(condition));
-    const StaffingGap = await db.execute(connection, SQL.StaffingGap(condition));
-    const OverUnderAllocation = await db.execute(connection, SQL.OverUnderAllocation(condition));
+    const StaffingGap = await db.execute(connection, SQL.StaffingGap(condition, roleCondition));
+    const OverUnderAllocation = await db.execute(connection, SQL.OverUnderAllocation(condition, roleCondition));
 
     util.successResponse(res, {
       UnassignedRoleCount: getValue(UnassignedRoleCount),
@@ -94,9 +100,7 @@ const getGraphData = async (req, res) => {
       if (!allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME]) {
         allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME] = 0
       }
-      e.ALLOCATION_STATUS === 'OVER_ALLOCATED'
-        ? allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME]++
-        : allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME]--
+      allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME]++
     })
 
     const over = [];
@@ -110,10 +114,7 @@ const getGraphData = async (req, res) => {
     )
 
     util.successResponse(res, {
-      bench,
-      gap,
-      over,
-      under
+      gap, under, bench, over,
     })
   } catch (exception) {
     util.errorResponse(res, exception);

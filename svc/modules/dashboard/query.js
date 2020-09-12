@@ -13,7 +13,7 @@ module.exports = {
   //     AND PROJECT.${condition}
   //     AND END_DATE >= '${date}'`
   // ),
-  UnassignedRole: (condition, date, projectStatusQuery) => (
+  UnassignedRole: (condition, date, projectStatusQuery, roleCondition) => (
     `SELECT SUM(COUNT) AS TOTAL FROM 
       (SELECT COUNT(ID) AS COUNT FROM PLANNED_PROJECT_STAFF 
        LEFT JOIN PROJECT ON PLANNED_PROJECT_STAFF.PROJECT_ID = PROJECT.PROJECT_ID
@@ -21,6 +21,7 @@ module.exports = {
       WHERE PROJECT.${condition}
       AND PROJECT.END_DATE >= '${date}'
       ${projectStatusQuery}
+      ${roleCondition}
       GROUP BY PROJECT.PROJECT_ID) as COUNT`
   ),
   OnBench: (condition) => (
@@ -29,7 +30,7 @@ module.exports = {
         SELECT STAFF_ID FROM PROJECT_STAFF WHERE START_DATE <= NOW() AND END_DATE >= NOW() GROUP BY STAFF_ID
       ) AND STAFF.${condition}`
   ),
-  StaffingGap: (condition) => (
+  StaffingGap: (condition, roleCondition) => (
     /* Get all staff id, project start and end date details if they have */
     `
       SELECT
@@ -40,18 +41,25 @@ module.exports = {
         ON CURRENT.STAFF_ID = FUTURE.STAFF_ID 
         AND DATEDIFF(FUTURE.START_DATE, CURRENT.END_DATE) > 1
         AND CURRENT.ID <> FUTURE.ID
+      INNER JOIN PROJECT ON CURRENT.PROJECT_ID = PROJECT.PROJECT_ID AND FUTURE.ID = PROJECT.PROJECT_ID
       WHERE 
        CURRENT.END_DATE > CURDATE()
        AND
        FUTURE.END_DATE > CURDATE()
-       AND CURRENT.STAFF_ID IN (SELECT STAFF_ID FROM STAFF WHERE STAFF.${condition})
+       AND CURRENT.STAFF_ID IN (SELECT STAFF_ID FROM STAFF WHERE STAFF.${condition}
+        ${roleCondition}
+        )
       `
   ),
-  OverUnderAllocation: (condition) => (
+  OverUnderAllocation: (condition, roleCondition) => (
     `SELECT COUNT(ALLOCATION_TOTAL) AS TOTAL FROM 
       (SELECT SUM(ALLOCATION) as ALLOCATION_TOTAL FROM PROJECT_STAFF
         INNER JOIN STAFF ON STAFF.STAFF_ID = PROJECT_STAFF.STAFF_ID
-      WHERE PROJECT_STAFF.START_DATE <= NOW() AND PROJECT_STAFF.END_DATE >= NOW() AND STAFF.${condition}
+        INNER JOIN PROJECT ON PROJECT_STAFF.PROJECT_ID = PROJECT.PROJECT_ID
+      WHERE PROJECT_STAFF.START_DATE <= NOW() 
+        AND PROJECT_STAFF.END_DATE >= NOW() 
+        AND STAFF.${condition}
+        ${roleCondition}
       GROUP BY PROJECT_STAFF.STAFF_ID HAVING ALLOCATION_TOTAL <> ${CONST.MAX_FTE_ALLOCATION} ) 
       as ALLOCATION_TOTAL
 `
