@@ -78,7 +78,7 @@ module.exports = {
     )
     group by ROLE_NAME
     `,
-  GapRoles: (date, officeId) =>
+  GapRoles: (date, officeId, projectGroup) =>
     `
     SELECT COUNT(CURRENT.STAFF_ID) AS TOTAL, ROLE_NAME
     FROM PROJECT_STAFF CURRENT
@@ -93,9 +93,10 @@ module.exports = {
       AND CURRENT.STAFF_ID IN (SELECT STAFF_ID FROM STAFF)
       AND OFFICE_ID = '${officeId}'
       AND FUTURE.END_DATE > '${date}'
+      ${projectGroup === 'All' ? `` : ` AND P.GROUP_ID = ${projectGroup}`}
     GROUP BY SR.ROLE_NAME
     `,
-  AllocationRoles: (date, officeId) => `
+  AllocationRoles: (date, officeId, projectGroup) => `
     SELECT CAST(
               CASE
                 WHEN ALLOCATION > ${CONST.MAX_FTE_ALLOCATION} THEN 'OVER_ALLOCATED'
@@ -118,6 +119,7 @@ module.exports = {
                     AND '${date}' >= C.END_DATE
                     AND C.START_DATE >= NOW()
                     AND P.OFFICE_ID = '${officeId}'
+                    ${projectGroup === 'All' ? `` : ` AND P.GROUP_ID = ${projectGroup}`}
                   group by C.WEEK, S.STAFF_ID, SR.ROLE_NAME
                 ) Q1
           WHERE (ALLOCATION < ${CONST.MIN_FTE_ALLOCATION} OR ALLOCATION > ${CONST.MAX_FTE_ALLOCATION})
