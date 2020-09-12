@@ -85,17 +85,19 @@ const getGraphData = async (req, res) => {
     const connection = await db.connection(req);
     const officeId = req.body.officeId;
     const date = req.body.date;
+    const projectGroup = req.body.projectGroup;
 
     // TOTAL, ROLE_NAME
     const bench = await db.execute(connection, SQL.BenchRoles(date))
-    const gap = await db.execute(connection, SQL.GapRoles(date, officeId))
+    const gap = await db.execute(connection, SQL.GapRoles(date, officeId, projectGroup))
     // ALLOCATION_STATUS STAFF_ID ROLE_NAME
     const allocHash = {
       'OVER_ALLOCATED': {},
       'UNDER_ALLOCATED': {},
     };
 
-    const allocation = await db.execute(connection, SQL.AllocationRoles(date, officeId))
+    const allocation = await db.execute(connection,
+      SQL.AllocationRoles(date, officeId, projectGroup))
     allocation.forEach(e => {
       if (!allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME]) {
         allocHash[e.ALLOCATION_STATUS][e.ROLE_NAME] = 0
