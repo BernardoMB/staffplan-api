@@ -9,31 +9,6 @@ const getValue = (rows => {
   return 0;
 });
 
-/* const calculateGap = (StaffAssignments => {
-  let gap = 0;
-  if (StaffAssignments && StaffAssignments.length) {
-    StaffAssignments.forEach((currentInfo, index) => {
-      // if staff doesn't have project start date add to gap
-      if (currentInfo.START_DATE) {
-        // Check itteration reached end
-        if (index < StaffAssignments.length - 1) {
-          const nextInfo = StaffAssignments[index + 1];
-          // check next staff equals to current one
-          if (nextInfo.STAFF_ID === currentInfo.STAFF_ID) {
-            // check the current project end date with next project start date
-            if (nextInfo.START_DATE > currentInfo.END_DATE) {
-              gap++;
-            }
-          }
-        }
-      } else {
-        gap++
-      }
-    })
-  }
-  return gap;
-}); */
-
 const getDashboardDetails = async (req, res) => {
   try {
     const connection = await db.connection(req);
@@ -53,7 +28,7 @@ const getDashboardDetails = async (req, res) => {
 
     if (projectStatus == 0) {
       projectStatusQuery += '(3, 2)'
-      // potencial
+      // potential
     } else if (projectStatus == 1) {
       projectStatusQuery += '(2)'
       // in-progress
