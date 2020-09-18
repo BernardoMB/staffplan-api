@@ -5,7 +5,7 @@ const log = require("../../common/logger");
 
 // Method to validate the domain and get company details
 const getCompanyDB = async (userName, hostname, req) => {
-  let connection= null;
+  let connection = null;
   let company = [];
   if (config.DOMAINCHECK === "true") {
     log.info("DOMAIN CHECK: true")
@@ -18,11 +18,13 @@ const getCompanyDB = async (userName, hostname, req) => {
     connection = await db.connection(req);
     company = await db.execute(connection, SQL.fetchCompanyByDomain(domain));
   }
+  console.log('hey que pedo', company)
   if (company && !company.length) {
     throw `Authentication failed. Could not find company environment combination`;
   }
   const dbName = company[0].COMPANY_DB;
-  return ({ connection, dbName });
+  const companyName = company[0].NAME;
+  return ({ connection, dbName, companyName });
 };
 
 
