@@ -8,4 +8,5 @@ public/dist/staff-planner
 svc/env.local.json
 .env
 svc/test/config.ts
+svc/env.json
 */config.ts
