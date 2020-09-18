@@ -1,7 +1,7 @@
 module.exports = {
   fetchCompany: (environment, domain) => (
     `SELECT
-        COMPANY_ENVIRONMENT.* 
+        * 
     FROM COMPANY
     INNER JOIN COMPANY_ENVIRONMENT
       ON COMPANY.ID = COMPANY_ENVIRONMENT.COMPANY_ID
@@ -15,8 +15,9 @@ module.exports = {
   ),
   fetchCompanyByDomain: (domain) => (
     `SELECT
-        COMPANY_ENVIRONMENT.* 
+        * 
     FROM COMPANY_ENVIRONMENT
+    LEFT JOIN COMPANY ON COMPANY.ID = COMPANY_ENVIRONMENT.COMPANY_ID
     WHERE 
       COMPANY_ENVIRONMENT.DOMAIN = '${domain}'`
   ),

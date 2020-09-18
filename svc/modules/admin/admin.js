@@ -4,6 +4,8 @@ const SQL = require('./query');
 const AuthSQL = require('../auth/query');
 const util = require("../../common/util");
 const log = require("../../common/logger");
+const config = require('../../common/config');
+const CONST = require('../../common/const');
 
 const getWeekDates = (year) => {
   const firstDay = moment([year]).startOf('year');
@@ -36,7 +38,7 @@ const insertCalendar = async (req, res) => {
       values.substring(0, values.length - 1)
     ));
     util.successResponse(res, data);
-  } catch(exception) {
+  } catch (exception) {
     log.error(exception);
     util.errorResponse(res, exception);
   }
@@ -54,7 +56,7 @@ const insertUser = async (req, res) => {
       CITY: '',
       STATE: '',
       COUNTRY: 'USA',
-      ZIP: ''
+      ZIP: '',
     };
     const userInfo = req.body;
     const userToCreate = Object.assign(userDefault, util.cleanObject(userInfo));
@@ -87,8 +89,14 @@ const getUser = async (req, res) => {
   try {
     if (util.isAdmin(req.payload.ROLE)) {
       const connection = await db.connection(req);
-      const result = await db.execute(connection, SQL.getUsers());
-      util.successResponse(res, result);  
+      let result = await db.execute(connection, SQL.getUsers());
+      result = result.map((item) => {
+        return {
+          ...item,
+          PHOTO_URL: util.getThumbnailUrl(item.PHOTO_URL)
+        }
+      });
+      util.successResponse(res, result);
     } else {
       util.errorResponse(res, 'User Access Restricted');
     }
@@ -112,11 +120,11 @@ const activeUser = async (req, res) => {
         }
         util.successResponse(res, {
           activated: (ACTIVE === 0)
-        });    
+        });
       } else {
         util.errorResponse(res, 'Activation failed');
       }
-      
+
     } else {
       util.errorResponse(res, 'User Access Restricted');
     }
@@ -169,7 +177,7 @@ const resetPassword = async (req, res) => {
 }
 
 const getOfficeAccess = async (req, res) => {
- try {
+  try {
     const userId = req.params.id;
     const connection = await db.connection(req);
     const result = await db.execute(connection, SQL.getOfficeAccess(userId));
@@ -180,7 +188,7 @@ const getOfficeAccess = async (req, res) => {
 }
 
 const addOfficeAccess = async (req, res) => {
- try {
+  try {
     const userId = req.params.id;
     const officeId = req.params.officeId;
     const connection = await db.connection(req);
@@ -203,6 +211,69 @@ const removeOfficeAccess = async (req, res) => {
   }
 }
 
+const insertAdminPhoto = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    // Get Staff ID and check is staff already have photo key
+    const userId = req.params.id;
+    let key = '';
+    const result = await db.execute(connection, SQL.getUserPhoto(userId));
+    if (result && result.length > 0 && result[0].PHOTO_URL) {
+      key = result[0].PHOTO_URL;
+    } else {
+      // Generate new key if staff doesn't have
+      const uuidv4 = require('uuid/v4');
+      key = uuidv4();
+      await db.execute(connection, SQL.insertUserPhoto(userId, key));
+    }
+
+    // Use sharp to get meta data and set file info
+    const sharp = require('sharp');
+    const orginalUrl = await uploadImage(req.file.buffer, `${key}/${CONST.ORGINAL}.${CONST.IMGEXTN}`);
+    const buffer = await sharp(req.file.buffer).resize(80, 80).toBuffer();
+    const thumbnailUrl = await uploadImage(buffer, `${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`);
+    util.successResponse(res, { orginalUrl, thumbnailUrl, key });
+  } catch (exception) {
+    log.error(exception);
+    util.errorResponse(res, exception);
+  }
+}
+
+const getAdminPhoto = async (req, res) => {
+  try {
+    const connection = await db.connection(req);
+    // Get Staff ID and check is staff already have photo key
+    const userId = req.params.id;
+    let key = '';
+    const result = await db.execute(connection, SQL.getUserPhoto(userId));
+    if (result && result.length > 0 && result[0].PHOTO_URL) {
+      key = result[0].PHOTO_URL;
+      util.successResponse(res, util.getThumbnailUrl(key));
+    } else {
+      util.errorResponse(res, "Photo does not exists");
+    }
+  } catch (exception) {
+    log.error(exception);
+    util.errorResponse(res, exception);
+  }
+}
+
+const uploadImage = async (buffer, fileName) => {
+  const aws = require('aws-sdk');
+  aws.config.update({
+    accessKeyId: config.AWS.accessKeyId,
+    secretAccessKey: config.AWS.secretAccessKey,
+    region: config.AWS.region
+  });
+  const s3 = new aws.S3();
+  return s3.upload({
+    Bucket: config.AWS.bucket,
+    Key: fileName,
+    Body: buffer,
+    ACL: 'public-read'
+  }).promise();
+}
+
 module.exports = {
   insertCalendar,
   getUser,
@@ -212,7 +283,9 @@ module.exports = {
   getOfficeAccess,
   addOfficeAccess,
   removeOfficeAccess,
-  updateUser
+  updateUser,
+  insertAdminPhoto,
+  getAdminPhoto
 }
 
 
