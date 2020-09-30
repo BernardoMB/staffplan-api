@@ -9,9 +9,12 @@ module.exports = {
   errorResponse: (res, message = "Something went wrong", status = 500) => {
     log.error(message);
     res.status(status).json({ error: true, message });
-  }, 
+  },
   successResponse: (res, data = {}) => {
     res.status(200).json(data);
+  },
+  badRequest: (res, data) => {
+    res.status(400).json(data)
   },
   failureResponse: (res, errorCode = error.EC_UNKNOWN) => {
     res.status(200).json({
@@ -27,8 +30,8 @@ module.exports = {
     return null;
   },
   cleanObject: (obj) => {
-    for (var propName in obj) { 
-      if(!obj[propName]) {
+    for (var propName in obj) {
+      if (!obj[propName]) {
         delete obj[propName];
       }
     }
