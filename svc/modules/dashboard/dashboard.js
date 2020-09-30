@@ -116,7 +116,7 @@ const getGraphData = async (req, res) => {
     }
 
     util.successResponse(res, {
-      bench, gap, over, under
+      over, under, bench, gap,
     })
   } catch (exception) {
     util.errorResponse(res, exception);
