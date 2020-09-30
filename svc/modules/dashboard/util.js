@@ -34,7 +34,6 @@ module.exports = {
                 &&
                 (overUnderHash[id].ALLOCATION > MAX_FTE_ALLOCATION || overUnderHash[id].ALLOCATION < MIN_FTE_ALLOCATION)
             ) {
-                console.log(overUnderHash[id].ALLOCATION)
                 overUnderCount++
             }
         }
