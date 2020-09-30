@@ -1,18 +1,6 @@
 const CONST = require('../../common/const');
 
 module.exports = {
-  // InProgress: (condition, date, projectStatusQuery) => (
-  //   `SELECT COUNT(PROJECT_ID) AS TOTAL FROM PROJECT 
-  //     LEFT JOIN PROJECT_STATUS on PROJECT.PROJECT_STATUS_ID = STATUS_ID
-  //     AND PROJECT.${condition}
-  //     AND END_DATE >= '${date}'`
-  // ),
-  // Proposal: (condition, date, projectStatusQuery) => (
-  //   `SELECT COUNT(PROJECT_ID) AS TOTAL FROM PROJECT 
-  //    LEFT JOIN PROJECT_STATUS on PROJECT.PROJECT_STATUS_ID = STATUS_ID
-  //     AND PROJECT.${condition}
-  //     AND END_DATE >= '${date}'`
-  // ),
   UnassignedRole: (condition, date, projectStatusQuery, roleCondition) => (
     `SELECT SUM(COUNT) AS TOTAL FROM 
       (SELECT COUNT(ID) AS COUNT FROM PLANNED_PROJECT_STAFF 
@@ -72,22 +60,6 @@ module.exports = {
           ) Q1
       GROUP BY STAFF_ID, ROLE_NAME, GROUP_ID
     `
-    //     `SELECT COUNT(ALLOCATION_TOTAL) AS TOTAL FROM 
-    //       (SELECT SUM(ALLOCATION) as ALLOCATION_TOTAL FROM PROJECT_STAFF
-    //         INNER JOIN STAFF ON STAFF.STAFF_ID = PROJECT_STAFF.STAFF_ID
-    //         INNER JOIN PROJECT ON PROJECT_STAFF.PROJECT_ID = PROJECT.PROJECT_ID
-    //       WHERE PROJECT_STAFF.END_DATE > NOW() 
-    //         AND PROJECT_STAFF.START_DATE < '${date}'
-    //         AND STAFF.${condition}
-    //         ${roleCondition}
-    //       GROUP BY PROJECT_STAFF.STAFF_ID 
-    //       HAVING (
-    //         ALLOCATION_TOTAL < ${CONST.MIN_FTE_ALLOCATION} OR
-    //          ALLOCATION_TOTAL > ${CONST.MAX_FTE_ALLOCATION}
-    //          )
-    //       ) 
-    //       as ALLOCATION_TOTAL
-    // `
   ),
   BenchRoles: (date) =>
     `
