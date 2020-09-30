@@ -29,10 +29,10 @@ const getDashboardDetails = async (req, res) => {
     let projectStatusQuery = 'AND PROJECT_STATUS.STATUS_ID in ';
 
     if (projectStatus == 0) {
-      projectStatusQuery += '(3, 2)'
+      projectStatusQuery += '(3)'
       // in-progress
     } else if (projectStatus == 1) {
-      projectStatusQuery += '(3)'
+      projectStatusQuery += '(3, 2)'
     }
 
     if (!condition || !date) return;
@@ -74,10 +74,10 @@ const getGraphData = async (req, res) => {
     let projectStatusQuery = 'AND PROJECT_STATUS.STATUS_ID in ';
 
     if (projectStatus == 0) {
-      projectStatusQuery += '(3, 2)'
+      projectStatusQuery += '(3)'
       // in-progress
     } else if (projectStatus == 1) {
-      projectStatusQuery += '(3)'
+      projectStatusQuery += '(3, 2)'
     }
 
     const OverUnderAllocation = await db.execute(connection,
@@ -116,7 +116,7 @@ const getGraphData = async (req, res) => {
     }
 
     util.successResponse(res, {
-      gap, under, bench, over,
+      bench, gap, over, under
     })
   } catch (exception) {
     util.errorResponse(res, exception);
