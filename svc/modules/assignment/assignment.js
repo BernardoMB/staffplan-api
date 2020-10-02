@@ -130,6 +130,27 @@ const insertProjectRole = async (req, res) => {
   }
 };
 
+const updateAllocation = async (req, res) => {
+  try {
+    const allocation = req.body.allocation;
+    const projectAllocationIds = req.body.projectAllocationIds;
+
+    if (!allocation || !projectAllocationIds) {
+      return util.badRequest(res, { message: 'Missing allocation or projectAllocationIds' });
+    }
+
+    if (allocation > 100 || allocation < 0) {
+      return util.badRequest(res, { message: 'Incorrect allocation value' });
+    }
+
+    const connection = await db.connection(req);
+    await db.execute(connection, SQL.updateStaffAllocation(allocation, projectAllocationIds));
+    util.successResponse(res);
+  } catch (exception) {
+    util.errorResponse(res, exception);
+  }
+};
+
 /**
  * Updates an existing unassigned open role
  * it updates PLANNED_PROJECT_STAFF, PROJECT_STAFF
@@ -379,4 +400,5 @@ module.exports = {
   assignList,
   outlookList,
   getProjectRoleCalendar,
+  updateAllocation,
 };
