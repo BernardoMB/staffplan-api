@@ -18,7 +18,6 @@ const getCompanyDB = async (userName, hostname, req) => {
     connection = await db.connection(req);
     company = await db.execute(connection, SQL.fetchCompanyByDomain(domain));
   }
-  console.log('hey que pedo', company)
   if (company && !company.length) {
     throw `Authentication failed. Could not find company environment combination`;
   }
