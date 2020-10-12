@@ -14,8 +14,8 @@ module.exports = {
         queryResult.forEach(el => {
             if (!overUnderHash[el.STAFF_ID]) {
                 overUnderHash[el.STAFF_ID] = {
-                    STAFF_ID: 1,
-                    ROLE_NAME: 'Assistant Superintendent',
+                    STAFF_ID: el.STAFF_ID,
+                    ROLE_NAME: el.ROLE_NAME,
                     GROUP_ID: [],
                     ALLOCATION: 0
                 }
