@@ -80,6 +80,7 @@ const getGraphData = async (req, res) => {
       projectStatusQuery += '(3, 2)'
     }
 
+
     const OverUnderAllocation = await db.execute(connection,
       SQL.OverUnderAllocation(condition, projectStatusQuery, date)
     );
