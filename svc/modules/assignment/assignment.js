@@ -125,7 +125,6 @@ const insertProjectRole = async (req, res) => {
       }
     });
   } catch (exception) {
-    console.log(exception);
     util.errorResponse(res, exception);
   }
 };
