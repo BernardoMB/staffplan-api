@@ -33,7 +33,7 @@ const getOfficeDetailById = async (req, res) => {
         const connection = await db.connection(req);
         const officeDetail = await db.execute(
             connection,
-            SQL.getOfficeDetailById(req.params.id)
+            SQL.officeDetailsById(req.params.id)
         );
         util.successResponse(res, officeDetail);
     } catch (exception) {
