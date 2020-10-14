@@ -10,3 +10,7 @@ svc/env.local.json
 svc/test/config.ts
 svc/env.json
 */config.ts
+
+svc/env.json
+*/env.json
+env.json
