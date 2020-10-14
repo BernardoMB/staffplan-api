@@ -1,6 +1,7 @@
 module.exports = {
     OfficeList: (Condition) =>
-        `SELECT OFFICE.OFFICE_NAME,
+        `SELECT OFFICE.OFFICE_ID,
+                OFFICE.OFFICE_NAME,
                 OFFICE.OFFICE_ADDRESS,
                 OFFICE.OFFICE_CITY,
                 OFFICE.OFFICE_STATE,
@@ -11,7 +12,7 @@ module.exports = {
         ${Condition}
         `,
     getQueryCount: (query) => `SELECT COUNT(*) AS count FROM (${query}) AS Q`,
-    officeDetailsById: (id) => `SELECT * FROM PROJECT WHERE PROJECT.PROJECT_ID = ${id}`,
+    officeDetailsById: (id) => `SELECT * FROM OFFICE WHERE OFFICE.OFFICE_ID = ${id}`,
     insertOfficeDetail: (office) =>
         `INSERT INTO OFFICE (
             OFFICE_NAME,
