@@ -88,6 +88,7 @@ FROM PROJECT
     ${condition}
     AND CALENDAR.START_DATE >= '${startDate}'
     AND CALENDAR.END_DATE <= '${endDate}'
+    AND PROJECT.PROJECT_STATUS_ID = 3
     ORDER BY CALENDAR.CALENDAR_ID, ROLE_NAME
     `,
   getWorkloadBench: (condition, startDate, endDate) =>
@@ -117,34 +118,17 @@ FROM PROJECT
     `,
   getWorkloadListCount: (condition, startDate, endDate) =>
     `
-  select ID
-  from (
-         SELECT ID,
-                PROJECT_ID,
-                STAFF_ID,
-                PROJECT_ROLE_ID,
-                START_DATE,
-                END_DATE,
-                ALLOCATION,
-                RESUME_SUBMITTED
-         FROM PROJECT_STAFF
-         UNION ALL
-         SELECT ID,
-                PROJECT_ID,
-                NULL,
-                PROJECT_ROLE_ID,
-                START_DATE,
-                END_DATE,
-                ALLOCATION,
-                RESUME_SUBMITTED
-         FROM PLANNED_PROJECT_STAFF
-     ) as res
-         left join PROJECT on res.PROJECT_ID = PROJECT.PROJECT_ID
-  where 1 = 1
-${condition}
-  AND ((res.START_DATE >= '${startDate}' AND res.START_DATE <= '${endDate}')
-    OR (res.END_DATE >= '${endDate}' OR res.END_DATE > '${startDate}'))
-    GROUP by res.PROJECT_ID
+    select ID
+    from PROJECT_STAFF
+          LEFT JOIN PROJECT ON PROJECT.PROJECT_ID = PROJECT_STAFF.PROJECT_ID
+    where 1 = 1
+  ${condition}
+    AND (
+        (PROJECT_STAFF.START_DATE >= '${startDate}' OR PROJECT_STAFF.START_DATE <= '${endDate}')
+        AND 
+        (PROJECT_STAFF.END_DATE >= '${endDate}' OR PROJECT_STAFF.END_DATE > '${startDate}')
+      )
+    GROUP by PROJECT_STAFF.PROJECT_ID
   `,
   getProjectTeams: (condition) =>
     `
