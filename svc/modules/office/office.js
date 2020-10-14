@@ -94,6 +94,19 @@ const updateOfficeDetail = async (req, res) => {
     }
 };
 
+const deleteOfficeById = async (req, res) => {
+    try {
+        const connection = await db.connection(req);
+        const officeDetail = await db.execute(
+            connection,
+            SQL.removeOffice(req.params.id)
+        );
+        util.successResponse(res, officeDetail);
+    } catch (exception) {
+        util.errorResponse(res, exception);
+    }
+};
+
 const filters = (req) => {
     const filter = req.body.filter;
     let filterCondition = ' where 1 = 1 ';
@@ -112,5 +125,6 @@ module.exports = {
     getOfficeListCount,
     getOfficeDetailById,
     insertOfficeDetail,
-    updateOfficeDetail
+    updateOfficeDetail,
+    deleteOfficeById
 };

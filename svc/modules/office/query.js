@@ -29,7 +29,7 @@ module.exports = {
             '${office.OFFICE_STATE}',
             '${office.OFFICE_ZIP}',
             '${office.OFFICE_TYPE}',
-            '${office.REGION_I}'
+            '${office.REGION_ID}'
         )`,
     updateOfficeDetail: (office, id) =>
         `UPDATE OFFICE SET 
@@ -41,4 +41,5 @@ module.exports = {
             OFFICE_TYPE = '${office.OFFICE_TYPE}',
             REGION_ID = '${office.REGION_ID}'
         WHERE OFFICE.OFFICE_ID = ${id}`,
+    removeOffice: (id) => `DELETE FROM OFFICE WHERE OFFICE_ID = ${id}`
 };
