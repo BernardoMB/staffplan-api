@@ -24,7 +24,7 @@ module.exports = (app) => {
         authenticate.isAuthenticated,
         office.getOfficeDetailById
     );
-    app.post(
+    app.patch(
         `/${CONST.API}/${MODULE}/:id/details`,
         authenticate.isAuthenticated,
         office.updateOfficeDetail
