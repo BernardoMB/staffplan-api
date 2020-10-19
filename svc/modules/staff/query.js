@@ -674,4 +674,88 @@ ORDER BY STAFF.FIRST_NAME;
   ),
   getQueryCount: (query) => (`SELECT COUNT(*) AS count FROM (${query}) AS Q`),
   getStaffAllocationNow: getStaffAllocationNow,
+
+  // Staff group CRUD
+  StaffGroupList: (Condition) =>
+  `SELECT STAFF_GROUP.GROUP_ID,
+          STAFF_GROUP.GROUP_NAME
+  FROM STAFF_GROUP
+  ${Condition}
+  `,
+  getStaffGroupQueryCount: (query) => `SELECT COUNT(*) AS count FROM (${query}) AS Q`,
+  staffGroupDetailsById: (id) => `SELECT * FROM STAFF_GROUP WHERE STAFF_GROUP.GROUP_ID = ${id}`,
+  insertStaffGroupDetail: (group) =>
+    `INSERT INTO STAFF_GROUP (
+        GROUP_NAME
+    ) VALUES (
+        '${group.GROUP_NAME}'
+    )`,
+  updateStaffGroupDetail: (group, id) =>
+    `UPDATE STAFF_GROUP SET 
+            GROUP_NAME = '${group.GROUP_NAME}'
+    WHERE STAFF_GROUP.GROUP_ID = ${id}`,
+  removeStaffGroup: (id) => `DELETE FROM STAFF_GROUP WHERE GROUP_ID = ${id}`,
+
+  // Staff role CRUD
+  StaffRoleList: (Condition) =>
+  `SELECT STAFF_ROLE.ROLE_ID,
+          STAFF_ROLE.ROLE_NAME
+  FROM STAFF_ROLE
+  ${Condition}
+  `,
+  getStaffRoleQueryCount: (query) => `SELECT COUNT(*) AS count FROM (${query}) AS Q`,
+  staffRoleDetailsById: (id) => `SELECT * FROM STAFF_ROLE WHERE STAFF_ROLE.ROLE_ID = ${id}`,
+  insertStaffRoleDetail: (role) =>
+    `INSERT INTO STAFF_ROLE (
+        ROLE_NAME
+    ) VALUES (
+        '${role.ROLE_NAME}'
+    )`,
+  updateStaffRoleDetail: (role, id) =>
+    `UPDATE STAFF_ROLE SET 
+            ROLE_NAME = '${role.ROLE_NAME}'
+    WHERE STAFF_ROLE.ROLE_ID = ${id}`,
+  removeStaffRole: (id) => `DELETE FROM STAFF_ROLE WHERE ROLE_ID = ${id}`,
+  
+  // Staff certification CRUD
+  StaffCertificationList: (Condition) =>
+  `SELECT CERTIFICATION_SKILLS.CERTIFICATION_ID,
+          CERTIFICATION_SKILLS.CERTIFICATION_NAME
+  FROM CERTIFICATION_SKILLS
+  ${Condition}
+  `,
+  getStaffCertificationQueryCount: (query) => `SELECT COUNT(*) AS count FROM (${query}) AS Q`,
+  staffCertificationDetailsById: (id) => `SELECT * FROM CERTIFICATION_SKILLS WHERE CERTIFICATION_SKILLS.CERTIFICATION_ID = ${id}`,
+  insertStaffCertificationDetail: (certification) =>
+    `INSERT INTO CERTIFICATION_SKILLS (
+        CERTIFICATION_NAME
+    ) VALUES (
+        '${certification.CERTIFICATION_NAME}'
+    )`,
+  updateStaffCertificationDetail: (certification, id) =>
+    `UPDATE CERTIFICATION_SKILLS SET 
+            CERTIFICATION_NAME = '${certification.CERTIFICATION_NAME}'
+    WHERE CERTIFICATION_SKILLS.CERTIFICATION_ID = ${id}`,
+  removeStaffCertification: (id) => `DELETE FROM CERTIFICATION_SKILLS WHERE CERTIFICATION_ID = ${id}`,
+  
+  // Staff experience CRUD
+  StaffExperienceList: (Condition) =>
+  `SELECT EXPERIENCE.EXPERIENCE_ID,
+          EXPERIENCE.EXPERIENCE_LABEL
+  FROM EXPERIENCE
+  ${Condition}
+  `,
+  getStaffExperienceQueryCount: (query) => `SELECT COUNT(*) AS count FROM (${query}) AS Q`,
+  staffExperienceDetailsById: (id) => `SELECT * FROM EXPERIENCE WHERE EXPERIENCE.EXPERIENCE_ID = ${id}`,
+  insertStaffExperienceDetail: (role) =>
+    `INSERT INTO EXPERIENCE (
+        EXPERIENCE_LABEL
+    ) VALUES (
+        '${role.EXPERIENCE_LABEL}'
+    )`,
+  updateStaffExperienceDetail: (role, id) =>
+    `UPDATE EXPERIENCE SET 
+            EXPERIENCE_LABEL = '${role.EXPERIENCE_LABEL}'
+    WHERE EXPERIENCE.EXPERIENCE_ID = ${id}`,
+  removeStaffExperience2: (id) => `DELETE FROM EXPERIENCE WHERE EXPERIENCE_ID = ${id}`,
 }
