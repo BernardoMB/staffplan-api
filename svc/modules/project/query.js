@@ -362,7 +362,8 @@ FROM PROJECT
     // Project status CRUD
     ProjectStatusList: (Condition) =>
         `SELECT PROJECT_STATUS.STATUS_ID,
-                PROJECT_STATUS.STATUS_NAME
+                PROJECT_STATUS.STATUS_NAME,
+                PROJECT_STATUS.CUSTOM
         FROM PROJECT_STATUS
         ${Condition}
         `,
@@ -370,13 +371,16 @@ FROM PROJECT
     projectStatusDetailsById: (id) => `SELECT * FROM PROJECT_STATUS WHERE PROJECT_STATUS.STATUS_ID = ${id}`,
     insertProjectStatusDetail: (status) =>
         `INSERT INTO PROJECT_STATUS (
-            STATUS_NAME
+            STATUS_NAME,
+            CUSTOM
         ) VALUES (
-            '${status.STATUS_NAME}'
+            '${status.STATUS_NAME}',
+            ${status.CUSTOM ? '1' : '0'}
         )`,
     updateProjectStatusDetail: (status, id) =>
         `UPDATE PROJECT_STATUS SET 
-                STATUS_NAME = '${status.STATUS_NAME}'
+                STATUS_NAME = '${status.STATUS_NAME}',
+                CUSTOM = ${status.CUSTOM ? '1' : '0'}
         WHERE PROJECT_STATUS.STATUS_ID = ${id}`,
     removeProjectStatus: (id) => `DELETE FROM PROJECT_STATUS WHERE STATUS_ID = ${id}`,
 
