@@ -15,7 +15,12 @@ module.exports = {
   OnBench: (condition) => (
     `SELECT COUNT(STAFF_ID) AS TOTAL FROM 
       STAFF WHERE STAFF_ID NOT IN (
-        SELECT STAFF_ID FROM PROJECT_STAFF WHERE START_DATE <= NOW() AND END_DATE >= NOW() GROUP BY STAFF_ID
+        SELECT STAFF_ID
+        FROM PROJECT_STAFF
+        WHERE START_DATE <= NOW()
+          AND END_DATE >= NOW()
+          AND STAFF_ID IS NOT NULL
+        GROUP BY STAFF_ID
       ) AND STAFF.${condition}`
   ),
   StaffingGap: (condition, roleCondition) => (
