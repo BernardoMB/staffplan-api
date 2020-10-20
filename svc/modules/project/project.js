@@ -499,6 +499,7 @@ const insertProjectStatusDetail = async (req, res) => {
   try {
       const projectStatusDefault = {
           STATUS_NAME: '',
+          CUSTOM: 0,
       };
       const projectStatusDetails = req.body;
       const connection = await db.connection(req);
@@ -519,20 +520,31 @@ const insertProjectStatusDetail = async (req, res) => {
 const updateProjectStatusDetail = async (req, res) => {
   try {
       const projectStatusDetails = req.body;
+      console.log('\n');
+      console.log(`Project status update BODY`, projectStatusDetails);
+      console.log('');
       const connection = await db.connection(req);
       const result = await db.execute(
           connection,
           SQL.projectStatusDetailsById(req.params.id)
       );
+      console.log('\n');
+      console.log(`Result`, result);
+      console.log('');
       let detailsToUpdate = {};
       if (result && result.length > 0) {
           detailsToUpdate = result[0];
       }
+      console.log('\n');
+      console.log(`detailsToUpdate`, detailsToUpdate);
+      console.log('');
       const projectStatusToUpdate = Object.assign(
           detailsToUpdate,
           util.cleanObject(projectStatusDetails)
       );
-      console.log(`\nProject status to update\n`, projectStatusToUpdate);
+      console.log('\n');
+      console.log(`Project status to update`, projectStatusToUpdate);
+      console.log('');
       const rowsAffected = await db.execute(
           connection,
           SQL.updateProjectStatusDetail(projectStatusToUpdate, req.params.id)
