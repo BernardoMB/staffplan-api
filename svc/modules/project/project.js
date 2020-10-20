@@ -354,6 +354,431 @@ const filters = (req) => {
   return filterCondition;
 };
 
+//#region Project groups CRUD
+
+const getProjectGroupList = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectGroupList = await db.execute(
+          connection,
+          SQL.ProjectGroupList(filters(req))
+      );
+      util.successResponse(res, projectGroupList);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getProjectGroupListCount = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectGroupList = await db.execute(
+          connection,
+          SQL.getProjectGroupQueryCount(SQL.ProjectGroupList(filters(req)))
+      );
+      util.successResponse(res, projectGroupList[0]);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getProjectGroupDetailById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectGroupDetail = await db.execute(
+          connection,
+          SQL.projectGroupDetailsById(req.params.id)
+      );
+      util.successResponse(res, projectGroupDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const insertProjectGroupDetail = async (req, res) => {
+  try {
+      const projectGroupDefault = {
+          GROUP_NAME: '',
+      };
+      const projectGroupDetails = req.body;
+      const connection = await db.connection(req);
+      const projectGroupToCreate = Object.assign(
+          projectGroupDefault,
+          util.cleanObject(projectGroupDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.insertProjectGroupDetail(projectGroupToCreate)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const updateProjectGroupDetail = async (req, res) => {
+  try {
+      const projectGroupDetails = req.body;
+      const connection = await db.connection(req);
+      const result = await db.execute(
+          connection,
+          SQL.projectGroupDetailsById(req.params.id)
+      );
+      let detailsToUpdate = {};
+      if (result && result.length > 0) {
+          detailsToUpdate = result[0];
+      }
+      const projectGroupToUpdate = Object.assign(
+          detailsToUpdate,
+          util.cleanObject(projectGroupDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.updateProjectGroupDetail(projectGroupToUpdate, req.params.id)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const deleteProjectGroupById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectGroupDetail = await db.execute(
+          connection,
+          SQL.removeProjectGroup(req.params.id)
+      );
+      util.successResponse(res, projectGroupDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+//#endregion
+
+//#region Project status CRUD
+
+const getProjectStatusList = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectStatusList = await db.execute(
+          connection,
+          SQL.ProjectStatusList(filters(req))
+      );
+      util.successResponse(res, projectStatusList);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getProjectStatusListCount = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectStatusList = await db.execute(
+          connection,
+          SQL.getProjectStatusQueryCount(SQL.ProjectStatusList(filters(req)))
+      );
+      util.successResponse(res, projectStatusList[0]);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getProjectStatusDetailById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectStatusDetail = await db.execute(
+          connection,
+          SQL.projectStatusDetailsById(req.params.id)
+      );
+      util.successResponse(res, projectStatusDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const insertProjectStatusDetail = async (req, res) => {
+  try {
+      const projectStatusDefault = {
+          STATUS_NAME: '',
+          CUSTOM: 0,
+      };
+      const projectStatusDetails = req.body;
+      const connection = await db.connection(req);
+      const projectStatusToCreate = Object.assign(
+          projectStatusDefault,
+          util.cleanObject(projectStatusDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.insertProjectStatusDetail(projectStatusToCreate)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const updateProjectStatusDetail = async (req, res) => {
+  try {
+      const projectStatusDetails = req.body;
+      console.log('\n');
+      console.log(`Project status update BODY`, projectStatusDetails);
+      console.log('');
+      const connection = await db.connection(req);
+      const result = await db.execute(
+          connection,
+          SQL.projectStatusDetailsById(req.params.id)
+      );
+      console.log('\n');
+      console.log(`Result`, result);
+      console.log('');
+      let detailsToUpdate = {};
+      if (result && result.length > 0) {
+          detailsToUpdate = result[0];
+      }
+      console.log('\n');
+      console.log(`detailsToUpdate`, detailsToUpdate);
+      console.log('');
+      const projectStatusToUpdate = Object.assign(
+          detailsToUpdate,
+          util.cleanObject(projectStatusDetails)
+      );
+      console.log('\n');
+      console.log(`Project status to update`, projectStatusToUpdate);
+      console.log('');
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.updateProjectStatusDetail(projectStatusToUpdate, req.params.id)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const deleteProjectStatusById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectStatusDetail = await db.execute(
+          connection,
+          SQL.removeProjectStatus(req.params.id)
+      );
+      util.successResponse(res, projectStatusDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+//#endregion
+
+//#region Project category CRUD
+
+const getProjectCategoryList = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectCategoryList = await db.execute(
+          connection,
+          SQL.ProjectCategoryList(filters(req))
+      );
+      util.successResponse(res, projectCategoryList);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getProjectCategoryListCount = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectCategoryList = await db.execute(
+          connection,
+          SQL.getProjectCategoryQueryCount(SQL.ProjectCategoryList(filters(req)))
+      );
+      util.successResponse(res, projectCategoryList[0]);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getProjectCategoryDetailById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectCategoryDetail = await db.execute(
+          connection,
+          SQL.projectCategoryDetailsById(req.params.id)
+      );
+      util.successResponse(res, projectCategoryDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const insertProjectCategoryDetail = async (req, res) => {
+  try {
+      const projectCategoryDefault = {
+          Category_NAME: '',
+      };
+      const projectCategoryDetails = req.body;
+      const connection = await db.connection(req);
+      const projectCategoryToCreate = Object.assign(
+          projectCategoryDefault,
+          util.cleanObject(projectCategoryDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.insertProjectCategoryDetail(projectCategoryToCreate)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const updateProjectCategoryDetail = async (req, res) => {
+  try {
+      const projectCategoryDetails = req.body;
+      const connection = await db.connection(req);
+      const result = await db.execute(
+          connection,
+          SQL.projectCategoryDetailsById(req.params.id)
+      );
+      let detailsToUpdate = {};
+      if (result && result.length > 0) {
+          detailsToUpdate = result[0];
+      }
+      const projectCategoryToUpdate = Object.assign(
+          detailsToUpdate,
+          util.cleanObject(projectCategoryDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.updateProjectCategoryDetail(projectCategoryToUpdate, req.params.id)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const deleteProjectCategoryById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectCategoryDetail = await db.execute(
+          connection,
+          SQL.removeProjectCategory(req.params.id)
+      );
+      util.successResponse(res, projectCategoryDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+//#endregion
+
+//#region Project type CRUD
+
+const getProjectTypeList = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectTypeList = await db.execute(
+          connection,
+          SQL.ProjectTypeList(filters(req))
+      );
+      util.successResponse(res, projectTypeList);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getProjectTypeListCount = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectTypeList = await db.execute(
+          connection,
+          SQL.getProjectTypeQueryCount(SQL.ProjectTypeList(filters(req)))
+      );
+      util.successResponse(res, projectTypeList[0]);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getProjectTypeDetailById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectTypeDetail = await db.execute(
+          connection,
+          SQL.projectTypeDetailsById(req.params.id)
+      );
+      util.successResponse(res, projectTypeDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const insertProjectTypeDetail = async (req, res) => {
+  try {
+      const projectTypeDefault = {
+          Type_NAME: '',
+      };
+      const projectTypeDetails = req.body;
+      const connection = await db.connection(req);
+      const projectTypeToCreate = Object.assign(
+          projectTypeDefault,
+          util.cleanObject(projectTypeDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.insertProjectTypeDetail(projectTypeToCreate)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const updateProjectTypeDetail = async (req, res) => {
+  try {
+      const projectTypeDetails = req.body;
+      const connection = await db.connection(req);
+      const result = await db.execute(
+          connection,
+          SQL.projectTypeDetailsById(req.params.id)
+      );
+      let detailsToUpdate = {};
+      if (result && result.length > 0) {
+          detailsToUpdate = result[0];
+      }
+      const projectTypeToUpdate = Object.assign(
+          detailsToUpdate,
+          util.cleanObject(projectTypeDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.updateProjectTypeDetail(projectTypeToUpdate, req.params.id)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const deleteProjectTypeById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const projectTypeDetail = await db.execute(
+          connection,
+          SQL.removeProjectType(req.params.id)
+      );
+      util.successResponse(res, projectTypeDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+//#endregion
+
 module.exports = {
   getProjectList,
   getOpenRoles,
@@ -367,5 +792,34 @@ module.exports = {
   getWorkloadList,
   getWorkloadListCount,
   getWorkloadBench,
-  getWorkloadUnassigned
+  getWorkloadUnassigned,
+
+  getProjectGroupList,
+  getProjectGroupListCount,
+  getProjectGroupDetailById,
+  insertProjectGroupDetail,
+  updateProjectGroupDetail,
+  deleteProjectGroupById,
+
+  getProjectStatusList,
+  getProjectStatusListCount,
+  getProjectStatusDetailById,
+  insertProjectStatusDetail,
+  updateProjectStatusDetail,
+  deleteProjectStatusById,
+
+  getProjectCategoryList,
+  getProjectCategoryListCount,
+  getProjectCategoryDetailById,
+  insertProjectCategoryDetail,
+  updateProjectCategoryDetail,
+  deleteProjectCategoryById,
+
+  getProjectTypeList,
+  getProjectTypeListCount,
+  getProjectTypeDetailById,
+  insertProjectTypeDetail,
+  updateProjectTypeDetail,
+  deleteProjectTypeById,
+  
 };

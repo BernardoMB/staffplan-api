@@ -440,6 +440,484 @@ const getStaffPhoto = async (req, res) => {
   }
 }
 
+const filters = (req) => {
+  const filter = req.body.filter;
+  let filterCondition = ' where 1 = 1 ';
+  if (req.params.id) {
+    filterCondition = `${filterCondition} AND PROJECT.PROJECT_ID = ${req.params.id}`;
+  }
+  if (filter) {
+    if (filter.status) {
+      filterCondition = `${filterCondition} AND PROJECT_STATUS.STATUS_ID IN (${filter.status.join(
+        ','
+      )})`;
+    }
+
+    if (filter.role) {
+      filterCondition = `${filterCondition} AND STAFF.STAFF_ROLE_ID IN (${filter.role.join(',')})`;
+    }
+
+    if (filter.group) {
+      filterCondition = `${filterCondition} AND STAFF.STAFF_GROUP_ID IN (${filter.group.join(',')})`;
+    }
+
+    if (filter.startBetween && filter.endBetween) {
+      filterCondition = `${filterCondition} AND PROJECT.START_DATE BETWEEN '${filter.startBetween}' AND '${filter.endBetween}'`;
+    }
+
+    if (filter.StartIn) {
+      filterCondition = `${filterCondition} AND PROJECT.START_DATE >= NOW() and PROJECT.START_DATE <=  DATE_ADD(NOW(), INTERVAL 90 DAY)`;
+    }
+
+    if (filter.EndIn) {
+      filterCondition = `${filterCondition} AND PROJECT.END_DATE >= NOW() and PROJECT.END_DATE <=  DATE_ADD(NOW(), INTERVAL 90 DAY)`;
+    }
+
+    if (filter.startDate) {
+      filterCondition = `${filterCondition} AND PROJECT.START_DATE >= '${filter.startDate}'`;
+    }
+
+    if (filter.endDate) {
+      filterCondition = `${filterCondition} AND PROJECT.END_DATE >= '${filter.endDate}'`;
+    }
+
+    if (filter.office) {
+      filterCondition = `${filterCondition} AND PROJECT.OFFICE_ID = ${filter.office}`;
+    }
+
+    if (filter.projectId) {
+      filterCondition = `${filterCondition} AND PROJECT.PROJECT_ID = ${filter.projectId}`;
+    }
+
+    if (filter.ProjectGroup) {
+      filterCondition = `${filterCondition} AND PROJECT.GROUP_ID = ${filter.ProjectGroup}`;
+    }
+
+    if (filter.OpenRoles) {
+      filterCondition = `${filterCondition} AND (SELECT COUNT(ID) FROM
+      PLANNED_PROJECT_STAFF WHERE
+        PLANNED_PROJECT_STAFF.PROJECT_ID = PROJECT.PROJECT_ID) > 0`;
+    }
+  }
+  // List project based on user office access
+  if (util.officeAccessRestricted(req.payload.ROLE)) {
+    filterCondition = `${filterCondition} AND PROJECT.OFFICE_ID IN (SELECT OFFICE_ID FROM USER_ACCESS WHERE USER_ID = ${req.payload.ID})`;
+  }
+  return filterCondition;
+};
+
+//#region Staff group CRUD
+
+const getStaffGroupList = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffGroupList = await db.execute(
+          connection,
+          SQL.StaffGroupList(filters(req))
+      );
+      util.successResponse(res, staffGroupList);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getStaffGroupListCount = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffGroupList = await db.execute(
+          connection,
+          SQL.getStaffGroupQueryCount(SQL.StaffGroupList(filters(req)))
+      );
+      util.successResponse(res, staffGroupList[0]);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getStaffGroupDetailById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffGroupDetail = await db.execute(
+          connection,
+          SQL.staffGroupDetailsById(req.params.id)
+      );
+      util.successResponse(res, staffGroupDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const insertStaffGroupDetail = async (req, res) => {
+  try {
+      const staffGroupDefault = {
+          GROUP_NAME: '',
+      };
+      const staffGroupDetails = req.body;
+      const connection = await db.connection(req);
+      const staffGroupToCreate = Object.assign(
+          staffGroupDefault,
+          util.cleanObject(staffGroupDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.insertStaffGroupDetail(staffGroupToCreate)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const updateStaffGroupDetail = async (req, res) => {
+  try {
+      const staffGroupDetails = req.body;
+      const connection = await db.connection(req);
+      const result = await db.execute(
+          connection,
+          SQL.staffGroupDetailsById(req.params.id)
+      );
+      let detailsToUpdate = {};
+      if (result && result.length > 0) {
+          detailsToUpdate = result[0];
+      }
+      const staffGroupToUpdate = Object.assign(
+          detailsToUpdate,
+          util.cleanObject(staffGroupDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.updateStaffGroupDetail(staffGroupToUpdate, req.params.id)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const deleteStaffGroupById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffGroupDetail = await db.execute(
+          connection,
+          SQL.removeStaffGroup(req.params.id)
+      );
+      util.successResponse(res, staffGroupDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+//#endregion
+
+//#region Staff role CRUD
+
+const getStaffRoleList = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffRoleList = await db.execute(
+          connection,
+          SQL.StaffRoleList(filters(req))
+      );
+      util.successResponse(res, staffRoleList);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getStaffRoleListCount = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffRoleList = await db.execute(
+          connection,
+          SQL.getStaffRoleQueryCount(SQL.StaffRoleList(filters(req)))
+      );
+      util.successResponse(res, staffRoleList[0]);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getStaffRoleDetailById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffRoleDetail = await db.execute(
+          connection,
+          SQL.staffRoleDetailsById(req.params.id)
+      );
+      util.successResponse(res, staffRoleDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const insertStaffRoleDetail = async (req, res) => {
+  try {
+      const staffRoleDefault = {
+          ROLE_NAME: '',
+      };
+      const staffRoleDetails = req.body;
+      const connection = await db.connection(req);
+      const staffRoleToCreate = Object.assign(
+          staffRoleDefault,
+          util.cleanObject(staffRoleDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.insertStaffRoleDetail(staffRoleToCreate)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const updateStaffRoleDetail = async (req, res) => {
+  try {
+      const staffRoleDetails = req.body;
+      const connection = await db.connection(req);
+      const result = await db.execute(
+          connection,
+          SQL.staffRoleDetailsById(req.params.id)
+      );
+      let detailsToUpdate = {};
+      if (result && result.length > 0) {
+          detailsToUpdate = result[0];
+      }
+      const staffRoleToUpdate = Object.assign(
+          detailsToUpdate,
+          util.cleanObject(staffRoleDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.updateStaffRoleDetail(staffRoleToUpdate, req.params.id)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const deleteStaffRoleById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffRoleDetail = await db.execute(
+          connection,
+          SQL.removeStaffRole(req.params.id)
+      );
+      util.successResponse(res, staffRoleDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+//#endregion
+
+//#region Staff certification CRUD
+
+const getStaffCertificationList = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffCertificationList = await db.execute(
+          connection,
+          SQL.StaffCertificationList(filters(req))
+      );
+      util.successResponse(res, staffCertificationList);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getStaffCertificationListCount = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffCertificationList = await db.execute(
+          connection,
+          SQL.getStaffCertificationQueryCount(SQL.StaffCertificationList(filters(req)))
+      );
+      util.successResponse(res, staffCertificationList[0]);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getStaffCertificationDetailById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffCertificationDetail = await db.execute(
+          connection,
+          SQL.staffCertificationDetailsById(req.params.id)
+      );
+      util.successResponse(res, staffCertificationDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const insertStaffCertificationDetail = async (req, res) => {
+  try {
+      const staffCertificationDefault = {
+          CERTIFICATION_NAME: '',
+      };
+      const staffCertificationDetails = req.body;
+      const connection = await db.connection(req);
+      const staffCertificationToCreate = Object.assign(
+          staffCertificationDefault,
+          util.cleanObject(staffCertificationDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.insertStaffCertificationDetail(staffCertificationToCreate)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const updateStaffCertificationDetail = async (req, res) => {
+  try {
+      const staffCertificationDetails = req.body;
+      const connection = await db.connection(req);
+      const result = await db.execute(
+          connection,
+          SQL.staffCertificationDetailsById(req.params.id)
+      );
+      let detailsToUpdate = {};
+      if (result && result.length > 0) {
+          detailsToUpdate = result[0];
+      }
+      const staffCertificationToUpdate = Object.assign(
+          detailsToUpdate,
+          util.cleanObject(staffCertificationDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.updateStaffCertificationDetail(staffCertificationToUpdate, req.params.id)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const deleteStaffCertificationById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffCertificationDetail = await db.execute(
+          connection,
+          SQL.removeStaffCertification(req.params.id)
+      );
+      util.successResponse(res, staffCertificationDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+//#endregion
+
+//#region Staff experience CRUD
+
+const getStaffExperienceList = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffExperienceList = await db.execute(
+          connection,
+          SQL.StaffExperienceList(filters(req))
+      );
+      util.successResponse(res, staffExperienceList);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getStaffExperienceListCount = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffExperienceList = await db.execute(
+          connection,
+          SQL.getStaffExperienceQueryCount(SQL.StaffExperienceList(filters(req)))
+      );
+      util.successResponse(res, staffExperienceList[0]);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const getStaffExperienceDetailById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffExperienceDetail = await db.execute(
+          connection,
+          SQL.staffExperienceDetailsById(req.params.id)
+      );
+      util.successResponse(res, staffExperienceDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const insertStaffExperienceDetail = async (req, res) => {
+  try {
+      const staffExperienceDefault = {
+          EXPERIENCE_LABEL: '',
+      };
+      const staffExperienceDetails = req.body;
+      const connection = await db.connection(req);
+      const staffExperienceToCreate = Object.assign(
+          staffExperienceDefault,
+          util.cleanObject(staffExperienceDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.insertStaffExperienceDetail(staffExperienceToCreate)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const updateStaffExperienceDetail = async (req, res) => {
+  try {
+      const staffExperienceDetails = req.body;
+      const connection = await db.connection(req);
+      const result = await db.execute(
+          connection,
+          SQL.staffExperienceDetailsById(req.params.id)
+      );
+      let detailsToUpdate = {};
+      if (result && result.length > 0) {
+          detailsToUpdate = result[0];
+      }
+      const staffExperienceToUpdate = Object.assign(
+          detailsToUpdate,
+          util.cleanObject(staffExperienceDetails)
+      );
+      const rowsAffected = await db.execute(
+          connection,
+          SQL.updateStaffExperienceDetail(staffExperienceToUpdate, req.params.id)
+      );
+      util.successResponse(res, rowsAffected);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+const deleteStaffExperienceById = async (req, res) => {
+  try {
+      const connection = await db.connection(req);
+      const staffExperienceDetail = await db.execute(
+          connection,
+          SQL.removeStaffExperience2(req.params.id)
+      );
+      util.successResponse(res, staffExperienceDetail);
+  } catch (exception) {
+      util.errorResponse(res, exception);
+  }
+};
+
+//#endregion
+
 module.exports = {
   staffAssignments,
   getStaffProjectList,
@@ -464,5 +942,33 @@ module.exports = {
   availabilityByDate,
   getStaffWorkloadList,
   getStaffWorkload,
-  getStaffWorkloadListCount
+  getStaffWorkloadListCount,
+
+  getStaffGroupList,
+  getStaffGroupListCount,
+  getStaffGroupDetailById,
+  insertStaffGroupDetail,
+  updateStaffGroupDetail,
+  deleteStaffGroupById,
+
+  getStaffRoleList,
+  getStaffRoleListCount,
+  getStaffRoleDetailById,
+  insertStaffRoleDetail,
+  updateStaffRoleDetail,
+  deleteStaffRoleById,
+
+  getStaffCertificationList,
+  getStaffCertificationListCount,
+  getStaffCertificationDetailById,
+  insertStaffCertificationDetail,
+  updateStaffCertificationDetail,
+  deleteStaffCertificationById,
+
+  getStaffExperienceList,
+  getStaffExperienceListCount,
+  getStaffExperienceDetailById,
+  insertStaffExperienceDetail,
+  updateStaffExperienceDetail,
+  deleteStaffExperienceById,
 }
