@@ -85,7 +85,7 @@ const updateUser = async (req, res) => {
   }
 }
 
-const getUser = async (req, res) => {
+const getUsers = async (req, res) => {
   try {
     if (util.isAdmin(req.payload.ROLE)) {
       const connection = await db.connection(req);
@@ -96,6 +96,9 @@ const getUser = async (req, res) => {
           PHOTO_URL: util.getThumbnailUrl(item.PHOTO_URL)
         }
       });
+      console.log('\n');
+      console.log('Result', {result});
+      console.log('\n');
       util.successResponse(res, result);
     } else {
       util.errorResponse(res, 'User Access Restricted');
@@ -276,7 +279,7 @@ const uploadImage = async (buffer, fileName) => {
 
 module.exports = {
   insertCalendar,
-  getUser,
+  getUsers,
   insertUser,
   activeUser,
   resetPassword,
