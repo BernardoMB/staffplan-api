@@ -61,7 +61,7 @@ module.exports = {
               AND C.START_DATE >= NOW()
               AND S.${condition}
               ${projectStatusQuery}
-            GROUP BY WEEK, S.STAFF_ID, SR.ROLE_NAME, P.GROUP_ID
+            GROUP BY C.CALENDAR_ID, WEEK, S.STAFF_ID, SR.ROLE_NAME, P.GROUP_ID
           ) Q1
       GROUP BY STAFF_ID, ROLE_NAME, GROUP_ID
     `
@@ -122,7 +122,7 @@ module.exports = {
                     AND C.START_DATE >= NOW()
                     AND S.OFFICE_ID = ${officeId}
                     ${projectGroup === 'All' ? `` : ` AND P.GROUP_ID = ${projectGroup}`}
-                  group by C.WEEK, S.STAFF_ID, SR.ROLE_NAME
+                  group by C.CALENDAR_ID, C.WEEK, S.STAFF_ID, SR.ROLE_NAME
                 ) Q1
           WHERE (ALLOCATION < ${CONST.MIN_FTE_ALLOCATION} OR ALLOCATION > ${CONST.MAX_FTE_ALLOCATION})
           GROUP BY STAFF_ID, ROLE_NAME
