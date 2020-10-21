@@ -340,4 +340,92 @@ FROM PROJECT
       ${CONTACT_ID}
     )
     `,
+
+    // Project group CRUD
+    ProjectGroupList: (Condition) =>
+        `SELECT PROJECT_GROUP.GROUP_ID,
+                PROJECT_GROUP.GROUP_NAME
+        FROM PROJECT_GROUP
+        ${Condition}
+        `,
+    getProjectGroupQueryCount: (query) => `SELECT COUNT(*) AS count FROM (${query}) AS Q`,
+    projectGroupDetailsById: (id) => `SELECT * FROM PROJECT_GROUP WHERE PROJECT_GROUP.GROUP_ID = ${id}`,
+    insertProjectGroupDetail: (group) =>
+        `INSERT INTO PROJECT_GROUP (
+            GROUP_NAME
+        ) VALUES (
+            '${group.GROUP_NAME}'
+        )`,
+    updateProjectGroupDetail: (group, id) =>
+        `UPDATE PROJECT_GROUP SET 
+                GROUP_NAME = '${group.GROUP_NAME}'
+        WHERE PROJECT_GROUP.GROUP_ID = ${id}`,
+    removeProjectGroup: (id) => `DELETE FROM PROJECT_GROUP WHERE GROUP_ID = ${id}`,
+
+    // Project status CRUD
+    ProjectStatusList: (Condition) =>
+        `SELECT PROJECT_STATUS.STATUS_ID,
+                PROJECT_STATUS.STATUS_NAME,
+                PROJECT_STATUS.CUSTOM
+        FROM PROJECT_STATUS
+        ${Condition}
+        `,
+    getProjectStatusQueryCount: (query) => `SELECT COUNT(*) AS count FROM (${query}) AS Q`,
+    projectStatusDetailsById: (id) => `SELECT * FROM PROJECT_STATUS WHERE PROJECT_STATUS.STATUS_ID = ${id}`,
+    insertProjectStatusDetail: (status) =>
+        `INSERT INTO PROJECT_STATUS (
+            STATUS_NAME,
+            CUSTOM
+        ) VALUES (
+            '${status.STATUS_NAME}',
+            ${status.CUSTOM ? '1' : '0'}
+        )`,
+    updateProjectStatusDetail: (status, id) =>
+        `UPDATE PROJECT_STATUS SET 
+                STATUS_NAME = '${status.STATUS_NAME}',
+                CUSTOM = ${status.CUSTOM ? '1' : '0'}
+        WHERE PROJECT_STATUS.STATUS_ID = ${id}`,
+    removeProjectStatus: (id) => `DELETE FROM PROJECT_STATUS WHERE STATUS_ID = ${id}`,
+
+    // Project type CRUD category Category
+    ProjectCategoryList: (Condition) =>
+        `SELECT CATEGORY.CATEGORY_ID,
+                CATEGORY.CATEGORY_NAME
+        FROM CATEGORY
+        ${Condition}
+        `,
+    getProjectCategoryQueryCount: (query) => `SELECT COUNT(*) AS count FROM (${query}) AS Q`,
+    projectCategoryDetailsById: (id) => `SELECT * FROM CATEGORY WHERE CATEGORY.CATEGORY_ID = ${id}`,
+    insertProjectCategoryDetail: (category) =>
+        `INSERT INTO CATEGORY (
+            CATEGORY_NAME
+        ) VALUES (
+            '${category.CATEGORY_NAME}'
+        )`,
+    updateProjectCategoryDetail: (category, id) =>
+        `UPDATE CATEGORY SET 
+                CATEGORY_NAME = '${category.CATEGORY_NAME}'
+        WHERE CATEGORY.CATEGORY_ID = ${id}`,
+    removeProjectCategory: (id) => `DELETE FROM CATEGORY WHERE CATEGORY_ID = ${id}`,
+    
+    // Project type CRUD type Type
+    ProjectTypeList: (Condition) =>
+        `SELECT PROJECT_TYPE.TYPE_ID,
+                PROJECT_TYPE.TYPE_NAME
+        FROM PROJECT_TYPE
+        ${Condition}
+        `,
+    getProjectTypeQueryCount: (query) => `SELECT COUNT(*) AS count FROM (${query}) AS Q`,
+    projectTypeDetailsById: (id) => `SELECT * FROM PROJECT_TYPE WHERE PROJECT_TYPE.TYPE_ID = ${id}`,
+    insertProjectTypeDetail: (type) =>
+        `INSERT INTO PROJECT_TYPE (
+            TYPE_NAME
+        ) VALUES (
+            '${type.TYPE_NAME}'
+        )`,
+    updateProjectTypeDetail: (type, id) =>
+        `UPDATE PROJECT_TYPE SET 
+                TYPE_NAME = '${type.TYPE_NAME}'
+        WHERE PROJECT_TYPE.TYPE_ID = ${id}`,
+    removeProjectType: (id) => `DELETE FROM PROJECT_TYPE WHERE TYPE_ID = ${id}`,
 };
