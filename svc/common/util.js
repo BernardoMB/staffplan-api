@@ -24,10 +24,12 @@ module.exports = {
   officeAccessRestricted: (role) => (role && role === 'OFFICE'),
   isAdmin: (role) => (role && role === 'ADMIN'),
   getThumbnailUrl: (key) => {
+    console.log('S3 resource key', key);
     if (key && key.length > 3) {
       return `${url}/${key}/${CONST.THUMBNAIL}.${CONST.IMGEXTN}`;
+    } else {
+      return null;
     }
-    return null;
   },
   cleanObject: (obj) => {
     for (var propName in obj) {

@@ -65,8 +65,8 @@ module.exports = {
       CITY,
       STATE,
       ZIP,
-      if(ACTIVE, 'Yes', 'No') AS 'ACTIVE'/* ,
-      PHOTO_URL */
+      if(ACTIVE, 'Yes', 'No') AS 'ACTIVE',
+      PHOTO_URL
     FROM
       USERS
     INNER JOIN
