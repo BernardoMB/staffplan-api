@@ -41,4 +41,133 @@ module.exports = (app) => {
 
   app.get(`/${CONST.API}/${MODULE}/:id/photo`, authenticate.isAuthenticated, staff.getStaffPhoto);
   app.put(`/${CONST.API}/${MODULE}/:id/photo`, authenticate.isAuthenticated, upload.single('photo'), staff.insertStaffPhoto);
+
+  // Staff group crud
+  app.put(
+    `/${CONST.API}/${MODULE}/group/details`,
+    authenticate.isAuthenticated,
+    staff.insertStaffGroupDetail
+  );
+  app.post(
+    `/${CONST.API}/${MODULE}/group/list`,
+    authenticate.isAuthenticated,
+    staff.getStaffGroupList
+  );
+  app.post(
+    `/${CONST.API}/${MODULE}/group/list-count`,
+    authenticate.isAuthenticated,
+    staff.getStaffGroupListCount
+  );
+  app.get(
+    `/${CONST.API}/${MODULE}/group/:id/details`,
+    authenticate.isAuthenticated,
+    staff.getStaffGroupDetailById
+  );
+  app.patch(
+    `/${CONST.API}/${MODULE}/group/:id/details`,
+    authenticate.isAuthenticated,
+    staff.updateStaffGroupDetail
+  );
+  app.delete(
+    `/${CONST.API}/${MODULE}/group/:id`,
+    authenticate.isAuthenticated,
+    staff.deleteStaffGroupById
+  );
+
+  // Staff role crud
+  app.put(
+    `/${CONST.API}/${MODULE}/role/details`,
+    authenticate.isAuthenticated,
+    staff.insertStaffRoleDetail
+  );
+  app.post(
+    `/${CONST.API}/${MODULE}/role/list`,
+    authenticate.isAuthenticated,
+    staff.getStaffRoleList
+  );
+  app.post(
+    `/${CONST.API}/${MODULE}/role/list-count`,
+    authenticate.isAuthenticated,
+    staff.getStaffRoleListCount
+  );
+  app.get(
+    `/${CONST.API}/${MODULE}/role/:id/details`,
+    authenticate.isAuthenticated,
+    staff.getStaffRoleDetailById
+  );
+  app.patch(
+    `/${CONST.API}/${MODULE}/role/:id/details`,
+    authenticate.isAuthenticated,
+    staff.updateStaffRoleDetail
+  );
+  app.delete(
+    `/${CONST.API}/${MODULE}/role/:id`,
+    authenticate.isAuthenticated,
+    staff.deleteStaffRoleById
+  );
+  
+  // Staff certification crud
+  app.put(
+    `/${CONST.API}/${MODULE}/certification/details`,
+    authenticate.isAuthenticated,
+    staff.insertStaffCertificationDetail
+  );
+  app.post(
+    `/${CONST.API}/${MODULE}/certification/list`,
+    authenticate.isAuthenticated,
+    staff.getStaffCertificationList
+  );
+  app.post(
+    `/${CONST.API}/${MODULE}/certification/list-count`,
+    authenticate.isAuthenticated,
+    staff.getStaffCertificationListCount
+  );
+  app.get(
+    `/${CONST.API}/${MODULE}/certification/:id/details`,
+    authenticate.isAuthenticated,
+    staff.getStaffCertificationDetailById
+  );
+  app.patch(
+    `/${CONST.API}/${MODULE}/certification/:id/details`,
+    authenticate.isAuthenticated,
+    staff.updateStaffCertificationDetail
+  );
+  app.delete(
+    `/${CONST.API}/${MODULE}/certification/:id`,
+    authenticate.isAuthenticated,
+    staff.deleteStaffCertificationById
+  );
+  
+  // Staff experience crud
+  app.put(
+    `/${CONST.API}/${MODULE}/experience/details`,
+    authenticate.isAuthenticated,
+    staff.insertStaffExperienceDetail
+  );
+  app.post(
+    `/${CONST.API}/${MODULE}/experience/list`,
+    authenticate.isAuthenticated,
+    staff.getStaffExperienceList
+  );
+  app.post(
+    `/${CONST.API}/${MODULE}/experience/list-count`,
+    authenticate.isAuthenticated,
+    staff.getStaffExperienceListCount
+  );
+  app.get(
+    `/${CONST.API}/${MODULE}/experience/:id/details`,
+    authenticate.isAuthenticated,
+    staff.getStaffExperienceDetailById
+  );
+  app.patch(
+    `/${CONST.API}/${MODULE}/experience/:id/details`,
+    authenticate.isAuthenticated,
+    staff.updateStaffExperienceDetail
+  );
+  app.delete(
+    `/${CONST.API}/${MODULE}/experience/:id`,
+    authenticate.isAuthenticated,
+    staff.deleteStaffExperienceById
+  );
+
 }
