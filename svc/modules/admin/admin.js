@@ -96,9 +96,6 @@ const getUsers = async (req, res) => {
           PHOTO_URL: util.getThumbnailUrl(item.PHOTO_URL)
         }
       });
-      console.log('\n');
-      console.log('Result', {result});
-      console.log('\n');
       util.successResponse(res, result);
     } else {
       util.errorResponse(res, 'User Access Restricted');
