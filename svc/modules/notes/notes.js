@@ -11,19 +11,25 @@ const getProjectNotes = async (req, res) => {
       condition = `PROJECT.PROJECT_ID = ${req.params.id} AND NOTES.IS_PARENT = 1`
     }
     const connection = await db.connection(req);
-    const projectNotes = await db.execute(connection, SQL.getProjectNotes(condition));
+    let projectNotes = await db.execute(connection, SQL.getProjectNotes(condition));
+    projectNotes = projectNotes.map((item) => {
+      return {
+        ...item,
+        PHOTO_URL: util.getThumbnailUrl(item.PHOTO_URL)
+      }
+    });
     util.successResponse(res, projectNotes);
   } catch (exception) {
-      util.errorResponse(res,exception);
+    util.errorResponse(res, exception);
   }
 }
 
 const insertProjectNotes = async (req, res) => {
   try {
-      const IS_PARENT = !(req.body.project.parentId);
-      const notesToCreate = {
+    const IS_PARENT = !(req.body.project.parentId);
+    const notesToCreate = {
       USER_ID: req.payload.ID,
-      CONTENT: req.body.project.content,      
+      CONTENT: req.body.project.content,
       PROJECT_ID: req.params.id,
       NODE_PARENT_ID: req.body.project.parentId || null,
       IS_PARENT
@@ -38,7 +44,7 @@ const insertProjectNotes = async (req, res) => {
 
 const updateProjectNotes = async (req, res) => {
   try {
-    const notes = req.body.project;    
+    const notes = req.body.project;
     const connection = await db.connection(req);
     const rowsAffected = await db.execute(connection, SQL.updateProjectNotes(notes.content, notes.noteId));
     util.successResponse(res, rowsAffected);

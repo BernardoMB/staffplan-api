@@ -23,6 +23,7 @@ module.exports = {
             overUnderHash[el.STAFF_ID].ALLOCATION += el.ALLOCATION;
             overUnderHash[el.STAFF_ID].GROUP_ID.push(el.GROUP_ID);
         })
+        console.log(overUnderHash)
         return overUnderHash;
     },
     getOverUnderCount(queryResult, projectGroup) {
