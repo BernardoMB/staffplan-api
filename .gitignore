@@ -15,3 +15,7 @@ svc/env.json
 */env.json
 env.json
 *env.json
+svc/env.json
+../env.json
+
+svc
