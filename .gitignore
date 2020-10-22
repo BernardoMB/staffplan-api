@@ -18,4 +18,26 @@ env.json
 svc/env.json
 ../env.json
 
-svc
+# IDE - VSCode
+vscode/*
+vscode/settings.json
+vscode/tasks.json
+vscode/launch.json
+vscode/extensions.json
+.vscode/*
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+!.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.settings/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
