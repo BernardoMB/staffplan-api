@@ -99,8 +99,11 @@ FROM PROJECT
     WHERE STAFF_ID NOT IN (
       SELECT STAFF_ID
       FROM PROJECT_STAFF
-       where  ((START_DATE >= '${startDate}' AND START_DATE <= '${endDate}')
-         OR (END_DATE >= '${endDate}' OR END_DATE > '${startDate}'))
+       where  (
+          (START_DATE >= '${startDate}' AND START_DATE <= '${endDate}')
+          OR (END_DATE >= '${endDate}' OR END_DATE > '${startDate}')
+         )
+         AND STAFF_ID IS NOT NULL
       )
     AND STAFF_STATUS_ID = 1
     ${condition}

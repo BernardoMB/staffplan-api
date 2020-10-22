@@ -75,8 +75,11 @@ const getWorkloadBench = async (req, res) => {
       }
     }
 
+    console.log(SQL.getWorkloadBench(condition, req.body.startDate, req.body.endDate))
+
     let workLoadBench = await db.execute(connection,
-      SQL.getWorkloadBench(condition, req.body.startDate, req.body.endDate))
+      SQL.getWorkloadBench(condition, req.body.startDate, req.body.endDate)
+    )
     workLoadBench = workLoadBench.map((item) => {
       return {
         ...item,

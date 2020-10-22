@@ -38,7 +38,8 @@ const getDashboardDetails = async (req, res) => {
     if (!condition || !date) return;
 
     const UnassignedRoleCount = await db.execute(connection,
-      SQL.UnassignedRole(condition, date, projectStatusQuery, roleCondition));
+      SQL.UnassignedRole(condition, date, projectStatusQuery, roleCondition)
+    );
     const OnBench = await db.execute(connection, SQL.OnBench(condition));
     const StaffingGap = await db.execute(connection, SQL.StaffingGap(condition, roleCondition));
     const OverUnderAllocation = await db.execute(connection,
