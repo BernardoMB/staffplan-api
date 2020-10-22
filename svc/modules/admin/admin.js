@@ -85,7 +85,7 @@ const updateUser = async (req, res) => {
   }
 }
 
-const getUser = async (req, res) => {
+const getUsers = async (req, res) => {
   try {
     if (util.isAdmin(req.payload.ROLE)) {
       const connection = await db.connection(req);
@@ -276,7 +276,7 @@ const uploadImage = async (buffer, fileName) => {
 
 module.exports = {
   insertCalendar,
-  getUser,
+  getUsers,
   insertUser,
   activeUser,
   resetPassword,
